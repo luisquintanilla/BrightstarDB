@@ -2358,9 +2358,6 @@ namespace BrightstarDB.InternalTests.SparqlTestSuite {
 		}
 
 		[Test]
-#if NETCOREAPP10
-        [Ignore("Test relies on a DTD entity declaration which cannot be parsed in .NET Standard 1.0")]
-#endif
         public void DawgConstructOptional() {
 	
 					ImportData(@"data-r2/construct/data-opt.ttl");
@@ -3123,11 +3120,7 @@ namespace BrightstarDB.InternalTests.SparqlTestSuite {
                     if (!xd.Equals(yd)) return false;
                     var xlang = xl.Language ?? String.Empty;
                     var ylang = yl.Language ?? String.Empty;
-#if NETCOREAPP10
-                    if (!xlang.Equals(ylang, StringComparison.OrdinalIgnoreCase)) return false;
-#else
                     if (!xlang.Equals(ylang, StringComparison.InvariantCultureIgnoreCase)) return false;
-#endif
                     break;
                 case NodeType.Uri:
                     if (!actualNode.NodeType.Equals(expectedNode.NodeType)) return false;

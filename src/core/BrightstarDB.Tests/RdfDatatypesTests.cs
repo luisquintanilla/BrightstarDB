@@ -29,7 +29,6 @@ namespace BrightstarDB.Tests
 
     }
 
-#if !NETCOREAPP10
     [TestFixture("en-US")]
     [TestFixture("de")]
     [TestFixture("ja-JP")]
@@ -222,5 +221,4 @@ namespace BrightstarDB.Tests
             Assert.That(p, Is.EqualTo(v));
         }
     }
-#endif
 }

@@ -1,4 +1,3 @@
-﻿#if !NETCOREAPP10
 using System;
 using System.IO;
 using System.Linq;
@@ -209,4 +208,3 @@ namespace BrightstarDB.InternalTests
 
     }
 }
-#endif
