@@ -33,5 +33,9 @@
     <PackageVersion Include="Nancy.Hosting.Self" Version="1.4.1" />
     <PackageVersion Include="Nancy.Testing" Version="1.4.1" />
     <PackageVersion Include="System.ServiceProcess.ServiceController" Version="7.0.0" />
+
+    <!-- ASP.NET Core Server dependencies -->
+    <PackageVersion Include="Microsoft.Extensions.Hosting.WindowsServices" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.5" />
   </ItemGroup>
 </Project>

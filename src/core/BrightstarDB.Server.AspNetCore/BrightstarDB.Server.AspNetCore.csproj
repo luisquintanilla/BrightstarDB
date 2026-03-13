@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>BrightstarDB.Server.AspNetCore</RootNamespace>
+    <AssemblyName>BrightstarDB.Server.AspNetCore</AssemblyName>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BrightstarDB\BrightstarDB.csproj" />
+    <ProjectReference Include="..\BrightstarDB.Core\BrightstarDB.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dotNetRdf" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" />
+  </ItemGroup>
+
+</Project>
