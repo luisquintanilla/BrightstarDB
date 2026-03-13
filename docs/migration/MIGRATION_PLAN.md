@@ -36,9 +36,10 @@ Phase 8 (CI/CD)      ←  Final phase
 
 ---
 
-## Phase 0: Build Infrastructure Modernization
+## Phase 0: Build Infrastructure Modernization ✅ COMPLETE
 
 **Goal:** Set up the modern .NET build foundation before touching any project code.
+**Status:** Committed as part of Wave 1 (`c3cdd64c`)
 
 ### Task 0.1: Add global.json
 
@@ -133,9 +134,10 @@ Create `nuget.config` at repository root:
 
 ---
 
-## Phase 1: Core Library — Add net10.0 Target
+## Phase 1: Core Library — Add net10.0 Target ✅ COMPLETE
 
 **Goal:** Make `BrightstarDB.Core` compile for `net10.0` while keeping `netstandard2.0` for backward compatibility.
+**Status:** Committed as Wave 2 (`031e8868`). All projects retargeted. 991 tests pass.
 
 ### Task 1.1: Update BrightstarDB.Core.csproj target frameworks
 
@@ -199,9 +201,10 @@ Fix any compilation errors. Expected issues:
 
 ---
 
-## Phase 2: dotNetRDF 2.x → 3.x Upgrade
+## Phase 2: dotNetRDF 2.x → 3.x Upgrade ✅ COMPLETE
 
 **Goal:** Upgrade from dotNetRDF 2.7.5 to 3.5.1. This is a **major breaking change** and the **highest-risk phase**.
+**Status:** Committed as Wave 3 (`2e990754`). 166 compilation errors fixed. 28 files changed. 459 tests pass.
 
 > ⚠️ See [KNOWLEDGE_CAPTURE.md — Pattern 8](KNOWLEDGE_CAPTURE.md#pattern-8-dotnetrdf-2x--3x-migration-checklist) for the step-by-step checklist.
 
@@ -268,9 +271,10 @@ Fix any SPARQL query/parsing behavior changes.
 
 ---
 
-## Phase 3: Custom Entity Framework Modernization
+## Phase 3: Custom Entity Framework Modernization ✅ COMPLETE
 
 **Goal:** Ensure the custom EF (LINQ-to-SPARQL pipeline) works correctly on .NET 10.
+**Status:** All 86 EF tests pass on net10.0. LINQ-to-SPARQL pipeline works unchanged. Completed as part of Wave 2.
 
 ### Architecture Reference
 
@@ -346,9 +350,10 @@ The current tests only cover LINQ translation (via `MockContext`). Add tests for
 
 ---
 
-## Phase 4: Code Generation Modernization
+## Phase 4: Code Generation Modernization ✅ COMPLETE
 
 **Goal:** Modernize the code generation tools to work on .NET 10.
+**Status:** Committed (`1db2ee2c`). T4 retargeted from netcoreapp2.1 to net10.0. 22 CodeGen tests pass.
 
 ### Current State
 
@@ -389,9 +394,10 @@ These tests already target `net6.0` (the most modern target in the repo). Update
 
 ---
 
-## Phase 5: Server Migration (Nancy → ASP.NET Core)
+## Phase 5: Server Migration (Nancy → ASP.NET Core) ✅ COMPLETE
 
 **Goal:** Replace the dead Nancy web framework with ASP.NET Core. This is the **largest single work item**.
+**Status:** Committed (`f90045ed`). 53 new files, 3,759 lines. 9 endpoint classes, 24 routes. 976 tests pass (server test project scaffolded but empty — integration tests are Phase 6).
 
 > ⚠️ See [KNOWLEDGE_CAPTURE.md — Pattern 7](KNOWLEDGE_CAPTURE.md#pattern-7-nancy--aspnet-core-migration-checklist) for the step-by-step checklist.
 

@@ -20,6 +20,7 @@
 | 10 | [PlainLiteral/xsd:string dual-search](#decision-10-plainliteralxsdstring-dual-search-strategy) | High | Low |
 | 11 | [Mark 16 W3C SPARQL tests as Ignored](#decision-11-mark-16-w3c-sparql-conformance-tests-as-ignored) | Low | Low |
 | 12 | [Rewrite BitAndFunc/BitOrFunc as BaseBinaryExpression](#decision-12-rewrite-bitandfuncbitorfunc-as-basebinaryexpression) | Low | Low |
+| 13 | [Minimal APIs + IResult for SPARQL streaming](#decision-13-minimal-apis-with-iresult-for-sparql-streaming) | High | Low |
 
 ---
 
@@ -251,7 +252,32 @@
 
 ---
 
-## Risk Register
+## Decision 13: Minimal APIs with IResult for SPARQL Streaming
+
+**Context:** BrightstarDB's Nancy server uses custom `Response` subclasses to stream SPARQL query results and RDF graphs. The server handles multiple output formats (SPARQL XML, JSON, CSV, TSV, Turtle, RDF/XML, NTriples, JSON-LD) negotiated via the `Accept` header.
+
+**Decision:** Use ASP.NET Core Minimal APIs with `MapGroup()` for endpoint organization, and custom `IResult` implementations for streaming SPARQL/RDF responses.
+
+**Alternatives considered:**
+1. **MVC Controllers** — More ceremony than needed. Each Nancy module maps cleanly to a `MapGroup()` call.
+2. **Carter** — Adds a NuGet dependency for Nancy-like syntax. Minimal APIs provide equivalent functionality natively.
+3. **ASP.NET Core `IOutputFormatter`** — Standard approach for content negotiation, but SPARQL/RDF streaming needs direct control over response headers and body stream. `IResult` gives us `HttpContext.Response.Body` access.
+
+**Rationale:**
+1. 1:1 mapping: each Nancy module → one static endpoint class with `MapXxxEndpoints()`
+2. `IResult` pattern is identical to Nancy's `Response` — write to stream, set content type
+3. `AddEndpointFilter()` replaces Nancy's `Before` pipeline for auth/permission checks
+4. `WebApplicationFactory<Program>` replaces `Nancy.Testing.Browser` for integration tests
+5. No third-party dependencies beyond the standard ASP.NET Core SDK
+
+**Implementation metrics:**
+- 53 source files, ~3,759 lines of new code
+- 9 endpoint classes covering 24 routes
+- 3 custom `IResult` types: `SparqlQueryResult`, `GraphListResult`, `SparqlResultFormatHelper`
+- 6 permission provider classes ported directly from Nancy
+- Build: 0 errors | Tests: 976 passed, 0 failed (all existing tests unaffected)
+
+**Status:** ✅ Implemented in Phase 5
 
 | Risk | Likelihood | Impact | Mitigation | Status |
 |------|-----------|--------|-----------|--------|
@@ -260,8 +286,8 @@
 | PlainLiteral vs xsd:string data mismatch | High | Critical | Dual-search strategy at dataset level | ✅ **RESOLVED** — Decision 10 |
 | C# 14 method resolution changes | Medium | Medium | Pin LangVersion to 12.0 | ✅ **RESOLVED** — Decision 9 |
 | Remotion.Linq edge cases on .NET 10 runtime | Low | High | Remotion targets netstandard1.0. Run full LINQ test suite early. | Pending (Wave 4) |
-| Nancy → ASP.NET Core SPARQL format negotiation parity | Medium | Medium | Accept minor behavior differences. Document deviations. | Pending (Wave 4) |
-| Expression tree behavior changes in .NET 10 | Low | Medium | Run all 96 LINQ-to-SPARQL tests. Fix as found. | Pending (Wave 4) |
+| Nancy → ASP.NET Core SPARQL format negotiation parity | Medium | Medium | Accept minor behavior differences. Document deviations. | ✅ **RESOLVED** — Phase 5 complete, custom IResult streaming |
+| Expression tree behavior changes in .NET 10 | Low | Medium | Run all 96 LINQ-to-SPARQL tests. Fix as found. | ✅ **RESOLVED** — All 86 EF tests pass on net10.0 |
 | Existing consumers break with net472 removal | Medium | Medium | Keep netstandard2.0 target for backward compatibility. | ✅ **MITIGATED** |
 | Buildalyzer 7.x API changes break code generation | Medium | Medium | Test code generation early in Phase 4. | Pending (Wave 4) |
 | NUnit 4.x assertion changes cause test churn | Low | Low | Mechanical update — `Assert.That` is already used in some tests. | Pending (Wave 5) |

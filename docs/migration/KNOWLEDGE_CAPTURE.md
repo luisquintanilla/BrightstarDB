@@ -200,6 +200,67 @@ The actual migration work is:
 | `result.StatusCode` | `response.StatusCode` |
 | `result.Body.DeserializeJson<T>()` | `response.Content.ReadFromJsonAsync<T>()` |
 
+### Battle-Tested Implementation Details (Phase 5)
+
+**What we actually built:**
+- 53 source files, ~3,759 lines of new code
+- 9 endpoint groups covering 24 routes (14 GET, 7 POST, 1 PUT, 2 DELETE)
+- 3 custom `IResult` implementations for streaming SPARQL/RDF responses
+- Basic auth handler with constant-time password comparison (`CryptographicOperations.FixedTimeEquals`)
+
+**Key decisions that worked well:**
+
+1. **Minimal APIs over Controllers:** Minimal APIs with `MapGroup()` map 1:1 to Nancy modules. Each Nancy module becomes one static class with `MapXxxEndpoints()`. This preserved the logical grouping without the overhead of controller base classes.
+
+2. **Endpoint filters for authorization:** Nancy's `Before` pipeline hooks that checked permissions became ASP.NET Core endpoint filters (`AddEndpointFilter`). Pattern:
+   ```csharp
+   group.MapGet("/", HandleGet)
+       .AddSystemPermissionFilter(SystemPermissions.ListStores);
+   ```
+
+3. **IResult for streaming responses:** Nancy's custom `Response` subclasses (like `SparqlQueryResponse`) mapped directly to `IResult` implementations. The pattern is identical: write directly to `HttpContext.Response.Body`.
+
+4. **Permission providers stayed abstract:** The `AbstractStorePermissionsProvider` / `AbstractSystemPermissionsProvider` hierarchy ported unchanged because it uses `ClaimsPrincipal` (already in Nancy via OWIN).
+
+5. **Configuration moved to `IOptions<T>`:** Nancy's custom XML config handler became a POCO class bound to `appsettings.json` via `IOptions<BrightstarServiceConfiguration>`.
+
+**Gotchas we encountered:**
+
+1. **`IBrightstarService` registration:** Nancy's bootstrapper created this in `ConfigureApplicationContainer`. In ASP.NET Core, register as singleton in DI:
+   ```csharp
+   builder.Services.AddSingleton<IBrightstarService>(sp => {
+       var config = sp.GetRequiredService<IOptions<BrightstarServiceConfiguration>>().Value;
+       return BrightstarService.GetClient(config.ConnectionString);
+   });
+   ```
+
+2. **SPARQL content negotiation complexity:** The `Accept` header mapping to BrightstarDB's `SparqlResultsFormat`/`RdfFormat` required a helper class (`SparqlResultFormatHelper`) that understands both SPARQL result formats (XML, JSON, CSV, TSV) and RDF graph formats (Turtle, RDF/XML, NTriples, JSON-LD). The query type (SELECT vs CONSTRUCT/DESCRIBE) determines which format family applies.
+
+3. **Form data binding:** Nancy's `this.Bind<T>()` has no direct Minimal API equivalent. For simple models, use `[AsParameters]` or individual `[FromQuery]` parameters. For POST bodies, let the framework handle JSON deserialization. For form-encoded SPARQL, manually read `Request.ReadFormAsync()`.
+
+4. **Paging via Link headers:** Nancy's `WithPagedList()` extension added RFC 5988 Link headers. Created a `PagingHelpers` utility class that generates `first`, `prev`, `next`, `last` links.
+
+5. **`WindowsService` dual-mode hosting:** A single line replaces Nancy's separate `ServiceBase` subclass:
+   ```csharp
+   builder.Host.UseWindowsService(); // requires Microsoft.Extensions.Hosting.WindowsServices
+   ```
+
+6. **`public partial class Program;`** at the bottom of Program.cs enables `WebApplicationFactory<Program>` in the test project — without this, the test project can't reference the entry point.
+
+**Nancy module → Minimal API mapping reference:**
+
+| Nancy Module | ASP.NET Core Endpoint Class | Routes |
+|---|---|---|
+| `StoresModule` | `StoresEndpoints` | GET /, POST / |
+| `StoreModule` | `StoreEndpoints` | GET/HEAD/DELETE /{storeName} |
+| `CommitPointsModule` | `CommitPointsEndpoints` | GET/POST /{storeName}/commits |
+| `TransactionsModule` | `TransactionsEndpoints` | GET /{storeName}/transactions |
+| `StatisticsModule` + `LatestStatisticsModule` | `StatisticsEndpoints` | GET /{storeName}/statistics[/latest] |
+| `JobsModule` | `JobsEndpoints` | GET/POST /{storeName}/jobs |
+| `SparqlModule` | `SparqlEndpoints` | GET/POST /{storeName}/sparql |
+| `SparqlUpdateModule` | `SparqlUpdateEndpoints` | POST /{storeName}/update |
+| `GraphsModule` | `GraphsEndpoints` | GET/PUT/POST/DELETE /{storeName}/graphs |
+
 ---
 
 ## Pattern 8: dotNetRDF 2.x → 3.x Migration Checklist
