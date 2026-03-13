@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <AssemblyName>BrightstarDB.CodeGeneration.Console</AssemblyName>
     <SignAssembly>true</SignAssembly>

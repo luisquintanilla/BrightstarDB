@@ -504,11 +504,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             using (profiler.Step("Store.Load"))
             {
                 // Validate the hash for the index bloc
-#if NETSTANDARD16
                 using (var sha1 = SHA1.Create())
-#else
-                using (var sha1 = new SHA1Managed())
-#endif
                 {
                     var recordedHash = new byte[20];
                     Array.Copy(storePage.Data, 108, recordedHash, 0, 20);
@@ -569,11 +565,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             var buff = new byte[128];
             BitConverter.GetBytes(1).CopyTo(buff, 0);
 
-#if NETSTANDARD16
             using(var sha1 = SHA1.Create())
-#else
-            using (var sha1 = new SHA1Managed())
-#endif
             {
                 BitConverter.GetBytes(_currentTxnId + 1).CopyTo(buff, 4);
                 BitConverter.GetBytes(graphIndexId).CopyTo(buff, 12);

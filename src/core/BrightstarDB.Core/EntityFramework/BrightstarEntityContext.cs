@@ -871,7 +871,10 @@ namespace BrightstarDB.EntityFramework
         {
             var entityType = identifierProperty.DeclaringType;
             var prefix = EntityMappingStore.GetIdentifierPrefix(entityType);
-            return prefix + Uri.EscapeUriString(id);
+            // Use the Uri class to normalize the full resource URI.
+            // This encodes unsafe characters (spaces → %20) while preserving
+            // URI structure characters (/, #, ?) and existing percent-encoding.
+            return new Uri(prefix + id).AbsoluteUri;
         }
 
         /// <summary>

@@ -42,7 +42,7 @@ namespace BrightstarDB.Rdf
             else
             {
                 line.Append("<");
-                line.Append(Uri.EscapeUriString(identifier));
+                line.Append(new Uri(identifier).AbsoluteUri);
                 line.Append(">");
             }
         }
