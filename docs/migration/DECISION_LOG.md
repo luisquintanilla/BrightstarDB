@@ -21,6 +21,8 @@
 | 11 | [Mark 16 W3C SPARQL tests as Ignored](#decision-11-mark-16-w3c-sparql-conformance-tests-as-ignored) | Low | Low |
 | 12 | [Rewrite BitAndFunc/BitOrFunc as BaseBinaryExpression](#decision-12-rewrite-bitandfuncbitorfunc-as-basebinaryexpression) | Low | Low |
 | 13 | [Minimal APIs + IResult for SPARQL streaming](#decision-13-minimal-apis-with-iresult-for-sparql-streaming) | High | Low |
+| 14 | [Stay on NUnit 3.14, NOT upgrade to 4.x](#decision-14-stay-on-nunit-314-not-40) | Low | Low |
+| 15 | [Archive legacy tools, don't migrate](#decision-15-archive-legacy-tools-dont-migrate) | Medium | Low |
 
 ---
 
@@ -279,15 +281,61 @@
 
 **Status:** ✅ Implemented in Phase 5
 
+---
+
+## Decision 14: Stay on NUnit 3.14, NOT 4.0
+
+**Context:** NUnit 4.x was released with a major breaking change: classic assert methods (`Assert.AreEqual`, `Assert.IsTrue`, `Assert.IsNotNull`, etc.) are removed from the `Assert` class and moved to a new `ClassicAssert` class. NUnit 4.x encourages the constraint-based `Assert.That()` model exclusively.
+
+**Decision:** Stay on NUnit 3.14.0 (latest 3.x).
+
+**Rationale:**
+1. BrightstarDB has **2,000+ classic assert calls** across 4 test projects — migrating these would be a massive mechanical refactor with zero functional benefit
+2. NUnit 3.14.0 **fully supports .NET 10** — there are no runtime compatibility issues
+3. The effort-to-value ratio is extremely poor: hours of search-and-replace for no test quality improvement
+4. NUnit 3.x is still maintained and receives security/compatibility updates
+
+**Alternatives considered:**
+- Upgrade to NUnit 4.x and bulk-replace with `ClassicAssert` — mechanically possible but adds noise to the migration PR without improving test quality
+- Upgrade to NUnit 4.x and rewrite to constraint model — even more effort, no functional benefit
+
+**Status:** ✅ Implemented in Phase 6
+
+---
+
+## Decision 15: Archive Legacy Tools, Don't Migrate
+
+**Context:** Several projects outside core.sln target .NET Framework 4.0–4.5.2: BulkImport, Compress (console tools with WCF dependencies), Polaris (WPF GUI with dotNetRDF 1.0.11), PerformanceBenchmarks (netcoreapp2.2), ReadWriteBenchmark (net4.5.2).
+
+**Decision:** Archive all legacy tools. Don't invest in migrating them as part of this effort.
+
+**Rationale:**
+1. **BulkImport/Compress** depend on `System.ServiceModel` (WCF) for client communication — migration would require replacing the entire transport layer
+2. **Polaris** uses dotNetRDF 1.0.11 (three major versions behind) plus WPF — a standalone migration project
+3. **Benchmarks** are out of date and would be better rewritten from scratch with BenchmarkDotNet
+4. None of these projects are in core.sln or affect the core library/server functionality
+5. The BrightstarDB embedded API (the primary usage pattern) works fully on .NET 10 without these tools
+
+**Future options:**
+- If command-line tools are needed, create new `net10.0` console apps using the embedded BrightstarDB API directly (no WCF)
+- If GUI tooling is needed, consider a web-based admin UI in the ASP.NET Core server
+- If benchmarking is needed, create a new BenchmarkDotNet project targeting `net10.0`
+
+**Status:** ✅ Decided in Phase 7
+
+---
+
+## Risk Register (Final)
+
 | Risk | Likelihood | Impact | Mitigation | Status |
 |------|-----------|--------|-----------|--------|
 | dotNetRDF 3.x breaks BrightstarDB's SPARQL engine | High | Critical | Do Phase 2 early. Audit every dotNetRDF API call. Have rollback plan. | ✅ **RESOLVED** — 166 errors fixed, all tests pass |
 | Strong naming incompatibility with dotNetRDF 3.x | Medium | High | Test early. Fallback: build dotNetRDF from source. | ✅ **RESOLVED** — dotNetRdf 3.5.1 IS strong-named |
 | PlainLiteral vs xsd:string data mismatch | High | Critical | Dual-search strategy at dataset level | ✅ **RESOLVED** — Decision 10 |
 | C# 14 method resolution changes | Medium | Medium | Pin LangVersion to 12.0 | ✅ **RESOLVED** — Decision 9 |
-| Remotion.Linq edge cases on .NET 10 runtime | Low | High | Remotion targets netstandard1.0. Run full LINQ test suite early. | Pending (Wave 4) |
+| Remotion.Linq edge cases on .NET 10 runtime | Low | High | Remotion targets netstandard1.0. Run full LINQ test suite early. | ✅ **RESOLVED** — All 86 EF tests pass on net10.0 |
 | Nancy → ASP.NET Core SPARQL format negotiation parity | Medium | Medium | Accept minor behavior differences. Document deviations. | ✅ **RESOLVED** — Phase 5 complete, custom IResult streaming |
 | Expression tree behavior changes in .NET 10 | Low | Medium | Run all 96 LINQ-to-SPARQL tests. Fix as found. | ✅ **RESOLVED** — All 86 EF tests pass on net10.0 |
 | Existing consumers break with net472 removal | Medium | Medium | Keep netstandard2.0 target for backward compatibility. | ✅ **MITIGATED** |
-| Buildalyzer 7.x API changes break code generation | Medium | Medium | Test code generation early in Phase 4. | Pending (Wave 4) |
-| NUnit 4.x assertion changes cause test churn | Low | Low | Mechanical update — `Assert.That` is already used in some tests. | Pending (Wave 5) |
+| Buildalyzer 7.x API changes break code generation | Medium | Medium | Test code generation early in Phase 4. | ✅ **RESOLVED** — 22 CodeGen tests pass |
+| NUnit 4.x assertion changes cause test churn | Low | Low | Stay on NUnit 3.14.0 — fully supports .NET 10. | ✅ **RESOLVED** — Decision 14 |

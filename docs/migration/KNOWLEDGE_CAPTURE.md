@@ -22,6 +22,11 @@
 11. [Don't Migrate Everything at Once](#anti-pattern-dont-migrate-everything-at-once)
 12. [Don't Confuse "Entity Framework" Naming with Microsoft's EF](#anti-pattern-dont-confuse-entity-framework-naming-with-microsofts-ef)
 
+### Operational Patterns
+13. [NUnit 3.x → 4.x — Know When NOT to Upgrade](#pattern-11-nunit-3x--4x--know-when-not-to-upgrade)
+14. [CI/CD Modernization Checklist](#pattern-12-cicd-modernization-checklist)
+15. [Legacy Tool Assessment — Archive vs Migrate vs Rewrite](#pattern-13-legacy-tool-assessment--archive-vs-migrate-vs-rewrite)
+
 ---
 
 ## Pattern 1: Always Verify "Entity Framework" Identity
@@ -500,3 +505,89 @@ Migrating 12-13 projects is manageable. Migrating 36 simultaneously is not.
 **Impact of getting this wrong:** Planning for an EF→EF Core migration when you actually have a custom EF will produce a completely wrong plan. The custom EF migration is primarily about retargeting and updating dependencies, not replacing an ORM framework.
 
 **Takeaway:** Always examine the actual base classes and query pipeline before planning. Don't trust namespace names or attribute names alone.
+
+---
+
+## Pattern 11: NUnit 3.x → 4.x — Know When NOT to Upgrade
+
+**Context:** NUnit 4.x removes classic assert methods (`Assert.AreEqual`, `Assert.IsTrue`, `Assert.IsNotNull`) from the `Assert` class, moving them to `ClassicAssert`. This is a breaking change that affects every test file.
+
+**Lesson:** BrightstarDB has 2,000+ classic assert calls. Upgrading to NUnit 4.x would require either:
+- Bulk search-and-replace `Assert.AreEqual` → `ClassicAssert.AreEqual` (mechanical but noisy)
+- Rewriting all asserts to the constraint model `Assert.That(x, Is.EqualTo(y))` (even more work)
+
+Neither option improves test quality. NUnit 3.14.0 fully supports .NET 10.
+
+**Decision framework for test framework upgrades:**
+
+| Factor | Upgrade | Stay on current version |
+|--------|---------|------------------------|
+| Runtime compatibility | New version required for target runtime | Current version works on target runtime |
+| Breaking changes | Minimal or mechanical | Massive surface area (thousands of call sites) |
+| Functional benefit | New features you'll actually use | Only cosmetic/style changes |
+| Migration scope | Already doing related refactoring | Test changes would be unrelated noise |
+
+**Takeaway:** Don't upgrade test frameworks just because a new major version exists. If the current version supports your target runtime and the upgrade only brings style changes, the effort-to-value ratio is poor. Save the upgrade for a dedicated "test modernization" sprint.
+
+---
+
+## Pattern 12: CI/CD Modernization Checklist
+
+**Context:** BrightstarDB's CI (AppVeyor) was configured for Visual Studio 2017 with per-project test commands. Modern .NET projects need significantly simpler CI configuration.
+
+**CI/CD modernization steps:**
+
+1. **Update build image** — VS2017 → VS2022 (or latest)
+2. **Add SDK install step** — .NET 10 may not be pre-installed on CI images
+3. **Simplify test execution** — Replace per-project `dotnet test` commands with single solution-level command
+4. **Remove per-project tool installs** — Modern test adapters (NUnit3TestAdapter, Microsoft.NET.Test.Sdk) handle test reporting natively
+5. **Modernize MSBuild orchestration** — Remove targets for archived projects, fix stale output paths
+6. **Parameterize versions** — Use MSBuild properties for package versions instead of hardcoding
+
+**AppVeyor-specific pattern:**
+```yaml
+# Before (legacy pattern):
+test_script:
+  - dotnet tool install --global Appveyor.TestLogger
+  - cd src/core/ProjectA.Tests && dotnet test
+  - cd src/core/ProjectB.Tests && dotnet test
+
+# After (modern pattern):
+test_script:
+  - dotnet test src\core\core.sln --no-build --nologo -v q
+```
+
+**MSBuild orchestration pattern:**
+```xml
+<!-- Remove dead targets that reference archived projects -->
+<!-- Parameterize versions: <PackageVersion Condition="'$(PackageVersion)'==''">2.0.0</PackageVersion> -->
+<!-- Add a Test target for convenience: dotnet test on the solution -->
+```
+
+**Takeaway:** CI/CD modernization is often the lowest-risk, highest-impact phase. A simplified CI config is easier to maintain and debug. Do it last (after the code compiles and tests pass) so you have a known-good baseline.
+
+---
+
+## Pattern 13: Legacy Tool Assessment — Archive vs Migrate vs Rewrite
+
+**Context:** BrightstarDB had several console tools (BulkImport, Compress), a WPF GUI (Polaris), and benchmarks targeting .NET Framework 4.0–4.5.2.
+
+**Decision framework:**
+
+| Factor | Archive | Migrate | Rewrite |
+|--------|---------|---------|---------|
+| Dead framework dependency (WCF, Nancy on IIS, OpenRasta) | ✅ | ❌ | Consider |
+| SDK-style csproj? | Either | ✅ Easier | Either |
+| In core solution? | Doesn't matter | ✅ | Either |
+| Active users? | No | Yes | Yes |
+| Modern replacement exists? | Create if needed | N/A | N/A |
+
+**BrightstarDB examples:**
+- **BulkImport/Compress** → Archive (WCF dependency = rewrite, not migrate)
+- **Polaris WPF GUI** → Separate project (dotNetRDF 1.0→3.x gap too large)
+- **PerformanceBenchmarks** → Archive + rewrite from scratch with BenchmarkDotNet
+- **ReadWriteBenchmark** → Archive (net4.5.2 old-style project)
+
+**Key insight:** "Migrate" implies incremental changes to existing code. If a project requires replacing its core transport layer (WCF→gRPC) or jumping 3 major dependency versions, that's a "rewrite" wearing a "migrate" costume. Be honest about the effort classification — it helps set expectations.
+
+**Takeaway:** Don't try to migrate everything. Assess each project individually. Archive aggressively — it's better to have a clean, working core than a half-migrated tool that nobody uses.

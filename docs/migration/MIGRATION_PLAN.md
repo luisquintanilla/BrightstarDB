@@ -504,93 +504,109 @@ Replace Nancy.Testing patterns:
 
 ---
 
-## Phase 6: Test Infrastructure Modernization
+## Phase 6: Test Infrastructure Modernization ✅ COMPLETE
 
 **Goal:** Get all tests running on `net10.0`.
+**Status:** Committed (`6241e5d2`). 975 passed, 0 failed, 74 skipped.
 
-### Task 6.1: Retarget test projects
+### What was done:
 
-| Project | Current | New |
-|---|---|---|
-| `BrightstarDB.Tests` | net472 | net10.0;net472 |
-| `BrightstarDB.InternalTests` | net472 | net10.0;net472 |
-| `BrightstarDB.EntityFramework.Tests` | net472 | net10.0;net472 |
-| `BrightstarDB.CodeGeneration.Tests` | net6.0 | net10.0 |
-| `BrightstarDB.Server.Modules.Tests` | net462 | **Replace** (new project for ASP.NET Core server) |
+1. **Cleaned all `NETCOREAPP10` conditionals** — removed 15 occurrences across 6 test files. These conditionals originally meant `netcoreapp1.0` (NOT .NET 10!) and excluded tests unnecessarily.
 
-### Task 6.2: Fix NETCOREAPP10 confusion
+2. **Updated test framework packages** (via Central Package Management):
+   - Microsoft.NET.Test.Sdk: 17.5.0 → 17.14.0
+   - NUnit: 3.13.3 → 3.14.0 (**NOT** 4.x — see Decision 14)
+   - NUnit3TestAdapter: 4.4.2 → 4.6.0
+   - Moq: 4.18.4 → 4.20.72
 
-In test csproj files, `NETCOREAPP10` means `netcoreapp1.0`, NOT .NET 10. The `#if NETCOREAPP10` blocks exclude certain tests on old .NET Core. Review and likely remove these conditions since `net10.0` is much more capable.
+3. **All test projects already retargeted to `net10.0`** in earlier phases.
 
-### Task 6.3: Update test framework packages
-
-- NUnit 3.13.3 → 4.x (breaking: `Assert.That` preferred, classic asserts deprecated)
-- NUnit3TestAdapter 4.4.2 → 4.6.x
-- Microsoft.NET.Test.Sdk 17.5.0 → 17.12.x
-- Moq 4.18.4 → 4.20.x
-
-### Task 6.4: Run full test suite
-
-```bash
-dotnet test src\core\core.sln -f net10.0 --logger "console;verbosity=detailed"
-```
-
-Triage and fix all failures.
+### Final test results:
+| Project | Passed | Skipped | Failed |
+|---|---|---|---|
+| BrightstarDB.EntityFramework.Tests | 86 | 0 | 0 |
+| BrightstarDB.CodeGeneration.Tests | 22 | 0 | 0 |
+| BrightstarDB.Tests | 408 | 15 | 0 |
+| BrightstarDB.InternalTests | 460 | 59 | 0 |
+| **Total** | **976** | **74** | **0** |
 
 ---
 
-## Phase 7: Legacy Project Decisions
+## Phase 7: Legacy Project Decisions ✅ COMPLETE
 
 **Goal:** Decide what to do with projects that cannot easily migrate.
+**Status:** Completed. Legacy projects assessed; tools and benchmarks remain outside core.sln by design.
 
-### Task 7.1: Create archived solution folder
+### Decisions made:
 
-Move all archived projects to an `archived\` solution folder in `core.sln`. Keep the code but don't build them.
+1. **BulkImport / Compress tools** — .NET Framework 4.0 old-style projects with WCF (`System.ServiceModel`) dependencies. NOT in core.sln. **Decision: Archive.** Would need complete rewrites (WCF removal, SDK-style conversion). Low priority — the BrightstarDB embedded API is the primary usage pattern.
 
-### Task 7.2: Migrate simple tools
+2. **Polaris (WPF GUI)** — .NET Framework 4.0, uses dotNetRDF 1.0.11. **Decision: Separate migration effort** if needed. WPF can target `net10.0-windows` but the dotNetRDF 1.x→3.x gap plus WPF modernization makes this a standalone project.
 
-Port `BulkImport` and `Compress` to SDK-style `net10.0` console apps.
+3. **PerformanceBenchmarks** — `netcoreapp2.2`, NOT in core.sln. **Decision: Archive for now.** If performance benchmarking is needed, create a new `net10.0` project using BenchmarkDotNet from scratch.
 
-### Task 7.3: Decide on OData future
+4. **ReadWriteBenchmark** — `net4.5.2`, old-style project. **Decision: Archive.** Replace with modern BenchmarkDotNet project if needed.
 
-If OData support is desired, create a new `BrightstarDB.Server.OData` project using `Microsoft.AspNetCore.OData` package. This is a significant effort and should be a separate work item.
+5. **BrightstarDB.CodeGeneration.T4** — Was retargeted to `net10.0` in Phase 4 but not in core.sln. **Decision: Added to core.sln** in Phase 8 so it builds and validates as part of the solution.
+
+### What remains outside core.sln (by design):
+- All legacy .NET 4.x tools (`src\tools\`)
+- Cluster projects (`src\cluster\`)
+- Old server projects (`src\core\BrightstarDB.Server.Modules\`, `Runner`, `AspNet`, `AspNet.Secured`)
+- Polaris (`src\core\BrightstarDB.Server.IntegrationTests\`)
+- OData projects
+- Legacy benchmarks
 
 ---
 
-## Phase 8: CI/CD Modernization
+## Phase 8: CI/CD Modernization ✅ COMPLETE
 
 **Goal:** Update build infrastructure for .NET 10.
+**Status:** Committed (this commit). build.proj modernized, appveyor.yml updated, T4 added to solution.
 
-### Task 8.1: Update appveyor.yml
+### Task 8.1: Update appveyor.yml ✅
 
-Current: **Visual Studio 2017 image** (very outdated). Update to:
+**Changes:**
+- **Build image:** Visual Studio 2017 → Visual Studio 2022
+- **SDK install:** Added .NET 10 SDK install step via `dotnet-install.ps1`
+- **Test execution:** Replaced 4 per-project test commands (each installing Appveyor.TestLogger) with single solution-level `dotnet test`
+- **Pack step:** Moved to `after_test`, added T4 project pack alongside existing projects
+- **Removed:** Per-project Appveyor.TestLogger installs (test adapter handles reporting natively)
 
-```yaml
-image: Visual Studio 2022
-environment:
-  DOTNET_VERSION: '10.0'
-install:
-  - ps: |
-      Invoke-WebRequest -Uri 'https://dot.net/v1/dotnet-install.ps1' -OutFile 'dotnet-install.ps1'
-      ./dotnet-install.ps1 -Channel 10.0
-build_script:
-  - dotnet build src\core\core.sln -c Release
-test_script:
-  - dotnet test src\core\core.sln -c Release --no-build
-```
+### Task 8.2: Update build.proj ✅
 
-Or consider migrating to **GitHub Actions** (recommended for modern projects).
+**Changes:**
+- **Removed dead targets:** `BuildServer`, `BuildOData`, `BuildTools`, `CompilePolaris`, `PublishServer`, `PackageRunner`, `PackageServer` — all referenced archived projects
+- **Fixed stale path:** `netcoreapp2.1` → `net10.0` in CodeGeneration.Console output path
+- **Parameterized version:** `PackageVersion` property with `2.0.0` default (was hardcoded in `common.proj`)
+- **Added `Test` target:** `dotnet test` on the solution for one-command testing
+- **Retained:** `BuildCore`, `PackageCore`, `PackageCodeGeneration`, `PackageT4` targets
 
-### Task 8.2: Update build.proj
+### Task 8.3: Update solution file ✅
 
-Modernize the MSBuild orchestration:
-- Remove references to archived projects
-- Update NuGet pack targets for SDK-style pack (`dotnet pack`)
-- Update version to 2.0.0
+- Added `BrightstarDB.CodeGeneration.T4` project to core.sln
+- Solution now contains 12 projects (8 original + 2 ASP.NET Core + T4 + Tests folder)
+- Build verified: 0 errors, 976 tests pass
 
-### Task 8.3: Update solution file
+---
 
-- Remove archived projects from build configurations
-- Add new ASP.NET Core server project
-- Clean up duplicate `TestCaseManagementSettings` sections
-- Remove `.nuget` solution folder
+## Migration Complete — Summary
+
+All 8 phases of the .NET 10 migration are complete. The final state:
+
+| Metric | Value |
+|---|---|
+| **Target framework** | `net10.0` (libraries also target `netstandard2.0`) |
+| **Tests** | 976 passed, 0 failed, 74 skipped |
+| **Build errors** | 0 |
+| **Projects in solution** | 12 |
+| **Commits** | 10 (on `feature/net10-migration-plan`) |
+| **Key upgrades** | dotNetRDF 2.7.5→3.5.1, NUnit 3.14.0, .NET 10 SDK |
+| **Major rewrites** | Nancy→ASP.NET Core (3,759 lines) |
+| **Architecture decisions** | 15 ADRs documented |
+
+### Remaining future work (optional):
+- **ASP.NET Core server integration tests** — `BrightstarDB.Server.AspNetCore.Tests` project is scaffolded but empty. Port key tests from the 140 Nancy.Testing tests using `WebApplicationFactory<Program>`.
+- **Additional EF test coverage** — Add `SaveChanges`, `DeleteObject`, round-trip tests with real embedded store.
+- **Legacy tool migration** — If BulkImport/Compress/Polaris are needed, they require separate migration efforts.
+- **GitHub Actions** — Consider migrating from AppVeyor to GitHub Actions for CI/CD.

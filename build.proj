@@ -1,100 +1,47 @@
-<Project ToolsVersion="15.0"  xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+        <PackageVersion Condition=" '$(PackageVersion)' == '' ">2.0.0</PackageVersion>
     </PropertyGroup>
-    
+
     <!-- Main Build Targets -->
-    <Target Name="Build" DependsOnTargets="BuildCore;BuildTools"/>
-    
-    <Target Name="Clean" DependsOnTargets="CleanCore;CleanTools">
-        <RemoveDir Directories="build"/>
-    </Target>
-    
-    <Target Name="NuGet" DependsOnTargets="PackBrightstarDBLibs;PackBrightstarDBCodegen;PackBrightstarDBBundle">
+    <Target Name="Build" DependsOnTargets="CompileCore" />
+
+    <Target Name="Clean" DependsOnTargets="CleanCore">
+        <RemoveDir Directories="build" />
     </Target>
 
-    <Target Name="BuildCore" DependsOnTargets="CompileCore">
-        <ItemGroup>
-            <CoreSDK Include="src\core\BrightstarDB\bin\$(Configuration)\**\*.dll" />
-            <CoreCodeGen Include="src\core\BrightstarDB.CodeGeneration.Console\bin\$(Configuration)\netcoreapp2.1\*.dll" />
-        </ItemGroup>
-        <Copy SourceFiles="@(CoreSDK)" DestinationFolder="build\sdk\%(RecursiveDir)" />
-        <Copy SourceFiles="@(CoreCodeGen)" DestinationFolder="build\tools\codegen" />
+    <Target Name="NuGet" DependsOnTargets="PackBrightstarDBLibs;PackBrightstarDBCodegen;PackBrightstarDBBundle" />
+
+    <Target Name="Test" DependsOnTargets="CompileCore">
+        <Exec Command="dotnet test src\core\core.sln -c:$(Configuration) --no-build --nologo" />
     </Target>
-    
-    <Target Name="BuildServer" DependsOnTargets="CompileServer">
-        <!-- Not currently included in build output -->
-        <!--
-        <ItemGroup>
-            <ServerBinaries Include="src\core\BrightstarDB.Server.Runner\bin\$(Configuration)\*.dll;src\core\BrightstarDB.Server.Runner\bin\$(Configuration)\*.exe;src\core\BrightstarDB.Server.Runner\bin\$(Configuration)\*.exe.config"
-            Exclude="**\*.vshost.exe*"/>
-            <ServerAssets Include="src\core\BrightstarDB.Server.AspNet\assets\**\*.*" />
-            <ServerViews Include="src\core\BrightstarDB.Server.AspNet\views\**\*.*" />
-        </ItemGroup>
-        <Copy SourceFiles="@(ServerBinaries)" DestinationFolder="build\server" />
-        <Copy SourceFiles="@(ServerAssets)"
-            DestinationFiles="@(ServerAssets->'build\server\assets\%(RecursiveDir)\%(Filename)%(Extension)')" />
-        <Copy SourceFiles="@(ServerViews)"
-            DestinationFiles="@(ServerViews->'build\server\views\%(RecursiveDir)\%(Filename)%(Extension)')" />
-        -->
-    </Target>
-    
-    <Target Name="BuildOData" DependsOnTargets="CompileOData">
-        <!-- Not currently included in the build output -->
-    </Target>
-    
-    <Target Name="BuildTools" DependsOnTargets="CompileTools" Condition=" '$(OS)' != 'Unix' ">
-        <ItemGroup>
-            <PolarisBinaries Include="src\tools\Polaris\BrightstarDB.Polaris\bin\$(Configuration)\*.dll;src\tools\Polaris\BrightstarDB.Polaris\bin\$(Configuration)\*.exe;src\tools\Polaris\BrightstarDB.Polaris\bin\$(Configuration)\*.exe.config"
-            Exclude="**\*.vshost.exe*" />
-        </ItemGroup>
-        <Copy SourceFiles="@(PolarisBinaries)" DestinationFolder="build\tools\polaris" />
-    </Target>
-    
+
     <!-- Sub-targets -->
     <Target Name="CompileCore">
         <MSBuild Projects="src\core\core.sln"
                  Properties="Configuration=$(Configuration)"
-                 Targets="Restore;Build"/>
-    </Target>
-
-    <Target Name="CompileServer">
-        <!-- Not currently built -->
-    </Target>
-
-    <Target Name="CompileOData" DependsOnTargets="BuildCore">
-        <!-- Not currently built -->
+                 Targets="Restore;Build" />
     </Target>
 
     <Target Name="CleanCore">
         <MSBuild Projects="src\core\core.sln"
                  Properties="Configuration=$(Configuration)"
-                 Targets="Clean"/>
-    </Target>
-   
-    <Target Name="CompileTools" DependsOnTargets="CompilePolaris" />
-    
-    <Target Name="CompilePolaris" 
-	    DependsOnTargets="BuildCore"
-	    Condition=" '$(OS)' != 'Unix' ">
-        <!-- Not currently built -->
+                 Targets="Clean" />
     </Target>
 
-    <Target Name="CleanTools">
-        <!-- Not currently built -->
-    </Target>
-
+    <!-- NuGet Pack Targets -->
     <Target Name="PackBrightstarDBLibs">
-        <Exec Command="dotnet pack src\core\BrightstarDB.Core\BrightstarDB.Core.csproj -c:$(Configuration) -p:PackageVersion=1.14.0" />
+        <Exec Command="dotnet pack src\core\BrightstarDB.Core\BrightstarDB.Core.csproj -c:$(Configuration) -p:PackageVersion=$(PackageVersion)" />
     </Target>
-    
+
     <Target Name="PackBrightstarDBCodegen">
-        <Exec Command="dotnet pack src\core\BrightstarDB.CodeGeneration\BrightstarDB.CodeGeneration.csproj -c:$(Configuration) -p:PackageVersion=1.14.0"/>
-        <Exec Command="dotnet pack src\core\BrightstarDB.CodeGeneration.Console\BrightstarDB.CodeGeneration.Console.csproj -c:$(Configuration) -p:PackageVersion=1.14.0"/>
-        <Exec Command="dotnet pack src\core\BrightstarDB.CodeGeneration.T4\BrightstarDB.CodeGeneration.T4.csproj -c:$(Configuration) -p:PackageVersion=1.14.0"/>
+        <Exec Command="dotnet pack src\core\BrightstarDB.CodeGeneration\BrightstarDB.CodeGeneration.csproj -c:$(Configuration) -p:PackageVersion=$(PackageVersion)" />
+        <Exec Command="dotnet pack src\core\BrightstarDB.CodeGeneration.Console\BrightstarDB.CodeGeneration.Console.csproj -c:$(Configuration) -p:PackageVersion=$(PackageVersion)" />
+        <Exec Command="dotnet pack src\core\BrightstarDB.CodeGeneration.T4\BrightstarDB.CodeGeneration.T4.csproj -c:$(Configuration) -p:PackageVersion=$(PackageVersion)" />
     </Target>
-    
+
     <Target Name="PackBrightstarDBBundle">
-        <Exec Command="dotnet pack src\core\BrightstarDB\BrightstarDB.csproj -c:$(Configuration) -p:PackageVersion=1.14.0" />
+        <Exec Command="dotnet pack src\core\BrightstarDB\BrightstarDB.csproj -c:$(Configuration) -p:PackageVersion=$(PackageVersion)" />
     </Target>
 </Project>
