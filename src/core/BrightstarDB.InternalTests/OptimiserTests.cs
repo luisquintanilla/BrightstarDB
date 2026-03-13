@@ -66,9 +66,10 @@ namespace BrightstarDB.InternalTests
             results = XDocument.Parse(_docTagStore.ExecuteSparqlQuery(sparql, SparqlResultsFormat.Xml));
             Console.WriteLine(results.ToString());
             Assert.AreEqual(1, results.SparqlResultRows().Count());
-            var v = results.SparqlResultRows().First().GetColumnValue("v") as PlainLiteral;
+            var v = results.SparqlResultRows().First().GetColumnValue("v");
             Assert.IsNotNull(v);
-            Assert.AreEqual("Document 5", v.Value);
+            // In RDF 1.1 (dotNetRDF 3.x), xsd:string literals are returned as plain strings
+            Assert.AreEqual("Document 5", v is PlainLiteral pl ? pl.Value : v.ToString());
         }
 
     }

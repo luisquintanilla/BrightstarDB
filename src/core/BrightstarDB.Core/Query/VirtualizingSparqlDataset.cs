@@ -44,6 +44,17 @@ namespace BrightstarDB.Query
             AlgebraOptimiser = new BrightstarVirtualAlgebraOptimiser(_rdfProvider);
         }
 
+        #region Helper
+
+        private static Uri GetUri(IRefNode refNode)
+        {
+            return refNode is IUriNode un ? un.Uri : null;
+        }
+
+        #endregion
+
+        #region Active/Default Graph — Uri overloads (existing)
+
         public void SetActiveGraph(IEnumerable<Uri> graphUris)
         {
             _graphUris = graphUris.Select(g => g.ToString()).ToList();
@@ -86,6 +97,32 @@ namespace BrightstarDB.Query
             }
         }
 
+        #endregion
+
+        #region Active/Default Graph — IRefNode overloads (dotNetRDF 3.x)
+
+        public void SetActiveGraph(IRefNode graphName)
+        {
+            SetActiveGraph(GetUri(graphName));
+        }
+
+        public void SetActiveGraph(IList<IRefNode> graphNames)
+        {
+            _graphUris = graphNames.Select(n => GetUri(n)?.ToString() ?? Constants.DefaultGraphUri).ToList();
+        }
+
+        public void SetDefaultGraph(IRefNode graphName)
+        {
+            SetDefaultGraph(GetUri(graphName));
+        }
+
+        public void SetDefaultGraph(IList<IRefNode> graphNames)
+        {
+            _defaultGraphUris = graphNames.Select(n => GetUri(n)?.ToString() ?? Constants.DefaultGraphUri).ToList();
+        }
+
+        #endregion
+
         public void ResetActiveGraph()
         {
             _graphUris.Clear();
@@ -114,10 +151,32 @@ namespace BrightstarDB.Query
             return _store.GetGraphUris().Contains(graphUri.ToString());
         }
 
+        public bool HasGraph(IRefNode graphName)
+        {
+            if (graphName == null) return true;
+            var uri = GetUri(graphName);
+            return uri != null && HasGraph(uri);
+        }
+
         public IGraph GetModifiableGraph(Uri graphUri)
         {
             // we don't support IGraph based operations
             throw new NotSupportedException();
+        }
+
+        public IGraph GetModifiableGraph(IRefNode graphName)
+        {
+            throw new NotSupportedException();
+        }
+
+        public bool RemoveGraph(IRefNode graphName)
+        {
+            throw new NotSupportedException();
+        }
+
+        public IGraph this[IRefNode graphName]
+        {
+            get { throw new NotSupportedException(); }
         }
 
         public bool ContainsTriple(Triple t)
@@ -125,8 +184,12 @@ namespace BrightstarDB.Query
             if (t.Object.NodeType == NodeType.Literal)
             {
                 var objLit = t.Object as ILiteralNode;
-                var dataType = RdfDatatypes.PlainLiteral;
-                if (objLit.DataType != null) dataType = objLit.DataType.ToString();
+                var dataType = objLit.DataType?.AbsoluteUri;
+                // Normalize: treat null or PlainLiteral as xsd:string (RDF 1.1)
+                if (string.IsNullOrEmpty(dataType) || dataType == RdfDatatypes.PlainLiteral)
+                {
+                    dataType = RdfDatatypes.String;
+                }
                 return
                     _store.Match(GetNodeMatchString(t.Subject),
                                  GetNodeMatchString(t.Predicate),
@@ -163,7 +226,6 @@ namespace BrightstarDB.Query
                 return new Triple[0];
             }
             return GetTriples(subj, null, null);
-            //return _store.GetBindings(GetNodeMatchString(subj), null, null, graphs: _graphUris).Select(MakeVdsTriple);
         }
 
         public IEnumerable<Triple> GetTriplesWithPredicate(INode pred)
@@ -175,27 +237,11 @@ namespace BrightstarDB.Query
                 return new Triple[0];
             }
             return GetTriples(null, pred, null);
-            //return _store.GetBindings(null, GetNodeMatchString(pred), null, graphs: _graphUris).Select(MakeVdsTriple);
         }
 
         public IEnumerable<Triple> GetTriplesWithObject(INode obj)
         {
             return GetTriples(null, null, obj);
-            //if (obj.NodeType == NodeType.Literal)
-            //{
-            //    var objLit = obj as ILiteralNode;
-            //    var dataType = RdfDatatypes.PlainLiteral;
-            //    if (objLit.DataType != null)
-            //    {
-            //        dataType = objLit.DataType.ToString();
-            //    }
-            //    return
-            //        _store.GetBindings(
-            //            null, null, objLit.Value,
-            //            true, dataType, objLit.Language, _graphUris)
-            //              .Select(MakeVdsTriple);
-            //}
-            //return _store.GetBindings(null, null, GetNodeMatchString(obj), false, null, null, _graphUris).Select(MakeVdsTriple);
         }
 
         public IEnumerable<Triple> GetTriplesWithSubjectPredicate(INode subj, INode pred)
@@ -207,11 +253,6 @@ namespace BrightstarDB.Query
                 return new Triple[0];
             }
             return GetTriples(subj, pred, null);
-            //return _store.GetBindings(GetNodeMatchString(subj),
-            //                    GetNodeMatchString(pred), 
-            //                    null, 
-            //                    graphs: _graphUris)
-            //    .Select(MakeVdsTriple);
         }
 
         public IEnumerable<Triple> GetTriplesWithSubjectObject(INode subj, INode obj)
@@ -223,29 +264,6 @@ namespace BrightstarDB.Query
                 return new Triple[0];
             }
             return GetTriples(subj, null, obj);
-            //if (obj.NodeType == NodeType.Literal)
-            //{
-            //    var objLit = obj as ILiteralNode;
-            //    var dataType = RdfDatatypes.PlainLiteral;
-            //    if (objLit.DataType != null)
-            //    {
-            //        dataType = objLit.DataType.ToString();
-            //    }
-            //    return
-            //        _store.GetBindings(GetNodeMatchString(subj),
-            //                            null,
-            //                            objLit.Value,
-            //                            true, dataType, objLit.Language,
-            //                            _graphUris)
-            //                .Select(MakeVdsTriple);
-            //}
-            //return
-            //    _store.GetBindings(GetNodeMatchString(subj),
-            //                 null,
-            //                 GetNodeMatchString(obj),
-            //                 false, null, null,
-            //                 _graphUris)
-            //        .Select(MakeVdsTriple);
         }
 
         public IEnumerable<Triple> GetTriplesWithPredicateObject(INode pred, INode obj)
@@ -258,31 +276,6 @@ namespace BrightstarDB.Query
             }
 
             return GetTriples(null, pred, obj);
-
-            //if (obj.NodeType == NodeType.Literal)
-            //{
-            //    var objLit = obj as ILiteralNode;
-            //    var dataType = RdfDatatypes.PlainLiteral;
-            //    if (objLit.DataType != null)
-            //    {
-            //        dataType = objLit.DataType.ToString();
-            //    }
-            //    return
-            //        _store.GetBindings(
-            //            null,
-            //            GetNodeMatchString(pred),
-            //            objLit.Value,
-            //            true, dataType, objLit.Language,
-            //            _graphUris)
-            //                .Select(MakeVdsTriple);
-            //}
-            //return
-            //    _store.GetBindings(null,
-            //                 GetNodeMatchString(pred),
-            //                 GetNodeMatchString(obj),
-            //                 false, null, null,
-            //                 _graphUris)
-            //        .Select(MakeVdsTriple);
         }
 
         public IEnumerable<Triple> GetTriples(INode subj, INode pred, INode obj)
@@ -295,7 +288,7 @@ namespace BrightstarDB.Query
             if (pred is BrightstarVirtualNode) predNodeId = (pred as BrightstarVirtualNode).VirtualID;
             if (obj is BrightstarVirtualNode) objNodeId = (obj as BrightstarVirtualNode).VirtualID;
 
-            string subjValue = null, predValue = null, objValue = null, dataType = RdfDatatypes.PlainLiteral, languageCode = null;
+            string subjValue = null, predValue = null, objValue = null, dataType = RdfDatatypes.String, languageCode = null;
             bool objIsLiteral = false;
 
             if (!subjNodeId.HasValue)
@@ -314,7 +307,12 @@ namespace BrightstarDB.Query
                 {
                     var lit = obj as ILiteralNode;
                     objValue = lit.Value;
-                    dataType = lit.DataType == null ? RdfDatatypes.PlainLiteral : lit.DataType.ToString();
+                    dataType = lit.DataType == null ? RdfDatatypes.String : lit.DataType.ToString();
+                    // Normalize: treat PlainLiteral as xsd:string (RDF 1.1)
+                    if (dataType == RdfDatatypes.PlainLiteral)
+                    {
+                        dataType = RdfDatatypes.String;
+                    }
                     languageCode = lit.Language;
                     objIsLiteral = true;
                 }
@@ -328,7 +326,7 @@ namespace BrightstarDB.Query
                                       predNodeId, predValue,
                                       objNodeId, objValue, objIsLiteral, dataType, languageCode,
                                       _graphUris).Select(MakeVdsTriple);
-        } 
+        }
 
         private static string GetNodeMatchString(INode node)
         {
@@ -348,6 +346,138 @@ namespace BrightstarDB.Query
             }
         }
 
+        /// <summary>
+        /// Determines if a literal node is a plain string (no language tag) with either
+        /// PlainLiteral or xsd:string datatype. In RDF 1.1 (dotNetRDF 3.x), plain string
+        /// literals get xsd:string, but the store may contain PlainLiteral from older data.
+        /// </summary>
+        private static bool IsPlainStringLiteral(ILiteralNode lit)
+        {
+            if (!string.IsNullOrEmpty(lit.Language)) return false;
+            var dt = lit.DataType?.ToString();
+            return string.IsNullOrEmpty(dt)
+                   || dt.Equals(RdfDatatypes.PlainLiteral, StringComparison.Ordinal)
+                   || dt.Equals(RdfDatatypes.String, StringComparison.Ordinal);
+        }
+
+        #region ITripleIndex — Uri overloads (dotNetRDF 3.x)
+
+        public IEnumerable<Triple> GetTriples(Uri uri)
+        {
+            var node = new UriNode(uri);
+            return GetTriplesWithSubject(node)
+                .Union(GetTriplesWithPredicate(node))
+                .Union(GetTriplesWithObject(node));
+        }
+
+        public IEnumerable<Triple> GetTriples(INode n)
+        {
+            return GetTriplesWithSubject(n)
+                .Union(GetTriplesWithPredicate(n))
+                .Union(GetTriplesWithObject(n));
+        }
+
+        public IEnumerable<Triple> GetTriplesWithSubject(Uri u)
+        {
+            return GetTriplesWithSubject(new UriNode(u));
+        }
+
+        public IEnumerable<Triple> GetTriplesWithPredicate(Uri u)
+        {
+            return GetTriplesWithPredicate(new UriNode(u));
+        }
+
+        public IEnumerable<Triple> GetTriplesWithObject(Uri u)
+        {
+            return GetTriplesWithObject(new UriNode(u));
+        }
+
+        #endregion
+
+        #region ITripleIndex — Quoted triples (RDF-star, not supported)
+
+        public bool ContainsQuotedTriple(Triple t)
+        {
+            return false;
+        }
+
+        public IEnumerable<Triple> QuotedTriples => Enumerable.Empty<Triple>();
+
+        public IEnumerable<Triple> GetQuoted(Uri uri)
+        {
+            return Enumerable.Empty<Triple>();
+        }
+
+        public IEnumerable<Triple> GetQuoted(INode n)
+        {
+            return Enumerable.Empty<Triple>();
+        }
+
+        public IEnumerable<Triple> GetQuotedWithSubject(INode n)
+        {
+            return Enumerable.Empty<Triple>();
+        }
+
+        public IEnumerable<Triple> GetQuotedWithSubject(Uri u)
+        {
+            return Enumerable.Empty<Triple>();
+        }
+
+        public IEnumerable<Triple> GetQuotedWithPredicate(INode n)
+        {
+            return Enumerable.Empty<Triple>();
+        }
+
+        public IEnumerable<Triple> GetQuotedWithPredicate(Uri u)
+        {
+            return Enumerable.Empty<Triple>();
+        }
+
+        public IEnumerable<Triple> GetQuotedWithObject(INode n)
+        {
+            return Enumerable.Empty<Triple>();
+        }
+
+        public IEnumerable<Triple> GetQuotedWithObject(Uri u)
+        {
+            return Enumerable.Empty<Triple>();
+        }
+
+        public IEnumerable<Triple> GetQuotedWithSubjectPredicate(INode subj, INode pred)
+        {
+            return Enumerable.Empty<Triple>();
+        }
+
+        public IEnumerable<Triple> GetQuotedWithSubjectObject(INode subj, INode obj)
+        {
+            return Enumerable.Empty<Triple>();
+        }
+
+        public IEnumerable<Triple> GetQuotedWithPredicateObject(INode pred, INode obj)
+        {
+            return Enumerable.Empty<Triple>();
+        }
+
+        #endregion
+
+        #region Graph name collections (IRefNode-based, dotNetRDF 3.x)
+
+        public IEnumerable<IRefNode> GraphNames
+        {
+            get { return _store.GetGraphUris().Where(x => !x.Equals(Constants.DefaultGraphUri)).Select(x => (IRefNode)new UriNode(new Uri(x))); }
+        }
+
+        public IEnumerable<IRefNode> DefaultGraphNames
+        {
+            get { return _defaultGraphUris.Select(u => (IRefNode)new UriNode(new Uri(u))); }
+        }
+
+        public IEnumerable<IRefNode> ActiveGraphNames
+        {
+            get { return _graphUris.Select(u => (IRefNode)new UriNode(new Uri(u))); }
+        }
+
+        #endregion
 
         public void Flush()
         {
@@ -386,7 +516,7 @@ namespace BrightstarDB.Query
 
         public bool UsesUnionDefaultGraph
         {
-            get { return true; }
+            get { return false; }
         }
 
         public IEnumerable<IGraph> Graphs
@@ -419,7 +549,5 @@ namespace BrightstarDB.Query
                 return _store.GetBindings(null, null, null, false, null, null, _graphUris).Select(MakeVdsTriple);
             }
         }
-
-        
     }
 }

@@ -552,9 +552,9 @@ namespace BrightstarDB.Storage.BTreeStore
             ulong oid = FindResourceId(obj, isLiteral, dataType, langCode);
             var gids = LookupGraphIds(graphs);
 
-            if (sid == StoreConstants.NullUlong && !string.IsNullOrEmpty(subject)) return new List<Triple>();
-            if (pid == StoreConstants.NullUlong && !string.IsNullOrEmpty(predicate)) return new List<Triple>();
-            if (oid == StoreConstants.NullUlong && !string.IsNullOrEmpty(obj)) return new List<Triple>();
+            if (sid == StoreConstants.NullUlong && !String.IsNullOrEmpty(subject)) return new List<Triple>();
+            if (pid == StoreConstants.NullUlong && !String.IsNullOrEmpty(predicate)) return new List<Triple>();
+            if (oid == StoreConstants.NullUlong && !String.IsNullOrEmpty(obj)) return new List<Triple>();
 
             if (gids.Count == 0)
             {

@@ -8,6 +8,7 @@ using BrightstarDB.Client;
 using BrightstarDB.EntityFramework.Query;
 using BrightstarDB.EntityFramework.Tests.ContextObjects;
 using VDS.RDF;
+using ISparqlResult = BrightstarDB.Client.ISparqlResult;
 using VDS.RDF.Query;
 
 namespace BrightstarDB.EntityFramework.Tests

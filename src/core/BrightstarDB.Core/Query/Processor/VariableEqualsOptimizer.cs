@@ -22,6 +22,8 @@ namespace BrightstarDB.Query.Processor
 {
     class VariableEqualsOptimizer : IAlgebraOptimiser
     {
+        public bool UnsafeOptimisation { get; set; }
+
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
             try
@@ -185,15 +187,15 @@ namespace BrightstarDB.Query.Processor
                                     PatternItem subjPattern = triplePattern.Subject,
                                         predPattern = triplePattern.Predicate,
                                         objPattern = triplePattern.Object;
-                                    if (var.Equals(triplePattern.Subject.VariableName))
+                                    if (var.Equals(triplePattern.Subject.Variables.FirstOrDefault()))
                                     {
                                         subjPattern = new NodeMatchPattern(term);
                                     }
-                                    if (var.Equals(triplePattern.Predicate.VariableName))
+                                    if (var.Equals(triplePattern.Predicate.Variables.FirstOrDefault()))
                                     {
                                         predPattern = new NodeMatchPattern(term);
                                     }
-                                    if (var.Equals(triplePattern.Object.VariableName))
+                                    if (var.Equals(triplePattern.Object.Variables.FirstOrDefault()))
                                     {
                                         objPattern = new NodeMatchPattern(term);
                                     }
@@ -258,7 +260,7 @@ namespace BrightstarDB.Query.Processor
                 if (rhs is ConstantTerm)
                 {
                     var = lhs.Variables.First();
-                    term = rhs.Evaluate(null, 0);
+                    term = ((ConstantTerm)rhs).Node;
                     if (term.NodeType == NodeType.Uri || term.NodeType == NodeType.Literal)
                     {
                         return true;
@@ -272,7 +274,7 @@ namespace BrightstarDB.Query.Processor
                 if (rhs is VariableTerm)
                 {
                     var = rhs.Variables.First();
-                    term = lhs.Evaluate(null, 0);
+                    term = ((ConstantTerm)lhs).Node;
                     if (term.NodeType == NodeType.Uri || term.NodeType == NodeType.Literal)
                     {
                         return true;

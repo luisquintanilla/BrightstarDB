@@ -154,6 +154,16 @@ namespace BrightstarDB.Tests.DataObjectsTests
             throw new NotImplementedException();
         }
 
+        public IEnumerable<string> ListGraphNames()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            throw new NotImplementedException();
+        }
+
         public IStorageServer ParentServer { get; private set; }
     }
 }

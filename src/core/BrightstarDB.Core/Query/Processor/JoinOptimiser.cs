@@ -49,5 +49,7 @@ namespace BrightstarDB.Query.Processor
         {
             return true;
         }
+
+        public bool UnsafeOptimisation { get; set; }
     }
 }

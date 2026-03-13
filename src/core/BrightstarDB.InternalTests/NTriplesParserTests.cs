@@ -122,6 +122,11 @@ namespace BrightstarDB.InternalTests
                 return true;
             }
 
+            protected override bool HandleQuadInternal(Triple t, IRefNode graph)
+            {
+                return true;
+            }
+
             public override bool AcceptsAll
             {
                 get { return true; }

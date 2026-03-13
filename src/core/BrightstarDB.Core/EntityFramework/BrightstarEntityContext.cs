@@ -16,6 +16,7 @@ using Remotion.Linq.Clauses;
 using VDS.RDF;
 using VDS.RDF.Nodes;
 using VDS.RDF.Query;
+using ISparqlResult = BrightstarDB.Client.ISparqlResult;
 using SparqlResult = BrightstarDB.Client.SparqlResult;
 #if PORTABLE
 using BrightstarDB.Portable.Compatibility;

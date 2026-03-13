@@ -9,10 +9,12 @@ bst:peopleStore a dnr:TripleStore;
 bst:peopleGraph a dnr:Graph ;
 	dnr:type "VDS.RDF.Graph" ;
 	dnr:fromFile "people.ttl" ;
+	dnr:withName <http://example.org/people> ;
 	dnr:assignUri <http://example.org/people> .
 
 bst:addGraph a dnr:Graph ;
 	dnr:type "VDS.RDF.Graph" ;
+	dnr:withName <http://example.org/addGraph> ;
 	dnr:assignUri <http://example.org/addGraph> .
 
 bst:peopleStoreQuery a dnr:SparqlQueryProcessor;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 #if !SILVERLIGHT && !PORTABLE
@@ -79,6 +80,37 @@ namespace BrightstarDB.Rdf
             return (_bnodeCount++).ToString();
         }
 
+        // dotNetRDF 3.x INodeFactory additions
+        public Uri BaseUri { get; set; }
+
+        public INamespaceMapper NamespaceMap { get; } = new NamespaceMapper();
+
+        public IUriFactory UriFactory { get; set; } = new CachingUriFactory(null);
+
+        public bool NormalizeLiteralValues { get; set; }
+
+        public LanguageTagValidationMode LanguageTagValidation { get; set; } = LanguageTagValidationMode.None;
+
+        public ITripleNode CreateTripleNode(Triple triple)
+        {
+            throw new NotSupportedException("RDF-star triple nodes are not supported by BrightstarDB.");
+        }
+
+        public IUriNode CreateUriNode(string qName)
+        {
+            throw new NotSupportedException("QName-based URI node creation is not supported by BrightstarDB.");
+        }
+
+        public IUriNode CreateUriNode()
+        {
+            throw new NotSupportedException("No-argument URI node creation is not supported by BrightstarDB.");
+        }
+
+        public Uri ResolveQName(string qName)
+        {
+            throw new NotSupportedException("QName resolution is not supported by BrightstarDB.");
+        }
+
         #endregion
 
         #region Implementation of IRdfHandler
@@ -107,6 +139,25 @@ namespace BrightstarDB.Rdf
 
         public bool HandleTriple(Triple t)
         {
+            return HandleTripleWithGraph(t, _defaultGraphUri);
+        }
+
+        public bool HandleQuad(Triple t, IRefNode graph)
+        {
+            string graphUri;
+            if (graph is IUriNode uriNode)
+            {
+                graphUri = uriNode.Uri.ToString();
+            }
+            else
+            {
+                graphUri = _defaultGraphUri;
+            }
+            return HandleTripleWithGraph(t, graphUri);
+        }
+
+        private bool HandleTripleWithGraph(Triple t, string graphUri)
+        {
             // Pass the triple through to the B* triple sink
             string subject = t.Subject.ToString();
             bool subjectIsBNode = t.Subject is IBlankNode;
@@ -116,14 +167,12 @@ namespace BrightstarDB.Rdf
             if (t.Object is IBlankNode)
             {
                 _sink.Triple(subject, subjectIsBNode, predicate, predicateIsBNode, t.Object.ToString(), true, false,
-                             null, null,
-                             t.GraphUri == null ? _defaultGraphUri : t.GraphUri.ToString());
+                             null, null, graphUri);
             }
             else if (t.Object is IUriNode)
             {
                 _sink.Triple(subject, subjectIsBNode, predicate, predicateIsBNode, t.Object.ToString(), false, false,
-                             null, null,
-                             t.GraphUri == null ? _defaultGraphUri : t.GraphUri.ToString());
+                             null, null, graphUri);
             }
             else
             {
@@ -133,8 +182,7 @@ namespace BrightstarDB.Rdf
                     _sink.Triple(subject, subjectIsBNode, predicate, predicateIsBNode,
                                  literal.Value, false, true,
                                  literal.DataType == null ? Constants.DefaultDatatypeUri : literal.DataType.ToString(),
-                                 literal.Language,
-                                 t.GraphUri == null ? _defaultGraphUri : t.GraphUri.ToString());
+                                 literal.Language, graphUri);
                 }
                 else
                 {

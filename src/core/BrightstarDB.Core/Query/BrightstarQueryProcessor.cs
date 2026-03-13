@@ -1,4 +1,5 @@
-﻿using BrightstarDB.Query.Processor;
+﻿using System;
+using BrightstarDB.Query.Processor;
 using BrightstarDB.Storage;
 using VDS.RDF;
 using VDS.RDF.Query;
@@ -9,28 +10,25 @@ namespace BrightstarDB.Query
 {
     internal class BrightstarQueryProcessor : LeviathanQueryProcessor
     {
-        // KA: Not currently used
-        //private readonly IStore _store;
-
-
-        static BrightstarQueryProcessor()
+        private static readonly Action<LeviathanQueryOptions> ConfigureOptions = options =>
         {
-            SparqlOptimiser.AddOptimiser(new VariableEqualsOptimizer());
-            SparqlOptimiser.AddOptimiser(new JoinOptimiser());
+            var optimiser = new SparqlOptimiser();
+            optimiser.AddOptimiser(new VariableEqualsOptimizer());
+            optimiser.AddOptimiser(new JoinOptimiser());
+            foreach (var opt in optimiser.AlgebraOptimisers)
+            {
+                options.AlgebraOptimisers = options.AlgebraOptimisers is null
+                    ? new[] { opt }
+                    : new System.Collections.Generic.List<IAlgebraOptimiser>(options.AlgebraOptimisers) { opt };
+            }
+        };
+
+        public BrightstarQueryProcessor(IInMemoryQueryableStore store) : base(store, ConfigureOptions)
+        {
         }
 
-        public BrightstarQueryProcessor(IInMemoryQueryableStore store) : base(store)
+        public BrightstarQueryProcessor(IStore store, ISparqlDataset data) : base(data, ConfigureOptions)
         {
         }
-
-        public BrightstarQueryProcessor(IStore store, ISparqlDataset data) : base(data)
-        {
-            //_store = store;
-        }
-
-        // public override 
-
-
     }
-
 }

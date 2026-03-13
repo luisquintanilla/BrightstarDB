@@ -178,7 +178,7 @@ namespace BrightstarDB.InternalTests.SparqlTestSuite {
             }
         }
 
-        private static bool CompareSolutions(SparqlResult x, SparqlResult y)
+        private static bool CompareSolutions(ISparqlResult x, ISparqlResult y)
         {
             if (x.Variables.Count().Equals(y.Variables.Count()) &&
                 x.Variables.All(xv=>y.Variables.Contains(xv)))

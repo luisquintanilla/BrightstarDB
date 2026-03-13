@@ -416,7 +416,6 @@ namespace BrightstarDB.Rdf
         /// <exception cref="ArgumentException">Thrown if <paramref name="literalDatatype"/> is not an RDF datatype known to this class</exception>
         public static object ParseLiteralString(string literalString, string literalDatatype, string literalLanguageTag)
         {
-            if (literalDatatype.Equals(String)) return literalString;
             RdfDatatype datatype;
             if (DatatypeUriToRdfType.TryGetValue(literalDatatype, out datatype))
             {

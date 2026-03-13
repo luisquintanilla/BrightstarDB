@@ -20,7 +20,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="dotNetRDF" />
+    <PackageReference Include="dotNetRdf" />
     <PackageReference Include="Remotion.Linq" />
     <PackageReference Include="Serilog" />
     <PackageReference Include="Serilog.Sinks.Console" />

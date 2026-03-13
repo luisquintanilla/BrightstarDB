@@ -10,6 +10,32 @@ namespace BrightstarDB.Client
 {
     internal static class DotNetRdfConfigurationHelper
     {
+        private static bool _factoriesRegistered;
+        private static readonly object _factoryLock = new object();
+
+        private static void EnsureObjectFactoriesRegistered()
+        {
+            if (_factoriesRegistered) return;
+            lock (_factoryLock)
+            {
+                if (_factoriesRegistered) return;
+                // Register dotNetRdf.Client StorageFactory if available (needed for FusekiConnector etc. in 3.x)
+                try
+                {
+                    var storageFactoryType = Type.GetType("VDS.RDF.Configuration.StorageFactory, dotNetRdf.Client", false);
+                    if (storageFactoryType != null)
+                    {
+                        ConfigurationLoader.AddObjectFactory((IObjectFactory)Activator.CreateInstance(storageFactoryType));
+                    }
+                }
+                catch
+                {
+                    // dotNetRdf.Client not available — ignore
+                }
+                _factoriesRegistered = true;
+            }
+        }
+
 #if PORTABLE
         public static IGraph LoadConfiguration(string configurationPath)
         {
@@ -23,6 +49,7 @@ namespace BrightstarDB.Client
 #else
         public static IGraph LoadConfiguration(string configurationPath)
         {
+            EnsureObjectFactoriesRegistered();
             ConfigurationLoader.PathResolver = new DotNetRdfConfigurationPathResolver(configurationPath);
             return ConfigurationLoader.LoadConfiguration(configurationPath);
         }

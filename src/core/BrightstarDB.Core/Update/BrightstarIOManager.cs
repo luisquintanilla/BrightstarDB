@@ -91,10 +91,7 @@ namespace BrightstarDB.Update
                 ret.Object = String.Format("{0}/{1}/{2}", Constants.GeneratedUriPrefix, uniqueImportId,
                                             ((BlankNode) t.Object).InternalID);
             }
-            if (t.GraphUri != null)
-            {
-                ret.Graph = t.GraphUri.ToString();
-            }
+            // Graph is set by the caller (UpdateGraph sets t.Graph = graphUri)
             return ret;
         }
 
@@ -125,7 +122,7 @@ namespace BrightstarDB.Update
                             Stringify(removal.Subject, uniqueImportId), removal.Subject is IBlankNode,
                             Stringify(removal.Predicate, uniqueImportId), removal.Predicate is IBlankNode,
                             node.Value, false, true, node.DataType == null ? null : node.DataType.ToString(), node.Language,
-                            removal.GraphUri == null ? graphUri : removal.GraphUri.ToString()
+                            graphUri
                             );
                     }
                     else
@@ -134,7 +131,7 @@ namespace BrightstarDB.Update
                             Stringify(removal.Subject, uniqueImportId), removal.Subject is IBlankNode,
                             Stringify(removal.Predicate, uniqueImportId), removal.Predicate is IBlankNode,
                             Stringify(removal.Object, uniqueImportId), removal.Object is IBlankNode, false, null, null,
-                            removal.GraphUri == null ? graphUri : removal.GraphUri.ToString()
+                            graphUri
                             );
                     }
                 }
@@ -168,6 +165,17 @@ namespace BrightstarDB.Update
         public IEnumerable<Uri> ListGraphs()
         {
             return _store.GetGraphUris().Where(g=>!Constants.DefaultGraphUri.Equals(g)).Select(g => new Uri(g));
+        }
+
+        public IEnumerable<string> ListGraphNames()
+        {
+            return _store.GetGraphUris().Where(g => !Constants.DefaultGraphUri.Equals(g));
+        }
+
+        public void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
+        {
+            Uri graphUri = graphName is IUriNode un ? un.Uri : null;
+            UpdateGraph(graphUri, additions, removals);
         }
 
         public IStorageServer ParentServer

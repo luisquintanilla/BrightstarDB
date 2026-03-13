@@ -10,7 +10,7 @@ namespace BrightstarDB.Query
     {
         /// <summary>
         /// Returns the number of pattern items in the triple pattern that have a 
-        /// non-null VariableName
+        /// non-null variable
         /// </summary>
         /// <param name="tp"></param>
         /// <returns></returns>
@@ -20,7 +20,7 @@ namespace BrightstarDB.Query
         /// </remarks>
         public static int GetVariableCount(this TriplePattern  tp)
         {
-            return (new[] {tp.Subject, tp.Predicate, tp.Object}).Count(i => i.VariableName != null);
+            return (new[] {tp.Subject, tp.Predicate, tp.Object}).Count(i => i.Variables.Any());
         }
     }
 }

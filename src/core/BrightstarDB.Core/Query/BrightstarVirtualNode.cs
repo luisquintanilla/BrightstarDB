@@ -438,6 +438,29 @@ namespace BrightstarDB.Query
             return this.TypedEquality(other);
         }
 
+        // dotNetRDF 3.x: IRefNode comparison/equality (IUriNode now extends IRefNode)
+        public int CompareTo(IRefNode other)
+        {
+            return this.CompareTo((INode)other);
+        }
+
+        public bool Equals(IRefNode other)
+        {
+            return this.Equals((INode)other);
+        }
+
+        public int CompareTo(ITripleNode other)
+        {
+            // Triple nodes are a different node type; use standard node type ordering
+            return this.CompareTo((INode)other);
+        }
+
+        public bool Equals(ITripleNode other)
+        {
+            // BrightstarVirtualNode is never a triple node
+            return false;
+        }
+
         #endregion
 
         
