@@ -29,7 +29,7 @@ namespace BrightstarDB.Query.Functions
 
         public override T Accept<T>(ISparqlExpressionVisitor<T> visitor)
         {
-            return default;
+            throw new NotSupportedException("Visitor-based traversal is not supported for BrightstarDB custom SPARQL functions. Use the processor-based Accept overload instead.");
         }
 
         public override ISparqlExpression Transform(IExpressionTransformer transformer)

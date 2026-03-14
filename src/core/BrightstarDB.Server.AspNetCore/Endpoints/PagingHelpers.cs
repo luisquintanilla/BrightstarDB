@@ -58,7 +58,7 @@ public static class PagingHelpers
         if (skip > 0)
         {
             links.Add($"<{resourceUri}>;rel=first");
-            var previousPage = skip - DefaultPageSize;
+            var previousPage = skip - take;
             var previousLink = previousPage <= 0 ? resourceUri : $"{resourceUri}{querySeparator}skip={previousPage}";
             links.Add($"<{previousLink}>;rel=prev");
         }

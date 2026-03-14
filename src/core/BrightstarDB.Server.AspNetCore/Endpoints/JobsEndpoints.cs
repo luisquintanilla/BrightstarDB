@@ -265,7 +265,7 @@ public static class JobsEndpoints
         if (skip > 0)
         {
             links.Add($"<{resourceUri}>;rel=first");
-            var previousPage = skip - defaultPageSize;
+            var previousPage = skip - take;
             var previousLink = previousPage <= 0 ? resourceUri : $"{resourceUri}{querySeparator}skip={previousPage}";
             links.Add($"<{previousLink}>;rel=prev");
         }
