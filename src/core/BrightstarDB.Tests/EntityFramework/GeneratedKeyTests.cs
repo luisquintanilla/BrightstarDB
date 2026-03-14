@@ -195,6 +195,14 @@ namespace BrightstarDB.Tests.EntityFramework
                 child.Description = "Update description";
                 context.SaveChanges();
             }
+
+            using (var context = GetContext())
+            {
+                var child = context.ChildEntities.FirstOrDefault(x => x.Id.Equals(childId));
+                Assert.That(child, Is.Not.Null);
+                Assert.That(child.Description, Is.EqualTo("Update description"));
+                Assert.That(child.Parent, Is.Not.Null);
+            }
         }
 
         [Test]
@@ -253,6 +261,16 @@ namespace BrightstarDB.Tests.EntityFramework
                 context.ChildEntities.Add(modifiedChild);
                 context.SaveChanges();
             }
+
+            using (var context = GetContext())
+            {
+                var children = context.ChildEntities.Where(x => x.Code.Equals("child")).ToList();
+                Assert.That(children.Count, Is.EqualTo(1));
+                var child = children.FirstOrDefault();
+                Assert.That(child, Is.Not.Null);
+                Assert.That(child.Description, Is.EqualTo("A new description for the existing child"));
+                Assert.That(child.Parent, Is.Not.Null);
+            }
         }
 
         [Test]
@@ -285,6 +303,16 @@ namespace BrightstarDB.Tests.EntityFramework
                 context.DeleteObject(existingChild);
                 context.ChildEntity2s.Add(modifiedChild);
                 context.SaveChanges();
+            }
+
+            using (var context = GetContext())
+            {
+                var children = context.ChildEntity2s.Where(x => x.Code.Equals("child")).ToList();
+                Assert.That(children.Count, Is.EqualTo(1));
+                var child = children.FirstOrDefault();
+                Assert.That(child, Is.Not.Null);
+                Assert.That(child.Description, Is.EqualTo("A new description for the existing child"));
+                Assert.That(child.Parent, Is.Not.Null);
             }
         }
     }

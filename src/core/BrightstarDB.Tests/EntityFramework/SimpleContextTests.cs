@@ -2445,6 +2445,329 @@ where {
             }
         }
 
+        #region Round-trip CRUD Coverage
+
+        [Test]
+        public void TestAddOrUpdateWithSingleRelation()
+        {
+            var storeName = "TestAddOrUpdateWithSingleRelation_" + DateTime.Now.Ticks;
+            string aliceId;
+            using (var context = CreateEntityContext(storeName))
+            {
+                var sales = new Department { Name = "Sales", DeptId = 1 };
+                var alice = new Person { Name = "Alice", Department = sales };
+                context.Departments.Add(sales);
+                context.Persons.Add(alice);
+                context.SaveChanges();
+                aliceId = alice.Id;
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var engineering = new Department { Name = "Engineering", DeptId = 2 };
+                context.Departments.Add(engineering);
+                context.SaveChanges();
+
+                var updatedAlice = new Person { Id = aliceId, Name = "Alice", Department = engineering };
+                context.Persons.AddOrUpdate(updatedAlice);
+                context.SaveChanges();
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var alice = context.Persons.FirstOrDefault(x => x.Id == aliceId);
+                Assert.IsNotNull(alice);
+                Assert.IsNotNull(alice.Department);
+                Assert.AreEqual("Engineering", alice.Department.Name);
+            }
+        }
+
+        [Test]
+        public void TestAddOrUpdateWithCollection()
+        {
+            var storeName = "TestAddOrUpdateWithCollection_" + DateTime.Now.Ticks;
+            string bobId;
+            using (var context = CreateEntityContext(storeName))
+            {
+                var csharp = new Skill { Name = "C#" };
+                var java = new Skill { Name = "Java" };
+                var bob = new Person { Name = "Bob" };
+                bob.Skills.Add(csharp);
+                bob.Skills.Add(java);
+                context.Skills.Add(csharp);
+                context.Skills.Add(java);
+                context.Persons.Add(bob);
+                context.SaveChanges();
+                bobId = bob.Id;
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var python = new Skill { Name = "Python" };
+                var go = new Skill { Name = "Go" };
+                var rust = new Skill { Name = "Rust" };
+                context.Skills.Add(python);
+                context.Skills.Add(go);
+                context.Skills.Add(rust);
+
+                var bob = context.Persons.FirstOrDefault(x => x.Id == bobId);
+                Assert.IsNotNull(bob);
+                bob.Skills.Clear();
+                bob.Skills.Add(python);
+                bob.Skills.Add(go);
+                bob.Skills.Add(rust);
+                context.SaveChanges();
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var bob = context.Persons.FirstOrDefault(x => x.Id == bobId);
+                Assert.IsNotNull(bob);
+                Assert.AreEqual(3, bob.Skills.Count);
+                Assert.IsTrue(bob.Skills.Any(x => x.Name == "Python"));
+                Assert.IsTrue(bob.Skills.Any(x => x.Name == "Go"));
+                Assert.IsTrue(bob.Skills.Any(x => x.Name == "Rust"));
+            }
+        }
+
+        [Test]
+        public void TestAddOrUpdateWithInverseProperty()
+        {
+            var storeName = "TestAddOrUpdateWithInverseProperty_" + DateTime.Now.Ticks;
+            string salesId;
+            string engineeringId;
+            string aliceId;
+            using (var context = CreateEntityContext(storeName))
+            {
+                var sales = new Department { Name = "Sales", DeptId = 1 };
+                var alice = new Person { Name = "Alice", Department = sales };
+                var bob = new Person { Name = "Bob", Department = sales };
+                context.Departments.Add(sales);
+                context.Persons.Add(alice);
+                context.Persons.Add(bob);
+                context.SaveChanges();
+                salesId = sales.Id;
+                aliceId = alice.Id;
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var engineering = new Department { Name = "Engineering", DeptId = 2 };
+                context.Departments.Add(engineering);
+
+                var alice = context.Persons.FirstOrDefault(x => x.Id == aliceId);
+                Assert.IsNotNull(alice);
+                alice.Department = engineering;
+                context.SaveChanges();
+                engineeringId = engineering.Id;
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var sales = context.Departments.FirstOrDefault(x => x.Id == salesId);
+                var engineering = context.Departments.FirstOrDefault(x => x.Id == engineeringId);
+                Assert.IsNotNull(sales);
+                Assert.IsNotNull(engineering);
+                Assert.AreEqual(1, sales.Persons.Count);
+                Assert.AreEqual(1, engineering.Persons.Count);
+                Assert.AreEqual("Bob", sales.Persons.First().Name);
+                Assert.AreEqual("Alice", engineering.Persons.First().Name);
+            }
+        }
+
+        [Test]
+        public void TestScalarUpdateRoundTrip()
+        {
+            var storeName = "TestScalarUpdateRoundTrip_" + DateTime.Now.Ticks;
+            string personId;
+            var originalDateOfBirth = new DateTime(1999, 1, 1);
+            var updatedDateOfBirth = new DateTime(1994, 6, 15);
+            using (var context = CreateEntityContext(storeName))
+            {
+                var person = new Person
+                {
+                    Name = "Original",
+                    Age = 25,
+                    Salary = 50000,
+                    DateOfBirth = originalDateOfBirth
+                };
+                context.Persons.Add(person);
+                context.SaveChanges();
+                personId = person.Id;
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var person = context.Persons.FirstOrDefault(x => x.Id == personId);
+                Assert.IsNotNull(person);
+                person.Name = "Updated";
+                person.Age = 30;
+                person.Salary = 75000;
+                person.DateOfBirth = updatedDateOfBirth;
+                context.SaveChanges();
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var person = context.Persons.FirstOrDefault(x => x.Id == personId);
+                Assert.IsNotNull(person);
+                Assert.AreEqual("Updated", person.Name);
+                Assert.AreEqual(30, person.Age);
+                Assert.AreEqual(75000, person.Salary);
+                Assert.IsNotNull(person.DateOfBirth);
+                Assert.AreEqual(updatedDateOfBirth, person.DateOfBirth.Value);
+            }
+        }
+
+        [Test]
+        public void TestNullablePropertyRoundTrip()
+        {
+            var storeName = "TestNullablePropertyRoundTrip_" + DateTime.Now.Ticks;
+            string personId;
+            var initialDateOfBirth = new DateTime(2000, 1, 1);
+            var updatedDateOfBirth = new DateTime(1990, 5, 20);
+            using (var context = CreateEntityContext(storeName))
+            {
+                var person = new Person { Name = "Test", DateOfBirth = initialDateOfBirth };
+                context.Persons.Add(person);
+                context.SaveChanges();
+                personId = person.Id;
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var person = context.Persons.FirstOrDefault(x => x.Id == personId);
+                Assert.IsNotNull(person);
+                Assert.IsNotNull(person.DateOfBirth);
+                Assert.AreEqual(initialDateOfBirth, person.DateOfBirth.Value);
+                person.DateOfBirth = null;
+                context.SaveChanges();
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var person = context.Persons.FirstOrDefault(x => x.Id == personId);
+                Assert.IsNotNull(person);
+                Assert.IsNull(person.DateOfBirth);
+                person.DateOfBirth = updatedDateOfBirth;
+                context.SaveChanges();
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var person = context.Persons.FirstOrDefault(x => x.Id == personId);
+                Assert.IsNotNull(person);
+                Assert.IsNotNull(person.DateOfBirth);
+                Assert.AreEqual(updatedDateOfBirth, person.DateOfBirth.Value);
+            }
+        }
+
+        [Test]
+        public void TestDeleteEntityVerifyInverseCollectionCleanup()
+        {
+            var storeName = "TestDeleteEntityVerifyInverseCollectionCleanup_" + DateTime.Now.Ticks;
+            string departmentId;
+            string daveId;
+            using (var context = CreateEntityContext(storeName))
+            {
+                var qa = new Department { Name = "QA", DeptId = 1 };
+                var dave = new Person { Name = "Dave", Department = qa };
+                var eve = new Person { Name = "Eve", Department = qa };
+                var frank = new Person { Name = "Frank", Department = qa };
+                context.Departments.Add(qa);
+                context.Persons.Add(dave);
+                context.Persons.Add(eve);
+                context.Persons.Add(frank);
+                context.SaveChanges();
+                departmentId = qa.Id;
+                daveId = dave.Id;
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var dave = context.Persons.FirstOrDefault(x => x.Id == daveId);
+                Assert.IsNotNull(dave);
+                context.DeleteObject(dave);
+                context.SaveChanges();
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var qa = context.Departments.FirstOrDefault(x => x.Id == departmentId);
+                var dave = context.Persons.FirstOrDefault(x => x.Id == daveId);
+                Assert.IsNotNull(qa);
+                Assert.AreEqual(2, qa.Persons.Count);
+                Assert.IsTrue(qa.Persons.Any(x => x.Name == "Eve"));
+                Assert.IsTrue(qa.Persons.Any(x => x.Name == "Frank"));
+                Assert.IsNull(dave);
+            }
+        }
+
+        [Test]
+        public void TestDeleteParentVerifyChildRelationCleared()
+        {
+            var storeName = "TestDeleteParentVerifyChildRelationCleared_" + DateTime.Now.Ticks;
+            string programmingId;
+            string pythonId;
+            using (var context = CreateEntityContext(storeName))
+            {
+                var programming = new Skill { Name = "Programming" };
+                var python = new Skill { Name = "Python", Parent = programming };
+                context.Skills.Add(programming);
+                context.Skills.Add(python);
+                context.SaveChanges();
+                programmingId = programming.Id;
+                pythonId = python.Id;
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var programming = context.Skills.FirstOrDefault(x => x.Id == programmingId);
+                Assert.IsNotNull(programming);
+                context.DeleteObject(programming);
+                context.SaveChanges();
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var programming = context.Skills.FirstOrDefault(x => x.Id == programmingId);
+                var python = context.Skills.FirstOrDefault(x => x.Id == pythonId);
+                Assert.IsNull(programming);
+                Assert.IsNotNull(python);
+                Assert.IsNull(python.Parent);
+            }
+        }
+
+        [Test]
+        public void TestClearCollectionVerifyInverseCleared()
+        {
+            var storeName = "TestClearCollectionVerifyInverseCleared_" + DateTime.Now.Ticks;
+            string departmentId;
+            var personIds = new List<string>();
+            using (var context = CreateEntityContext(storeName))
+            {
+                var hr = new Department { Name = "HR", DeptId = 1 };
+                var alice = new Person { Name = "Alice", Department = hr };
+                var bob = new Person { Name = "Bob", Department = hr };
+                var charlie = new Person { Name = "Charlie", Department = hr };
+                context.Departments.Add(hr);
+                context.Persons.Add(alice);
+                context.Persons.Add(bob);
+                context.Persons.Add(charlie);
+                context.SaveChanges();
+                departmentId = hr.Id;
+                personIds.Add(alice.Id);
+                personIds.Add(bob.Id);
+                personIds.Add(charlie.Id);
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                var hr = context.Departments.FirstOrDefault(x => x.Id == departmentId);
+                Assert.IsNotNull(hr);
+                foreach (var person in hr.Persons.ToList())
+                {
+                    person.Department = null;
+                }
+                context.SaveChanges();
+            }
+            using (var context = CreateEntityContext(storeName))
+            {
+                foreach (var personId in personIds)
+                {
+                    var person = context.Persons.FirstOrDefault(x => x.Id == personId);
+                    Assert.IsNotNull(person);
+                    Assert.IsNull(person.Department);
+                }
+            }
+        }
+
+        #endregion
+
         MyEntityContext CreateEntityContext(string storeName)
         {
             return new MyEntityContext("type=embedded;storesdirectory=c:\\brightstar;storename=" + storeName);

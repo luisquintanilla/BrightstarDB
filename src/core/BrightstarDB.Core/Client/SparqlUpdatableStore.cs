@@ -135,7 +135,7 @@ namespace BrightstarDB.Client
                 builder.Append("^^");
                 builder.AppendFormat("<{0}>", dataType);
             }
-            if (languageCode != null)
+            if (!String.IsNullOrEmpty(languageCode))
             {
                 builder.Append("@");
                 builder.Append(languageCode);
@@ -230,7 +230,7 @@ namespace BrightstarDB.Client
                     builder.Append("^^");
                     builder.AppendFormat("<{0}>", triple.DataType);
                 }
-                if (triple.LangCode != null)
+                if (!String.IsNullOrEmpty(triple.LangCode))
                 {
                     builder.Append("@");
                     builder.Append(triple.LangCode);

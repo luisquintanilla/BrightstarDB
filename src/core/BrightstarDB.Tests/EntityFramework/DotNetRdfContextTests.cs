@@ -55,7 +55,95 @@ namespace BrightstarDB.Tests.EntityFramework
                 }
             }
         }
-    
+
+        [Test]
+        public void TestDotNetRdfUpdateRoundTrip()
+        {
+            var storeName = "http://www.brightstardb.com/tests#empty";
+            var connectionString = MakeStoreConnectionString(storeName);
+            var dataObjectContext = BrightstarService.GetDataObjectContext(connectionString);
+            var defaultGraph = BrightstarDB.Constants.DefaultGraphUri;
+
+            string carolId;
+            using (var store = dataObjectContext.OpenStore(storeName, updateGraph: defaultGraph, defaultDataSet: new[] { defaultGraph }))
+            {
+                using (var context = new MyEntityContext(store))
+                {
+                    var carol = context.FoafPersons.Create();
+                    carol.Name = "Carol";
+                    carol.Organisation = "Acme";
+                    carolId = carol.Id;
+                    context.SaveChanges();
+                }
+            }
+
+            using (var store = dataObjectContext.OpenStore(storeName, updateGraph: defaultGraph, defaultDataSet: new[] { defaultGraph }))
+            {
+                using (var context = new MyEntityContext(store))
+                {
+                    var carol = context.FoafPersons.FirstOrDefault(p => p.Id.Equals(carolId));
+                    Assert.That(carol, Is.Not.Null);
+                    Assert.That(carol.Name, Is.EqualTo("Carol"));
+                    Assert.That(carol.Organisation, Is.EqualTo("Acme"));
+                    carol.Name = "Caroline";
+                    carol.Organisation = "TechCorp";
+                    context.SaveChanges();
+                }
+            }
+
+            using (var store = dataObjectContext.OpenStore(storeName, updateGraph: defaultGraph, defaultDataSet: new[] { defaultGraph }))
+            {
+                using (var context = new MyEntityContext(store))
+                {
+                    var carol = context.FoafPersons.FirstOrDefault(p => p.Id.Equals(carolId));
+                    Assert.That(carol, Is.Not.Null);
+                    Assert.That(carol.Name, Is.EqualTo("Caroline"));
+                    Assert.That(carol.Organisation, Is.EqualTo("TechCorp"));
+                }
+            }
+        }
+
+        [Test]
+        public void TestDotNetRdfDeleteRoundTrip()
+        {
+            var storeName = "http://www.brightstardb.com/tests#empty";
+            var connectionString = MakeStoreConnectionString(storeName);
+            var dataObjectContext = BrightstarService.GetDataObjectContext(connectionString);
+            var defaultGraph = BrightstarDB.Constants.DefaultGraphUri;
+
+            string deleteMeId;
+            using (var store = dataObjectContext.OpenStore(storeName, updateGraph: defaultGraph, defaultDataSet: new[] { defaultGraph }))
+            {
+                using (var context = new MyEntityContext(store))
+                {
+                    var deleteMe = context.FoafPersons.Create();
+                    deleteMe.Name = "DeleteMe";
+                    deleteMeId = deleteMe.Id;
+                    context.SaveChanges();
+                }
+            }
+
+            using (var store = dataObjectContext.OpenStore(storeName, updateGraph: defaultGraph, defaultDataSet: new[] { defaultGraph }))
+            {
+                using (var context = new MyEntityContext(store))
+                {
+                    var deleteMe = context.FoafPersons.FirstOrDefault(p => p.Id.Equals(deleteMeId));
+                    Assert.That(deleteMe, Is.Not.Null);
+                    Assert.That(deleteMe.Name, Is.EqualTo("DeleteMe"));
+                    context.DeleteObject(deleteMe);
+                    context.SaveChanges();
+                }
+            }
+
+            using (var store = dataObjectContext.OpenStore(storeName, updateGraph: defaultGraph, defaultDataSet: new[] { defaultGraph }))
+            {
+                using (var context = new MyEntityContext(store))
+                {
+                    var deleteMe = context.FoafPersons.FirstOrDefault(p => p.Id.Equals(deleteMeId));
+                    Assert.That(deleteMe, Is.Null);
+                }
+            }
+        }
 
         private static string MakeStoreConnectionString(string storeName)
         {
