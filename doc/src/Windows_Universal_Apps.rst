@@ -4,6 +4,12 @@
  Building Windows Universal Apps with BrightstarDB
 **************************************************
 
+.. warning::
+
+   **This page is archived.** It describes features from BrightstarDB 1.x that are
+   no longer part of the actively maintained codebase as of BrightstarDB 2.0 (.NET 10).
+   See :ref:`Archived Documentation <Archived_Docs>` for context.
+
 Getting Started
 ===============
 

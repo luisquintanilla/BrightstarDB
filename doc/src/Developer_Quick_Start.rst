@@ -22,9 +22,12 @@ Create New Project
 ==================
 
 Create a new project in Visual Studio. For this example we chose a command line application. 
-After creating the project ensure the build target is set to  '.NET Framework 4' or later (
-do not select a Client Profile version of the .NET Framework) and that the 
-Platform Target is set to 'Any CPU'
+After creating the project ensure the target framework is set to ``net10.0`` (or
+``netstandard2.0`` if building a library). You can also use the .NET CLI::
+
+  dotnet new console -n MyBrightstarApp
+  cd MyBrightstarApp
+  dotnet add package BrightstarDB
 
 In the solution explorer, right click on the project icon and select 'Manage NuGet Packages...'
 Set the Package source to 'nuget.org' and then use the search facility to search for BrightstarDB.
@@ -51,9 +54,7 @@ for you to query and updated BrightstarDB using LINQ.
   Click OK to run the template (you can optionally check the 'Do not show this message again' which will prevent
   Visual Studio from popping up this dialog again).
   
-It is also worth noting here that there is an alternate method for generating the code framework which will work
-in Visual Studio 2015 and provides the possibility to use BrightstarDB's Entity Framework with Visual Basic. For
-more information please refer to the section :ref:`Roslyn Code Generation <Roslyn_Code_Generation>`.
+There is also a console-based code generator that works without Visual Studio.
 
 Create the Model
 ================
@@ -274,7 +275,7 @@ to the application configuration file::
       <add key="BrightstarDB.EnableServerSideCaching" value="false" />
 
 .. note::
-  Server side caching is not supported on BrightstarDB for Windows Phone 7.
+  Server side caching is enabled by default for all platforms.
 
 
 What Next?

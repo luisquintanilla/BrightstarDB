@@ -31,8 +31,8 @@ If you are an architect considering using BrightstarDB then the
 the different APIs will give you an overview of the different tools that 
 developers can use to work with BrightstarDB. The other sections that provide 
 a good overview of BrightstarDB's capabilities and features are the :ref:`API 
-Documentation <API_Documentation>`, :ref:`Admin API <Admin_API>` and 
-:ref:`Polaris Management Tool <Using_Polaris>` sections.
+Documentation <API_Documentation>`, :ref:`Admin API <Admin_API>` and :ref:`Running BrightstarDB
+<Running_BrightstarDB>` sections.
 
 
 
@@ -41,13 +41,11 @@ Documentation <API_Documentation>`, :ref:`Admin API <Admin_API>` and
  Data
 *****
 
-If you are coming to BrightstarDB from an RDF perspective and want to work 
-with RDF Data and SPARQL then the best place to start is the :ref:`Polaris 
-Management Tool <Using_Polaris>`. This shows how to create a new store 
-without code, load in RDF data, and execute queries and update transactions. 
-Other sections of interest will probably be :ref:`SPARQL Endpoint 
-<SPARQL_Endpoint>` and if you are writing code the :ref:`RDF Client API 
-<RDF_Client_API>`.
+If you are coming to BrightstarDB from an RDF perspective and want to work
+with RDF Data and SPARQL then the best place to start is the :ref:`SPARQL Endpoint
+<SPARQL_Endpoint>` section. You can use any SPARQL client to query and update a
+BrightstarDB store via its HTTP API. For loading RDF data and executing queries
+programmatically, see the :ref:`RDF Client API <RDF_Client_API>`.
 
 
 
@@ -70,7 +68,7 @@ creates concrete implementing classes. These classes can then be used in an
 application. The flexibility of the underlying storage makes evolving the 
 model very easy and straight forward. BrightstarDB is optimized for 
 associative data which provides a high performance when working with objects. 
-As this is a fully typed domain model it also provides LINQ and OData support.
+As this is a fully typed domain model it also provides full LINQ support.
 
 The main sections to see for developing .NET typed domain models are the 
 :ref:`Developer Quick Start <Developing_with_BrightstarDB>` section, the 
@@ -93,9 +91,3 @@ To work programmatically with RDF, SPARQL query, and SPARQL update, see the
 :ref:`RDF Client API <RDF_Client_API>` and :ref:`SPARQL Endpoint 
 <SPARQL_Endpoint>` sections. 
 
-**Portable Class Library and Windows Store**
-
-If you are building a Windows Store application you can now make use of the
-Portable Class Library build of BrightstarDB. This build also supports
-targetting Silverlight 5 and Windows Phone 8. For more information
-please refer to :ref:`Developing Portable Apps <Developing_Portable_Apps>`.

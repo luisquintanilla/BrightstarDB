@@ -23,6 +23,7 @@
 | 13 | [Minimal APIs + IResult for SPARQL streaming](#decision-13-minimal-apis-with-iresult-for-sparql-streaming) | High | Low |
 | 14 | [Stay on NUnit 3.14, NOT upgrade to 4.x](#decision-14-stay-on-nunit-314-not-40) | Low | Low |
 | 15 | [Archive legacy tools, don't migrate](#decision-15-archive-legacy-tools-dont-migrate) | Medium | Low |
+| 16 | [Archive vs delete deprecated doc pages](#decision-16-archive-vs-delete-deprecated-doc-pages) | Low | Low |
 
 ---
 
@@ -325,6 +326,26 @@
 
 ---
 
+## Decision 16: Archive vs Delete Deprecated Doc Pages
+
+**Context:** 5 documentation pages describe features removed in 2.0 (Polaris WPF GUI, IIS/Nancy hosting, Mono support, PCL builds, UWP apps). Should they be deleted or archived?
+
+**Decision:** Archive with deprecation notices. Move to an "Archived Documentation" appendix in the TOC.
+
+**Rationale:**
+1. Users migrating from 1.x need to understand what was removed and why
+2. Historical reference helps with troubleshooting legacy deployments
+3. Deleting docs would break any external links pointing to them
+4. The deprecation notice makes it immediately clear the content is not current
+
+**Alternatives considered:**
+- Delete the files entirely — rejected because it loses historical context and breaks links
+- Leave in main TOC with a note — rejected because it clutters the main navigation
+
+**Status:** ✅ Implemented in Phase 10
+
+---
+
 ## Risk Register (Final)
 
 | Risk | Likelihood | Impact | Mitigation | Status |
@@ -339,3 +360,4 @@
 | Existing consumers break with net472 removal | Medium | Medium | Keep netstandard2.0 target for backward compatibility. | ✅ **MITIGATED** |
 | Buildalyzer 7.x API changes break code generation | Medium | Medium | Test code generation early in Phase 4. | ✅ **RESOLVED** — 22 CodeGen tests pass |
 | NUnit 4.x assertion changes cause test churn | Low | Low | Stay on NUnit 3.14.0 — fully supports .NET 10. | ✅ **RESOLVED** — Decision 14 |
+| Outdated documentation misleads users after the .NET 10 migration | Medium | Medium | Add a dedicated documentation modernization phase, rewrite core docs, and archive deprecated pages with notices. | ✅ **RESOLVED** — Phase 10 complete |

@@ -22,21 +22,18 @@ BrightstarDB Documentation
     Admin API <Admin_API>
 	HTTP API <HTTP_API>
     Concurrency And Multi-threading <Concurrency>
-	Developing Portable Apps <Developing_Portable_Apps>
     Connecting to Other Stores <Other_Stores>
     API Documentation <API_Documentation>
     BrightstarDB Security <Security>
     Running BrightstarDB <Running_BrightstarDB>
     SPARQL Endpoint <SPARQL_Endpoint>
-    Polaris Management Tool <Using_Polaris>
     SdShare Server <SdShare_Server>
     Building_BrightstarDB
-    BrightstarDB_Under_Mono
-    Windows_Universal_Apps
-    BrightstarDB_In_IIS
     What's New <Whats_New>
     Known Issues <Known_Issues>
     Getting Support <Getting_Support>
+    Migration Guide <Migration_Guide>
+    Archived Documentation <Archived_Docs>
   
 ================================
 Indices and Tables

@@ -35,29 +35,13 @@ but the same query written as shown below will be processed correctly.::
 
 
 
-Currently only the following versions of Visual Studio are provisioned with the Entity Framework item templates through the installer:
-
-
-
-  - Visual Studio C# Express 2010
-
-  - Visual Studio 2010 Professional and above
-
-  - Visual Studio 2012 Professional and above
-
-
-
-To create an entity context class in other versions of Visual Studio, we recommend that you copy the .tt file from one of the Entity Framework samples into your own project. You may rename the file if you wish as long as you retain the .tt file extension.
+The T4 text template for entity generation works with Visual Studio 2022 and later.
+Alternatively, use the console-based Roslyn code generator
+(``BrightstarDB.CodeGeneration.Console``) which works without Visual Studio.
 
 
 
 
-****************
- OData Functions
-****************
-
-
-The filter function 'replace' is not supported. 
 
 
 

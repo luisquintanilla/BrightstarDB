@@ -1319,54 +1319,10 @@ entity so that it no longer appears in the collection of entities of type ``T`` 
 this does not remove the RDF type statements for super-types of ``T``, but you can explicitly do this by 
 making further calls to ``Unbecome<T>()`` with the appropriate super-types.
 
-.. _OData:
-
-OData
-=====
-
-The Open Data Protocol (OData) is an open web protocol for querying data. An OData provider can be added to BrightstarDB Entity Framework projects to allow OData 
-consumers to query the underlying data in the store. 
-
 .. note::
 
-  :ref:`Identifier Attributes <Annotations_Guide>` must exist on any BrightstarDB entity 
-  interfaces in order to be processed by an OData consumer
-
-For more details on how to add a BrightstarDB OData service to your projects, read 
-:ref:`Adding Linked Data Support <Adding_Linked_Data_Support>` in the MVC Nerd Dinner samples 
-chapter 
-
-OData Restrictions
-------------------
-
-The OData v2 protocol implemented by BrightstarDB does not support properties that contain a 
-collection of literal values. This means that BrightstarDB entity properties that are of type 
-``ICollection<literal type>`` are not supported. Any properties of this type will not be 
-readable via the OData service.
-
-An OData provider connected to the BrightstarDB Entity Framework as a few restrictions on how 
-it can be queried.
-
-**Expand**
-
-  - Second degree expansions are not currently supported. e.g. 
-    ``Department('5598556a-671a-44f0-b176-502da62b3b2f')?$expand=Persons/Skills``
-
-**Filtering**
-
-  - The arithmetic filter ``Mod`` is not supported
-
-  - The string filter functions ``int indexof(string p0, string p1)``, 
-    ``string trim(string p0)`` and ``trim(string p0, string p1)`` are not supported.
-
-  - The type filter functions ``bool IsOf(type p0)`` and ``bool IsOf(expression p0, type p1)`` 
-    are not supported.
-
-**Format**
-
-Microsoft WCF Data Services do not currently support the ``$format`` query option. 
-To return OData results formatted in JSON, the accept headers can be set in the web request 
-sent to the OData service.
+   OData support was available in BrightstarDB 1.x but has been removed in 2.0.
+   The BrightstarDB HTTP API provides RESTful access to stores. See :ref:`HTTP_API`.
 
 .. _SavingChanges_Event:
 
@@ -1547,11 +1503,10 @@ generator:
          
     #. It supports generating the code either through a T4 template or from the command-line,
        which makes it possible to generate code without using Visual Studio.
-    #. It will support code generation in Xamarin Studio / MonoDevelop
+    #. It supports code generation from the command-line without an IDE
 
 .. note::
-   The Roslyn code generation features are dependent upon .NET 4.5 and in VisualStudio
-   require VS2015 CTP5 release or later.
+   The Roslyn code generation features require .NET 10 SDK.
    
    
 Console-based Code Generation
@@ -1579,7 +1534,7 @@ T4 Template-based Generation
 ----------------------------
 
 We also provide a T4 template which acts as shim to invoke the code generator. This can be more convenient when working in 
-a development environment such as Visual Studio or Xamarin Studio. To use the T4 template, you should install the NuGet
+a development environment such as Visual Studio. To use the T4 template, you should install the NuGet
 package ``BrightstarDB.CodeGeneration.T4``::
 
     Install-Package BrightstarDB.CodeGeneration.T4

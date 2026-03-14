@@ -26,6 +26,7 @@
 13. [NUnit 3.x → 4.x — Know When NOT to Upgrade](#pattern-11-nunit-3x--4x--know-when-not-to-upgrade)
 14. [CI/CD Modernization Checklist](#pattern-12-cicd-modernization-checklist)
 15. [Legacy Tool Assessment — Archive vs Migrate vs Rewrite](#pattern-13-legacy-tool-assessment--archive-vs-migrate-vs-rewrite)
+16. [Documentation Modernization — Archive vs Rewrite vs Edit](#pattern-14-documentation-modernization--archive-vs-rewrite-vs-edit)
 
 ---
 
@@ -591,3 +592,34 @@ test_script:
 **Key insight:** "Migrate" implies incremental changes to existing code. If a project requires replacing its core transport layer (WCF→gRPC) or jumping 3 major dependency versions, that's a "rewrite" wearing a "migrate" costume. Be honest about the effort classification — it helps set expectations.
 
 **Takeaway:** Don't try to migrate everything. Assess each project individually. Archive aggressively — it's better to have a clean, working core than a half-migrated tool that nobody uses.
+
+---
+
+## Pattern 14: Documentation Modernization — Archive vs Rewrite vs Edit
+
+**Context:** After migrating BrightstarDB to .NET 10, 13 of 31 documentation files contained critically outdated content referencing Nancy, Polaris, OData/WCF, Mono, PCL, .NET Framework 4.0, and Visual Studio 2015.
+
+**Decision framework:**
+
+| Action | When to use | Example |
+|--------|-------------|---------|
+| **Rewrite** | Core docs users hit first | README, Getting Started, Building, Running |
+| **Archive** | Entire pages about removed features | Polaris, Mono, PCL, UWP, IIS/Nancy hosting |
+| **Edit sections** | Otherwise-valid docs with a few outdated paragraphs | Entity Framework (remove OData section) |
+| **Delete** | Only for generated artifacts that are completely broken | Never delete source docs — archive instead |
+
+**Key insights:**
+1. Don't delete archived docs — they serve as historical reference and help users migrating from 1.x understand what changed
+2. Add a clear deprecation notice at the top of archived pages so users immediately know the content is historical
+3. Move archived pages to an "Archived Documentation" appendix in the TOC — keeps the main TOC clean
+4. Ground rewritten docs on the actual code (read the real config classes, endpoint routes, Program.cs) — don't guess at the new API surface
+5. Documentation modernization should be its own phase, done AFTER all code changes are committed and tested
+
+**BrightstarDB numbers:**
+- 31 total .rst files audited
+- 13 had critically outdated content
+- 5 fully archived (deprecation notice + moved to appendix)
+- 4 fully rewritten (README, Building, Running server sections, Getting Started)
+- 4 had sections edited (Entity Framework, Concepts, Security, Known Issues)
+
+**Takeaway:** Budget documentation modernization as 10-15% of the total migration effort. It's often overlooked but outdated docs are worse than no docs — they actively mislead users.

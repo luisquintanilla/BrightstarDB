@@ -102,9 +102,10 @@ the form of authentication that works best for your solution.
 Credential-based Authentication
 ===============================
 
-If the BrightstarDB service is hosted under IIS, you can use IIS Basic Authentication or
-Windows Authentication to protect the service. This requires that the client provides
-credentials and that those credentials are checked for each request made. If the credentials
+The BrightstarDB ASP.NET Core server provides HTTP Basic Authentication.
+Authentication is configured in the ``BrightstarService:Authentication`` section of
+``appsettings.json``. See :ref:`Running BrightstarDB <Running_BrightstarDB>` for
+configuration details. The server checks credentials for each request made. If the credentials
 are valid, the user identity for the request will be set to the identity associated with
 the credentials. If the credentials are invalid, the request will be rejected without
 further processing.

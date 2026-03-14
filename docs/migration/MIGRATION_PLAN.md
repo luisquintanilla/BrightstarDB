@@ -603,10 +603,32 @@ All 8 phases of the .NET 10 migration are complete. The final state:
 | **Commits** | 10 (on `feature/net10-migration-plan`) |
 | **Key upgrades** | dotNetRDF 2.7.5→3.5.1, NUnit 3.14.0, .NET 10 SDK |
 | **Major rewrites** | Nancy→ASP.NET Core (3,759 lines) |
-| **Architecture decisions** | 15 ADRs documented |
+| **Architecture decisions** | 16 ADRs documented |
 
 ### Remaining future work (optional):
 - **ASP.NET Core server integration tests** — `BrightstarDB.Server.AspNetCore.Tests` project is scaffolded but empty. Port key tests from the 140 Nancy.Testing tests using `WebApplicationFactory<Program>`.
 - **Additional EF test coverage** — Add `SaveChanges`, `DeleteObject`, round-trip tests with real embedded store.
 - **Legacy tool migration** — If BulkImport/Compress/Polaris are needed, they require separate migration efforts.
 - **GitHub Actions** — Consider migrating from AppVeyor to GitHub Actions for CI/CD.
+
+---
+
+## Phase 10: Documentation Modernization ✅ COMPLETE
+
+**Goal:** Update all project documentation to reflect the .NET 10 migration.
+**Status:** Committed (this commit). 22 files updated across 12 tasks.
+
+### What was done:
+
+1. **README.md** — Replaced dead links, added .NET 10 build instructions
+2. **index.rst** — Removed 5 archived pages from TOC, added Migration Guide + Archived Docs sections
+3. **Getting_Started.rst** — Replaced Polaris/OData/PCL references
+4. **Developer_Quick_Start.rst** — Updated from .NET Framework 4 to net10.0
+5. **Building_BrightstarDB.rst** — Full rewrite: .NET 10 SDK, 12-project table, modern MSBuild targets
+6. **Running_BrightstarDB.rst** — Rewrote server sections for ASP.NET Core (appsettings.json, Kestrel, Docker)
+7. **Entity_Framework.rst** — Removed OData/WCF section, updated Xamarin/VS2015 references
+8. **Entity_Framework_Samples.rst** — Removed OData tutorial sections
+9. **5 archived pages** — Added deprecation notice banners (Polaris, IIS, Mono, PCL, UWP)
+10. **Concepts/Security/Known_Issues** — Replaced Polaris/IIS/OData references
+11. **Whats_New.rst** — Added BrightstarDB 2.0.0 changelog
+12. **docs.proj + BrightstarDB.shfbproj** — Removed broken Sandcastle target, added archive notice
