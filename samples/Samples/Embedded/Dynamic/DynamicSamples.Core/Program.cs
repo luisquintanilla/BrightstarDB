@@ -1,7 +1,6 @@
 ﻿using System;
 using BrightstarDB.Dynamic;
 using BrightstarDB.Client;
-using System.ServiceModel;
 
 
 namespace BrightstarDB.Samples.DynamicSamples.Core
