@@ -28,7 +28,7 @@ namespace BrightstarDB.EntityFramework.Query
         /// </summary>
         private bool _appendExpressionVariable = true;
 
-        public FilterWriter(SparqlGeneratorWhereExpressionTreeVisitor parentVisitor, SparqlQueryBuilder queryBuilder, 
+        public FilterWriter(SparqlGeneratorWhereExpressionTreeVisitor parentVisitor, SparqlQueryBuilder queryBuilder,
             StringBuilder filterExpressionBuilder) : base(queryBuilder)
         {
             _parent = parentVisitor;
@@ -102,26 +102,26 @@ namespace BrightstarDB.EntityFramework.Query
 
                             case PropertyMappingType.Arc:
                             case PropertyMappingType.Property:
-                            {
-                                var existingVarName = QueryBuilder.GetVariableForObject(GraphNode.Variable,
-                                    sourceVarName,
-                                    GraphNode.Iri,
-                                    hint.SchemaTypeUri);
-                                if (!String.IsNullOrEmpty(existingVarName))
                                 {
-                                    if (_appendExpressionVariable)
+                                    var existingVarName = QueryBuilder.GetVariableForObject(GraphNode.Variable,
+                                        sourceVarName,
+                                        GraphNode.Iri,
+                                        hint.SchemaTypeUri);
+                                    if (!String.IsNullOrEmpty(existingVarName))
                                     {
-                                        AppendFormat("?{0}", existingVarName);
+                                        if (_appendExpressionVariable)
+                                        {
+                                            AppendFormat("?{0}", existingVarName);
+                                        }
+                                        return new SelectVariableNameExpression(existingVarName,
+                                            hint.MappingType == PropertyMappingType.Arc
+                                                ? VariableBindingType.Resource
+                                                : VariableBindingType.Literal,
+                                            propertyInfo.PropertyType);
                                     }
-                                    return new SelectVariableNameExpression(existingVarName,
-                                        hint.MappingType == PropertyMappingType.Arc
-                                            ? VariableBindingType.Resource
-                                            : VariableBindingType.Literal,
-                                        propertyInfo.PropertyType);
-                                }
-                                else
-                                {
-                                    
+                                    else
+                                    {
+
                                         var varName = QueryBuilder.NextVariable();
                                         QueryBuilder.AddTripleConstraint(
                                             GraphNode.Variable, sourceVarName,
@@ -137,36 +137,36 @@ namespace BrightstarDB.EntityFramework.Query
                                                 ? VariableBindingType.Resource
                                                 : VariableBindingType.Literal,
                                             propertyInfo.PropertyType);
-                                    
+
+                                    }
                                 }
-                            }
                             case PropertyMappingType.InverseArc:
-                            {
-                                var existingVarName = QueryBuilder.GetVariableForSubject(GraphNode.Iri,
-                                    hint.SchemaTypeUri,
-                                    GraphNode.Variable,
-                                    sourceVarName);
-                                if (!String.IsNullOrEmpty(existingVarName))
                                 {
+                                    var existingVarName = QueryBuilder.GetVariableForSubject(GraphNode.Iri,
+                                        hint.SchemaTypeUri,
+                                        GraphNode.Variable,
+                                        sourceVarName);
+                                    if (!String.IsNullOrEmpty(existingVarName))
+                                    {
+                                        if (_appendExpressionVariable)
+                                        {
+                                            AppendFormat("?{0}", existingVarName);
+                                        }
+                                        return new SelectVariableNameExpression(existingVarName,
+                                            VariableBindingType.Resource,
+                                            propertyInfo.PropertyType);
+                                    }
+                                    var varName = QueryBuilder.NextVariable();
+                                    QueryBuilder.AddTripleConstraint(GraphNode.Variable, varName,
+                                        GraphNode.Iri, hint.SchemaTypeUri,
+                                        GraphNode.Variable, sourceVarName);
                                     if (_appendExpressionVariable)
                                     {
-                                        AppendFormat("?{0}", existingVarName);
+                                        AppendFormat("?{0}", varName);
                                     }
-                                    return new SelectVariableNameExpression(existingVarName,
-                                        VariableBindingType.Resource,
+                                    return new SelectVariableNameExpression(varName, VariableBindingType.Resource,
                                         propertyInfo.PropertyType);
                                 }
-                                var varName = QueryBuilder.NextVariable();
-                                QueryBuilder.AddTripleConstraint(GraphNode.Variable, varName,
-                                    GraphNode.Iri, hint.SchemaTypeUri,
-                                    GraphNode.Variable, sourceVarName);
-                                if (_appendExpressionVariable)
-                                {
-                                    AppendFormat("?{0}", varName);
-                                }
-                                return new SelectVariableNameExpression(varName, VariableBindingType.Resource,
-                                    propertyInfo.PropertyType);
-                            }
                             case PropertyMappingType.Address:
                                 if (_appendExpressionVariable)
                                 {
@@ -177,7 +177,7 @@ namespace BrightstarDB.EntityFramework.Query
                     }
                     else
                     {
-                        if (typeof (PlainLiteral) == (propertyInfo.DeclaringType))
+                        if (typeof(PlainLiteral) == (propertyInfo.DeclaringType))
                         {
                             if ("Language".Equals(propertyInfo.Name))
                             {
@@ -190,7 +190,7 @@ namespace BrightstarDB.EntityFramework.Query
                                 return expression;
                             }
                         }
-                        else if (typeof (string) == propertyInfo.DeclaringType)
+                        else if (typeof(string) == propertyInfo.DeclaringType)
                         {
                             if ("Length".Equals(propertyInfo.Name))
                             {
@@ -198,7 +198,7 @@ namespace BrightstarDB.EntityFramework.Query
                                 return expression;
                             }
                         }
-                        else if (typeof (DateTime) == propertyInfo.DeclaringType)
+                        else if (typeof(DateTime) == propertyInfo.DeclaringType)
                         {
                             string fnName = null;
                             switch (propertyInfo.Name)
@@ -234,7 +234,7 @@ namespace BrightstarDB.EntityFramework.Query
             return base.VisitMember(expression);
         }
 
-        
+
 
         protected override Expression VisitConstant(ConstantExpression expression)
         {
@@ -304,7 +304,7 @@ namespace BrightstarDB.EntityFramework.Query
         {
             if (expression.Method.Name.Equals("Equals") && expression.Object != null)
             {
-                if(EntityMappingStore.IsKnownInterface(expression.Object.Type))
+                if (EntityMappingStore.IsKnownInterface(expression.Object.Type))
                 {
                     // Query is testing equality on a property that maps to an entity type
                     if (expression.Arguments[0].NodeType == ExpressionType.Constant)
@@ -446,7 +446,7 @@ namespace BrightstarDB.EntityFramework.Query
                 if (expression.Method.Name.Equals("Replace"))
                 {
                     _regexEscaping = true;
-                    WriteFunction("REPLACE", expression.Object,  expression.Arguments[0], expression.Arguments[1]);
+                    WriteFunction("REPLACE", expression.Object, expression.Arguments[0], expression.Arguments[1]);
                     _regexEscaping = false;
                     return expression;
                 }
@@ -588,7 +588,7 @@ namespace BrightstarDB.EntityFramework.Query
             _castAsResourceType = false;
         }
 
-        public void WriteRegexFilter(Expression expression, string s, string flags =null)
+        public void WriteRegexFilter(Expression expression, string s, string flags = null)
         {
             _filterExpressionBuilder.Append("(regex(");
             Visit(expression);
@@ -611,7 +611,7 @@ namespace BrightstarDB.EntityFramework.Query
         public void WriteFunction(string fnName, params Expression[] args)
         {
             _filterExpressionBuilder.AppendFormat("({0}(", fnName);
-            for(int i =0;i < args.Length;i++)
+            for (int i = 0; i < args.Length; i++)
             {
                 if (i > 0) _filterExpressionBuilder.Append(", ");
                 Visit(args[i]);

@@ -8,7 +8,7 @@ namespace BrightstarDB.Storage.BTreeStore
     {
         private readonly ulong _dictCount;
         private readonly int _maxEntriesPerDict;
-        private readonly Dictionary<ulong , WeakReference>[] _itemDictionaries;
+        private readonly Dictionary<ulong, WeakReference>[] _itemDictionaries;
         private readonly bool _clearAtMax;
 
         public ItemCache(int dictCount, int maxCount, bool clearAtMax)
@@ -17,9 +17,9 @@ namespace BrightstarDB.Storage.BTreeStore
             _dictCount = (ulong)dictCount;
             _maxEntriesPerDict = maxCount;
             _itemDictionaries = new Dictionary<ulong, WeakReference>[dictCount];
-            for(int i = 0; i < dictCount; i++)
+            for (int i = 0; i < dictCount; i++)
             {
-                _itemDictionaries[i] = new Dictionary<ulong, WeakReference>(maxCount/10);
+                _itemDictionaries[i] = new Dictionary<ulong, WeakReference>(maxCount / 10);
             }
         }
 
@@ -28,12 +28,12 @@ namespace BrightstarDB.Storage.BTreeStore
             get
             {
                 return _itemDictionaries.Sum(itemDictionary => itemDictionary.Count);
-            }            
+            }
         }
 
         public void Add(IPersistable p)
         {
-            var dict = _itemDictionaries[p.ObjectId%_dictCount];
+            var dict = _itemDictionaries[p.ObjectId % _dictCount];
             if (_clearAtMax && dict.Count >= _maxEntriesPerDict)
             {
                 dict.Clear();
@@ -63,7 +63,7 @@ namespace BrightstarDB.Storage.BTreeStore
         public bool TryGetValue(ulong index, out IPersistable p)
         {
             WeakReference weakRef;
-            var dict = _itemDictionaries[index%_dictCount];
+            var dict = _itemDictionaries[index % _dictCount];
             if (dict.TryGetValue(index, out weakRef))
             {
                 if (weakRef.IsAlive)
@@ -83,7 +83,7 @@ namespace BrightstarDB.Storage.BTreeStore
 
         public void Clear()
         {
-            foreach(var dict in _itemDictionaries)
+            foreach (var dict in _itemDictionaries)
             {
                 dict.Clear();
             }

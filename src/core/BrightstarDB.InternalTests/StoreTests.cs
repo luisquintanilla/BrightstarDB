@@ -26,7 +26,7 @@ namespace BrightstarDB.InternalTests
         [Test]
         public override void TestOpenStoreFailure()
         {
-            Assert.Throws<StoreManagerException>( () => base.TestOpenStoreFailure());
+            Assert.Throws<StoreManagerException>(() => base.TestOpenStoreFailure());
         }
 
         [Test]

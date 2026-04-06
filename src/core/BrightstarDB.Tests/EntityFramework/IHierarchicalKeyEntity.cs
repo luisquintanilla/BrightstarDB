@@ -7,7 +7,7 @@ namespace BrightstarDB.Tests.EntityFramework
     [Entity]
     public interface IHierarchicalKeyEntity
     {
-        [Identifier(BaseAddress = "http://example.org/", KeyProperties = new[]{"Parent", "Code"})]
+        [Identifier(BaseAddress = "http://example.org/", KeyProperties = new[] { "Parent", "Code" })]
         string Id { get; }
 
         IHierarchicalKeyEntity Parent { get; set; }

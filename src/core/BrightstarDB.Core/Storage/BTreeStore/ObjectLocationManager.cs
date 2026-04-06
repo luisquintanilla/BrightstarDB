@@ -23,7 +23,7 @@ namespace BrightstarDB.Storage.BTreeStore
         {
             var count = 4;
 
-            var localOffset = offset + (ulong) count;
+            var localOffset = offset + (ulong)count;
 
             var skipCountPos = dataStream.BaseStream.Position;
             dataStream.Write(0);
@@ -38,7 +38,7 @@ namespace BrightstarDB.Storage.BTreeStore
                     _containerOffsets[containerNumber] = localOffset;
                     var written = container.Save(dataStream);
                     count += written;
-                    localOffset += (ulong) written;
+                    localOffset += (ulong)written;
                     container.IsModified = false;
                 }
             }
@@ -49,7 +49,7 @@ namespace BrightstarDB.Storage.BTreeStore
             dataStream.Seek(0, SeekOrigin.End);
 
             // save all the offsets of the containers
-            count += SerializationUtils.WriteVarint(dataStream, (ulong) _containerOffsets.Count);
+            count += SerializationUtils.WriteVarint(dataStream, (ulong)_containerOffsets.Count);
             foreach (var containerOffset in _containerOffsets)
             {
                 count += SerializationUtils.WriteVarint(dataStream, containerOffset);
@@ -95,7 +95,7 @@ namespace BrightstarDB.Storage.BTreeStore
 
         private ObjectLocationContainer GetContainerForObjectId(ulong objectId)
         {
-            var containerNumber = (int) (objectId/ContainerSize);
+            var containerNumber = (int)(objectId / ContainerSize);
 
             // see if its loaded
             if (_objectLocationContainers.ContainsKey(containerNumber))
@@ -106,7 +106,7 @@ namespace BrightstarDB.Storage.BTreeStore
             // see if there is a offset and load the container
             if (_containerOffsets.Count > containerNumber)
             {
-                var offset = _containerOffsets[(int) containerNumber];
+                var offset = _containerOffsets[(int)containerNumber];
                 var storeManager = StoreManagerFactory.GetStoreManager() as IStoreManager2;
                 if (storeManager == null) throw new Exception("Invalid store manager instance returned by store manager factory");
                 var container = storeManager.ReadObject<ObjectLocationContainer>(_storeFileName, offset);
@@ -128,7 +128,7 @@ namespace BrightstarDB.Storage.BTreeStore
             var container = GetContainerForObjectId(objectId);
             if (container != null)
             {
-                return container.GetObjectOffset(objectId);                
+                return container.GetObjectOffset(objectId);
             }
 
             throw new BrightstarInternalException("No container for object id " + objectId);

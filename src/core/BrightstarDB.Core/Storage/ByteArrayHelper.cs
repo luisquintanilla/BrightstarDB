@@ -5,7 +5,7 @@ namespace BrightstarDB.Storage
 {
     internal static class ByteArrayHelper
     {
-        internal static void ToByteArray(ulong [] ulongs, byte[] bytes, int offset, int byteCount)
+        internal static void ToByteArray(ulong[] ulongs, byte[] bytes, int offset, int byteCount)
         {
 #if UNSAFE
             unsafe
@@ -16,9 +16,9 @@ namespace BrightstarDB.Storage
                 }
             }
 #else
-            for(int i = 0; i < byteCount/8; i++)
+            for (int i = 0; i < byteCount / 8; i++)
             {
-                BitConverter.GetBytes(ulongs[i]).CopyTo(bytes, offset + i*8);
+                BitConverter.GetBytes(ulongs[i]).CopyTo(bytes, offset + i * 8);
             }
 #endif
         }
@@ -26,9 +26,9 @@ namespace BrightstarDB.Storage
         internal static ulong[] ToUlongArray(byte[] bytes, int offset, int ulongCount)
         {
             var ret = new ulong[ulongCount];
-            for(int i = 0; i < ulongCount; i++)
+            for (int i = 0; i < ulongCount; i++)
             {
-                ret[i] = BitConverter.ToUInt64(bytes, offset + i*8);
+                ret[i] = BitConverter.ToUInt64(bytes, offset + i * 8);
             }
             return ret;
         }
@@ -43,9 +43,9 @@ namespace BrightstarDB.Storage
         /// <param name="sourceArrayLength">The number of bytes to copy from each source array</param>
         internal static void MultiCopy(byte[][] sourceArrays, byte[] destinationArray, int destinationOffset, int sourceArrayCount, int sourceArrayLength)
         {
-            for(int i = 0; i < sourceArrayCount; i++)
+            for (int i = 0; i < sourceArrayCount; i++)
             {
-                Array.Copy(sourceArrays[i], 0, destinationArray, destinationOffset + (i*sourceArrayLength), sourceArrayLength);
+                Array.Copy(sourceArrays[i], 0, destinationArray, destinationOffset + (i * sourceArrayLength), sourceArrayLength);
             }
         }
 
@@ -55,12 +55,12 @@ namespace BrightstarDB.Storage
             {
                 return "[null]";
             }
-            return "[" + String.Join("", array.AsEnumerable().Reverse().Select(x=>x.ToString("X2"))) + "]";
+            return "[" + String.Join("", array.AsEnumerable().Reverse().Select(x => x.ToString("X2"))) + "]";
         }
 
         public static void Increment(byte[] mergedNodeKey)
         {
-            for(int ix = 0; ix < mergedNodeKey.Length; ix++)
+            for (int ix = 0; ix < mergedNodeKey.Length; ix++)
             {
                 if (mergedNodeKey[ix] < 255)
                 {

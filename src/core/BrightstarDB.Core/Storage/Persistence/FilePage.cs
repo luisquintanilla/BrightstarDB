@@ -50,10 +50,10 @@ namespace BrightstarDB.Storage.Persistence
         public FilePage(Stream stream, ulong pageId, int pageSize)
         {
             _data = new byte[pageSize];
-            _writeOffset = (pageId -1) * (ulong)pageSize; // TODO : could be a bit shift instead?
+            _writeOffset = (pageId - 1) * (ulong)pageSize; // TODO : could be a bit shift instead?
             lock (stream)
             {
-                stream.Seek((long) _writeOffset, SeekOrigin.Begin);
+                stream.Seek((long)_writeOffset, SeekOrigin.Begin);
                 stream.Read(Data, 0, pageSize);
             }
 #if DEBUG_PAGESTORE
@@ -120,12 +120,12 @@ namespace BrightstarDB.Storage.Persistence
         /// <returns>The timestamp associated with the page when the write started</returns>
         public long Write(Stream outputStream, ulong transactionId)
         {
-            lock(_writeLock)
+            lock (_writeLock)
             {
                 long ret = _modified;
                 if (outputStream.Position != (long)_writeOffset)
                 {
-                    outputStream.Seek((long) _writeOffset, SeekOrigin.Begin);
+                    outputStream.Seek((long)_writeOffset, SeekOrigin.Begin);
                 }
                 outputStream.Write(_data, 0, _pageSize);
                 outputStream.Flush();
@@ -143,7 +143,7 @@ namespace BrightstarDB.Storage.Persistence
                 long ret = _modified;
                 if (_modified > timestamp)
                 {
-                    outputStream.Seek((long) _writeOffset, SeekOrigin.Begin);
+                    outputStream.Seek((long)_writeOffset, SeekOrigin.Begin);
                     outputStream.Write(_data, 0, _pageSize);
 #if DEBUG_PAGESTORE
                     Logging.LogDebug("Write: PageId={0} Hash={1}", Id, DataHash());
@@ -159,9 +159,9 @@ namespace BrightstarDB.Storage.Persistence
                 return ret;
             }
         }
-#endregion
+        #endregion
 
-#region Implementation of IDisposable
+        #region Implementation of IDisposable
         public void Dispose()
         {
             Dispose(true);
@@ -178,6 +178,6 @@ namespace BrightstarDB.Storage.Persistence
             }
             _disposed = true;
         }
-#endregion
+        #endregion
     }
 }

@@ -96,7 +96,7 @@ namespace BrightstarDB.Client
         /// <param name="resultsFormat">OPTIONAL: Specifies the serialization format for the SPARQL results. Defaults to <see cref="SparqlResultsFormat.Xml"/></param>
         /// <param name="graphFormat">OPTIONAL: Specifies the serialization format for RDF graph results. Defaults to <see cref="RdfFormat.RdfXml"/></param>
         /// <returns>A stream containing XML SPARQL result XML</returns>
-        Stream ExecuteQuery(string storeName, string queryExpression, string defaultGraphUri, DateTime? ifNotModifiedSince = null, 
+        Stream ExecuteQuery(string storeName, string queryExpression, string defaultGraphUri, DateTime? ifNotModifiedSince = null,
             SparqlResultsFormat resultsFormat = null, RdfFormat graphFormat = null);
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace BrightstarDB.Client
         /// <param name="resultsFormat">OPTIONAL: Specifies the serialization format for the SPARQL results. Defaults to <see cref="SparqlResultsFormat.Xml"/></param>
         /// <param name="graphFormat">OPTIONAL: Specifies the serialization format for RDF graph results. Defaults to <see cref="RdfFormat.RdfXml"/></param>
         /// <returns>A stream containing XML SPARQL results</returns>
-        Stream ExecuteQuery(ICommitPointInfo commitPoint, string queryExpression, 
+        Stream ExecuteQuery(ICommitPointInfo commitPoint, string queryExpression,
             SparqlResultsFormat resultsFormat = null, RdfFormat graphFormat = null);
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace BrightstarDB.Client
         /// <param name="resultsFormat">OPTIONAL: Specifies the serialization format for the SPARQL results. Defaults to <see cref="SparqlResultsFormat.Xml"/></param>
         /// <param name="graphFormat">OPTIONAL: Specifies the serialization format for RDF graph results. Defaults to <see cref="RdfFormat.RdfXml"/></param>
         /// <returns>A stream containing XML SPARQL results</returns>
-        Stream ExecuteQuery(ICommitPointInfo commitPoint, string queryExpression, string defaultGraphUri, 
+        Stream ExecuteQuery(ICommitPointInfo commitPoint, string queryExpression, string defaultGraphUri,
             SparqlResultsFormat resultsFormat = null, RdfFormat graphFormat = null);
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace BrightstarDB.Client
         /// <param name="resultsFormat">OPTIONAL: Specifies the serialization format for the SPARQL results. Defaults to <see cref="SparqlResultsFormat.Xml"/></param>
         /// <param name="graphFormat">OPTIONAL: Specifies the serialization format for RDF graph results. Defaults to <see cref="RdfFormat.RdfXml"/></param>
         /// <returns>A stream containing XML SPARQL results</returns>
-        Stream ExecuteQuery(ICommitPointInfo commitPoint, string queryExpression, IEnumerable<string> defaultGraphUris, 
+        Stream ExecuteQuery(ICommitPointInfo commitPoint, string queryExpression, IEnumerable<string> defaultGraphUris,
             SparqlResultsFormat resultsFormat = null, RdfFormat graphFormat = null);
 
         /// <summary>
@@ -216,7 +216,7 @@ namespace BrightstarDB.Client
         /// <remarks>If <paramref name="preconditions"/>, <paramref name="deletePatterns"/> or <paramref name="insertData"/> contain
         /// quads, the graph URI specified by the quad will override the value provided by <paramref name="defaultGraphUri"/>. </remarks>
         [Obsolete("This method has been superceeded by ExecuteTransaction(string, UpdateTransaction, bool, string)")]
-        IJobInfo ExecuteTransaction(string storeName, string preconditions, string deletePatterns, string insertData, 
+        IJobInfo ExecuteTransaction(string storeName, string preconditions, string deletePatterns, string insertData,
             string defaultGraphUri = Constants.DefaultGraphUri, bool waitForCompletion = true, string label = null);
 
         /// <summary>
@@ -350,7 +350,7 @@ namespace BrightstarDB.Client
         /// <param name="storeName">The name of the store to re-apply the transaction to</param>
         /// <param name="transactionInfo">The transaction to be applied</param>
         /// <param name="label">Optional user-friendly label for the job.</param>
-        IJobInfo ReExecuteTransaction(string storeName, ITransactionInfo transactionInfo, string label=null);
+        IJobInfo ReExecuteTransaction(string storeName, ITransactionInfo transactionInfo, string label = null);
 
         /// <summary>
         /// Get a list of commit points that lie within a specified date/time range
@@ -404,7 +404,7 @@ namespace BrightstarDB.Client
         /// <param name="label">Optional user-friendly label for the job.</param>
         /// <returns>A <see cref="IJobInfo"/> instance for tracking the current status of the job.</returns>
         IJobInfo CreateSnapshot(string storeName, string targetStoreName, PersistenceType persistenceType, ICommitPointInfo sourceCommitPoint = null, string label = null);
-        
+
     }
 
 }

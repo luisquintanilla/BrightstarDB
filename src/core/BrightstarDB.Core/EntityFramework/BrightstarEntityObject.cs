@@ -126,7 +126,7 @@ namespace BrightstarDB.EntityFramework
         /// property with the object attached to a context.</exception>
         protected string Identity
         {
-            get { return  _identity; }
+            get { return _identity; }
             set
             {
                 if (value == _identity) return;
@@ -151,14 +151,14 @@ namespace BrightstarDB.EntityFramework
         /// <summary>
         /// Flag indicating if this entity has been locally modified
         /// </summary>
-        public bool IsModified 
-        { 
+        public bool IsModified
+        {
             get
             {
                 return DataObject != null && DataObject.IsModified;
             }
         }
-        
+
         /// <summary>
         /// Sets the key for this object
         /// </summary>
@@ -260,7 +260,7 @@ namespace BrightstarDB.EntityFramework
                 if (_currentItemValues.TryGetValue(propertyName, out value) &&
                     typeof(T).IsAssignableFrom(value.GetType()))
                 {
-                    return (T) value;
+                    return (T)value;
                 }
                 return default(T);
                 //return new T[0].FirstOrDefault(); // TODO : Find a better way to get the default value
@@ -275,30 +275,30 @@ namespace BrightstarDB.EntityFramework
                            ? (T)Enum.ToObject(typeof(T), DataObject.GetPropertyValue(propertyType))
                            : default(T);
             }
-            if (typeof (T) == typeof (Uri))
+            if (typeof(T) == typeof(Uri))
             {
                 var value = DataObject.GetPropertyValue(propertyType) as IDataObject;
                 object ret = value == null ? null : new Uri(value.Identity);
-                return (T) ret;
+                return (T)ret;
             }
             if (typeof(T).IsNullable() && typeof(T).GetGenericArguments()[0].GetTypeInfo().IsEnum)
             {
-                var enumType = typeof (T).GetGenericArguments()[0];
+                var enumType = typeof(T).GetGenericArguments()[0];
                 var enumValue = DataObject.GetPropertyValue(propertyType);
-                var valueDefinedByEnum = enumValue!=null && Enum.IsDefined(enumType, enumValue);
+                var valueDefinedByEnum = enumValue != null && Enum.IsDefined(enumType, enumValue);
                 var isFlagsEnum = enumType.GetTypeInfo().GetCustomAttributes(typeof(FlagsAttribute), true).Any();
-                return (enumValue != null && (valueDefinedByEnum||isFlagsEnum))
-                           ? (T) Enum.ToObject(enumType, enumValue)
+                return (enumValue != null && (valueDefinedByEnum || isFlagsEnum))
+                           ? (T)Enum.ToObject(enumType, enumValue)
                            : default(T);
             }
             object returnValue = DataObject.GetPropertyValue(propertyType);
             if (returnValue == null && typeof(T).IsValueType()) return default(T);
-            if (typeof(T) == typeof(String) && returnValue!=null)
+            if (typeof(T) == typeof(String) && returnValue != null)
             {
                 object o = returnValue.ToString();
-                return (T) o;
+                return (T)o;
             }
-            return (T) returnValue;
+            return (T)returnValue;
         }
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace BrightstarDB.EntityFramework
                 {
                     if (value is System.Enum)
                     {
-                        DataObject.SetProperty(propertyType, (int) value);
+                        DataObject.SetProperty(propertyType, (int)value);
                     }
                     else
                     {
@@ -404,7 +404,7 @@ namespace BrightstarDB.EntityFramework
             if (IsAttached)
             {
                 var property = GetType().GetProperty(propertyName);
-                if(property == null)
+                if (property == null)
                 {
                     throw new ArgumentException(String.Format("Cannot find property named '{0}' on type '{1}'", propertyName, GetType().FullName));
                 }
@@ -462,8 +462,8 @@ namespace BrightstarDB.EntityFramework
                     _context.RemoveArc(DataObject, propertyHint.SchemaTypeUri, existingDataObject);
                 }
                 // If the value entity has a single-value inverse properties of this type then all arcs needs removing
-                var invArcProperties = _context.GetInverseArcProperties(typeof (T), propertyHint.SchemaTypeUri).ToList();
-                if (invArcProperties.Any() && invArcProperties.All(x=>!(IsCollectionType(x.PropertyType))))
+                var invArcProperties = _context.GetInverseArcProperties(typeof(T), propertyHint.SchemaTypeUri).ToList();
+                if (invArcProperties.Any() && invArcProperties.All(x => !(IsCollectionType(x.PropertyType))))
                 {
                     foreach (var existingValueRef in entity.DataObject.GetInverseOf(propertyHint.SchemaTypeUri).ToList())
                     {
@@ -536,15 +536,15 @@ namespace BrightstarDB.EntityFramework
             OnPropertyChanged(propertyName);
         }
 
-        private static bool IsCollectionType (Type t)
+        private static bool IsCollectionType(Type t)
         {
-            if(t.IsGenericType())
+            if (t.IsGenericType())
             {
                 var typeDef = t.GetGenericTypeDefinition();
-                var ret = typeDef.GetTypeInfo().IsSubclassOf(typeof (ICollection<>)) || typeDef.Equals(typeof(ICollection<>));
+                var ret = typeDef.GetTypeInfo().IsSubclassOf(typeof(ICollection<>)) || typeDef.Equals(typeof(ICollection<>));
                 return ret;
             }
-            return t.GetTypeInfo().IsSubclassOf(typeof (ICollection));
+            return t.GetTypeInfo().IsSubclassOf(typeof(ICollection));
         }
 
         private static bool IsLiteralsCollection(Type t)
@@ -582,7 +582,7 @@ namespace BrightstarDB.EntityFramework
         /// <param name="propertyName">The name of the property that represents the relationship</param>
         /// <returns>The related entity or null if there is no related entity</returns>
         /// <exception cref="EntityFrameworkException">Thrown if this object is not currently attached to a context.</exception>
-        public T GetRelatedObject<T>(string propertyName) where T: class
+        public T GetRelatedObject<T>(string propertyName) where T : class
         {
             if (!IsAttached)
             {
@@ -745,7 +745,7 @@ namespace BrightstarDB.EntityFramework
         /// <typeparam name="T">The related entity type</typeparam>
         /// <param name="propertyName">The name of the property to be updated</param>
         /// <param name="relatedObjects">The new collection of related entities</param>
-        public void SetRelatedObjects<T>(string propertyName, ICollection<T> relatedObjects) where T: class
+        public void SetRelatedObjects<T>(string propertyName, ICollection<T> relatedObjects) where T : class
         {
             if (!IsAttached)
             {
@@ -765,11 +765,11 @@ namespace BrightstarDB.EntityFramework
                 if (propertyHint.MappingType == PropertyMappingType.Arc)
                 {
                     DataObject.RemovePropertiesOfType(propertyHint.SchemaTypeUri);
-                    if (relatedObjects.Any(r=>!(r is BrightstarEntityObject)))
+                    if (relatedObjects.Any(r => !(r is BrightstarEntityObject)))
                     {
                         throw new ArgumentException("Related objects must all extend BrightstarDB.EntityFramework.BrightstarEntityObject");
                     }
-                    foreach(var i in relatedObjects.Cast<BrightstarEntityObject>())
+                    foreach (var i in relatedObjects.Cast<BrightstarEntityObject>())
                     {
                         if (!i.IsAttached)
                         {
@@ -794,7 +794,7 @@ namespace BrightstarDB.EntityFramework
             {
                 throw new ArgumentException(
                     String.Format("An object of type {0} can only be attached to a context that extends {1}",
-                                  GetType().FullName, typeof (BrightstarEntityContext).FullName));
+                                  GetType().FullName, typeof(BrightstarEntityContext).FullName));
             }
             if (IsAttached)
             {
@@ -813,7 +813,7 @@ namespace BrightstarDB.EntityFramework
                 {
                     _context.EnforceClassUniqueConstraint(_identity, EntityMappingStore.MapTypeToUris(GetType()));
                 }
-                foreach(var typeUri in EntityMappingStore.MapTypeToUris(GetType()))
+                foreach (var typeUri in EntityMappingStore.MapTypeToUris(GetType()))
                 {
                     if (!String.IsNullOrEmpty(typeUri))
                     {
@@ -865,7 +865,7 @@ namespace BrightstarDB.EntityFramework
         /// both of the type of this entity object and of the type of entity object that it becomes. After committing changes,
         /// the resource can then be accessed through either entity collection on the context object.</remarks>
         /// <exception cref="MappingNotFoundException">Raised if <typeparamref name="T"/> is not a registered entity definition interface type.</exception>
-        public T Become<T>() 
+        public T Become<T>()
         {
             return _context.Become<T>(this);
         }
@@ -878,7 +878,7 @@ namespace BrightstarDB.EntityFramework
         /// entity definition as they may be shared by the other types of the resource. After commiting changes, the resource will no longer
         /// be accessible through the collection of entities of type <typeparamref name="T"/> on the context object.</remarks>
         /// <exception cref="MappingNotFoundException">Raised if <typeparamref name="T"/> is not a registered entity definition interface type.</exception>
-        public void Unbecome<T>() 
+        public void Unbecome<T>()
         {
             _context.Unbecome<T>(this);
         }
@@ -942,7 +942,7 @@ namespace BrightstarDB.EntityFramework
                     var propertyUri = GetPropertyUri(entry.Key);
                     var values = DataObject.GetPropertyValues(propertyUri).OfType<object>().ToList();
                     DataObject.RemovePropertiesOfType(propertyUri);
-                    foreach(var o in values)
+                    foreach (var o in values)
                     {
                         DataObject.AddProperty(propertyUri, o);
                     }
@@ -1001,10 +1001,10 @@ namespace BrightstarDB.EntityFramework
                 OnPropertyChanged(propertyName);
             }
 
-           foreach (var c in _currentPropertyCollections.Values)
-           {
-               c.RemoveFromLoadedObjects(toRemove.Identity);
-           }
+            foreach (var c in _currentPropertyCollections.Values)
+            {
+                c.RemoveFromLoadedObjects(toRemove.Identity);
+            }
         }
 
         internal void TriggerCreatedEvent(BrightstarEntityContext context)

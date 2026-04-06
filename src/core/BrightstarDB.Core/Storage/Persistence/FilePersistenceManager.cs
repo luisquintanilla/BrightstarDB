@@ -11,7 +11,7 @@ using BrightstarDB.Utils;
 
 namespace BrightstarDB.Storage.Persistence
 {
-    internal class FilePersistenceManager: IPersistenceManager
+    internal class FilePersistenceManager : IPersistenceManager
     {
         #region Implementation of IPersistenceManager
 
@@ -32,7 +32,7 @@ namespace BrightstarDB.Storage.Persistence
         /// <param name="pathName"></param>
         public void DeleteFile(string pathName)
         {
-            WrapSharingViolations(()=>File.Delete(pathName));
+            WrapSharingViolations(() => File.Delete(pathName));
         }
 
         /// <summary>
@@ -114,14 +114,14 @@ namespace BrightstarDB.Storage.Persistence
             var fileInfo = new FileInfo(storeConsolidateFile);
             if (fileInfo.Exists)
             {
-                WrapSharingViolations(() => fileInfo.MoveTo(storeDataFile), retryCount:50, waitTime:500);
+                WrapSharingViolations(() => fileInfo.MoveTo(storeDataFile), retryCount: 50, waitTime: 500);
             }
         }
 
         public void CopyFile(string sourceFilePath, string destinationFilePath, bool overwrite)
         {
             var fileInfo = new FileInfo(sourceFilePath);
-            WrapSharingViolations(()=> fileInfo.CopyTo(destinationFilePath, overwrite));
+            WrapSharingViolations(() => fileInfo.CopyTo(destinationFilePath, overwrite));
         }
 
         #endregion

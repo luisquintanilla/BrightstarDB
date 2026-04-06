@@ -91,7 +91,7 @@ namespace BrightstarDB.Storage.Persistence
 #if DEBUG_PAGESTORE
                         Logging.LogDebug( "Evict {0}", args.PageId );
 #endif
-                        var pageToEvict = _newPages[(int) (args.PageId - _newPageOffset)];
+                        var pageToEvict = _newPages[(int)(args.PageId - _newPageOffset)];
                         if (pageToEvict.IsAlive)
                         {
                             // Passing 0 for the transaction id is OK because it is not used for writing append-only pages
@@ -122,7 +122,7 @@ namespace BrightstarDB.Storage.Persistence
             {
                 if (!_readonly && pageId >= _newPageOffset)
                 {
-                    var newPageRef = _newPages[(int) (pageId - _newPageOffset)];
+                    var newPageRef = _newPages[(int)(pageId - _newPageOffset)];
                     if (newPageRef.IsAlive)
                     {
                         var newPage = newPageRef.Target as IPage;
@@ -199,7 +199,7 @@ namespace BrightstarDB.Storage.Persistence
                 _newPageOffset = _nextPageId;
                 PageCache.Instance.Clear(_path);
             }
-            
+
         }
 
         public void Write(ulong commitId, ulong pageId, byte[] data, int srcOffset = 0, int pageOffset = 0, int len = -1, BrightstarProfiler profiler = null)
@@ -208,7 +208,7 @@ namespace BrightstarDB.Storage.Persistence
             {
                 throw new InvalidOperationException("Attempt to write to a fixed page");
             }
-            var pageIx = (int) (pageId - _newPageOffset);
+            var pageIx = (int)(pageId - _newPageOffset);
             if (pageIx >= _newPages.Count)
             {
                 throw new InvalidOperationException("Attempt to write to an unreserved page");
@@ -295,7 +295,7 @@ namespace BrightstarDB.Storage.Persistence
 
         public int Preload(int numPages, BrightstarProfiler profiler)
         {
-            var maxPages = Math.Min(_stream.Length/PageSize, numPages);
+            var maxPages = Math.Min(_stream.Length / PageSize, numPages);
             for (int pageId = 0; pageId < maxPages; pageId++)
             {
                 Retrieve((ulong)pageId, profiler);

@@ -17,7 +17,7 @@ namespace BrightstarDB.CodeGeneration.Console
                 var arguments = Args.Parse<Arguments>(args);
                 var language = arguments.Language.GetValueOrDefault(DetermineLanguageByOutputFileName(arguments.OutputFile));
                 var entityAccessibilitySelector = arguments.InternalEntityClasses
-                    ? (Func < INamedTypeSymbol, Accessibility>) Generator.InteralyEntityAccessibilitySelector
+                    ? (Func<INamedTypeSymbol, Accessibility>)Generator.InteralyEntityAccessibilitySelector
                     : Generator.DefaultEntityAccessibilitySelector;
                 var result = Generator.GenerateAsync(
                     language,
@@ -25,7 +25,7 @@ namespace BrightstarDB.CodeGeneration.Console
                     arguments.ContextNamespace,
                     arguments.ContextName,
                     entityAccessibilitySelector: entityAccessibilitySelector,
-                    brightstarAssemblyPath:arguments.BrightstarAssemblyPath).Result;
+                    brightstarAssemblyPath: arguments.BrightstarAssemblyPath).Result;
                 var resultString = result
                     .Aggregate(new StringBuilder(), (sb, next) => sb.AppendLine(next.ToFullString()), x => x.ToString());
 

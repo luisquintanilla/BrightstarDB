@@ -14,8 +14,8 @@ namespace BrightstarDB.Tests.EntityFramework
         public void SetUp()
         {
             _context = new MyEntityContext("type=embedded;storesDirectory=" + Configuration.StoreLocation + ";storeName=EFStringComparisonTests_" + DateTime.Now.Ticks);
-            var np = new Company {Name = "NetworkedPlanet"};
-            var apple = new Company {Name = "Apple"};
+            var np = new Company { Name = "NetworkedPlanet" };
+            var apple = new Company { Name = "Apple" };
             _context.Companies.Add(np);
             _context.Companies.Add(apple);
             _context.SaveChanges();
@@ -26,7 +26,7 @@ namespace BrightstarDB.Tests.EntityFramework
         {
             var results = _context.Companies.Where(c => c.Name.StartsWith("Net")).ToList();
             Assert.AreEqual(1, results.Count);
-            Assert.AreEqual("NetworkedPlanet",results[0].Name);
+            Assert.AreEqual("NetworkedPlanet", results[0].Name);
 
             results = _context.Companies.Where(c => c.Name.StartsWith("net", true, CultureInfo.CurrentCulture)).ToList();
             Assert.AreEqual(1, results.Count);
@@ -116,7 +116,7 @@ namespace BrightstarDB.Tests.EntityFramework
             Assert.AreEqual(1, results.Count);
             Assert.AreEqual("NetworkedPlanet", results[0].Name);
 
-            results = _context.Companies.Where(c => c.Name.Length<10).ToList();
+            results = _context.Companies.Where(c => c.Name.Length < 10).ToList();
             Assert.AreEqual(1, results.Count);
             Assert.AreEqual("Apple", results[0].Name);
         }

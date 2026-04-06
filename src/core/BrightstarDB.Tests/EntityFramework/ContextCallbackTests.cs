@@ -14,7 +14,7 @@ namespace BrightstarDB.Tests.EntityFramework
         private readonly string _storeName;
         private readonly string _connectionString;
         private readonly List<BrightstarEntityObject> _changedItems = new List<BrightstarEntityObject>();
- 
+
         public ContextCallbackTests()
         {
             _storeName = "EFContextCallbackTests_" + DateTime.Now.Ticks;
@@ -29,7 +29,7 @@ namespace BrightstarDB.Tests.EntityFramework
                 _changedItems.Clear();
                 context.SavingChanges += LogChangedItems;
 
-                var alice = new Person {Name = "Alice"};
+                var alice = new Person { Name = "Alice" };
                 context.Persons.Add(alice);
                 var bob = context.Persons.Create();
                 bob.Name = "Bob";
@@ -46,7 +46,7 @@ namespace BrightstarDB.Tests.EntityFramework
                 Assert.IsTrue(_changedItems.Cast<Person>().Any(p => p.Id.Equals(bob.Id)));
                 _changedItems.Clear();
 
-                var skill = new Skill {Name = "Programming"};
+                var skill = new Skill { Name = "Programming" };
                 context.Skills.Add(skill);
                 context.SaveChanges();
                 _changedItems.Clear();
@@ -64,7 +64,7 @@ namespace BrightstarDB.Tests.EntityFramework
         {
             using (var context = new MyEntityContext(_connectionString))
             {
-                var carol = new Person {Name = "Carol"};
+                var carol = new Person { Name = "Carol" };
                 context.Persons.Add(carol);
                 context.SaveChanges();
 
@@ -109,7 +109,7 @@ namespace BrightstarDB.Tests.EntityFramework
         private void UpdateTrackable(object sender, EventArgs e)
         {
             var context = sender as MyEntityContext;
-            foreach(var t in context.TrackedObjects.Where(t=>t is ITrackable).Cast<ITrackable>())
+            foreach (var t in context.TrackedObjects.Where(t => t is ITrackable).Cast<ITrackable>())
             {
                 if (t.Created.Equals(DateTime.MinValue)) t.Created = DateTime.Now;
                 t.LastModified = DateTime.Now;
@@ -123,7 +123,7 @@ namespace BrightstarDB.Tests.EntityFramework
             using (var context = new MyEntityContext(_connectionString))
             {
                 context.SavingChanges += ThrowOnChange;
-                var dave = new Person {Name = "Dave"};
+                var dave = new Person { Name = "Dave" };
                 context.Persons.Add(dave);
                 try
                 {
@@ -189,7 +189,7 @@ namespace BrightstarDB.Tests.EntityFramework
         {
             var context = sender as MyEntityContext;
             Assert.IsNotNull(context);
-            foreach (var entity in context.TrackedObjects.Where(t=>t.IsModified))
+            foreach (var entity in context.TrackedObjects.Where(t => t.IsModified))
             {
                 _changedItems.Add(entity);
             }

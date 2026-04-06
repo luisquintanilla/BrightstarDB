@@ -38,11 +38,11 @@ namespace BrightstarDB
         }
 
         private SparqlResultsFormat(string displayName, string defaultExtension, Encoding encoding, params string[] mediaTypes)
-            :this(displayName, defaultExtension,encoding, (IEnumerable<string>)mediaTypes)
+            : this(displayName, defaultExtension, encoding, (IEnumerable<string>)mediaTypes)
         {
         }
 
-        private SparqlResultsFormat(string displayName, string defaultExtension, params string[] mediaTypes) : 
+        private SparqlResultsFormat(string displayName, string defaultExtension, params string[] mediaTypes) :
             this(displayName, defaultExtension, Encoding.UTF8, mediaTypes)
         {
         }
@@ -106,7 +106,7 @@ namespace BrightstarDB
 #endif
             var encoding = encodingName == null ? Encoding.UTF8 : Encoding.GetEncoding(encodingName);
             var mediaType = parts[0];
-            foreach(var format in AllFormats)
+            foreach (var format in AllFormats)
             {
                 if (format.MediaTypes.Contains(mediaType)) return format.WithEncoding(encoding);
                 if (format.DefaultExtension.Equals(mediaType)) return format.WithEncoding(encoding);

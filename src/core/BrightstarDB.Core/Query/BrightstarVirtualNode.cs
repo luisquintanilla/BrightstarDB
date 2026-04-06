@@ -11,9 +11,9 @@ using VDS.RDF.Writing.Formatting;
 
 namespace BrightstarDB.Query
 {
-    internal class BrightstarVirtualNode : 
-        IVirtualNode<ulong, int>, 
-        IComparable<BrightstarVirtualNode>, 
+    internal class BrightstarVirtualNode :
+        IVirtualNode<ulong, int>,
+        IComparable<BrightstarVirtualNode>,
         IEquatable<BrightstarVirtualNode>,
         IUriNode,
         ILiteralNode
@@ -22,7 +22,7 @@ namespace BrightstarDB.Query
         private Uri _graphUri;
         private readonly ulong _nodeId;
         private INode _value;
-        private readonly IVirtualRdfProvider<ulong, int> _provider; 
+        private readonly IVirtualRdfProvider<ulong, int> _provider;
 
         public BrightstarVirtualNode(ulong nodeId, int graphId, IVirtualRdfProvider<ulong, int> provider)
         {
@@ -53,7 +53,7 @@ namespace BrightstarDB.Query
         }
 
         #region IVirtualNode<TNodeId, TGraphId> members
-        public ulong VirtualId {get { return _nodeId; }}
+        public ulong VirtualId { get { return _nodeId; } }
 
         public ulong VirtualID
         {
@@ -63,9 +63,9 @@ namespace BrightstarDB.Query
         public IVirtualRdfProvider<ulong, int> Provider
         {
             get { return _provider; }
-        } 
+        }
 
-        public bool IsMaterialised {get { return _value != null; }}
+        public bool IsMaterialised { get { return _value != null; } }
 
         public INode MaterialisedValue
         {
@@ -94,7 +94,7 @@ namespace BrightstarDB.Query
             {
                 return 0;
             }
-            return this.CompareTo((INode) other);
+            return this.CompareTo((INode)other);
         }
 
         /// <summary>
@@ -463,7 +463,7 @@ namespace BrightstarDB.Query
 
         #endregion
 
-        
+
         /// <summary>
         /// Tries to check for equality using virtual node IDs
         /// </summary>
@@ -479,7 +479,7 @@ namespace BrightstarDB.Query
             {
                 return false;
             }
-            var virt = (IVirtualNode<ulong, int>) other;
+            var virt = (IVirtualNode<ulong, int>)other;
             if (!ReferenceEquals(_provider, virt.Provider))
             {
                 return false;
@@ -621,7 +621,8 @@ namespace BrightstarDB.Query
 
         string ILiteralNode.Language
         {
-            get {
+            get
+            {
                 var litNode = MaterialisedValue as ILiteralNode;
                 if (litNode == null) throw new InvalidCastException();
                 return litNode.Language;

@@ -6,6 +6,6 @@
     /// </summary>
     public sealed class EntityKeyChangedException : EntityFrameworkException
     {
-        internal EntityKeyChangedException() : base(Strings.EntityFramework_EntityKeyChanged){}
+        internal EntityKeyChangedException() : base(Strings.EntityFramework_EntityKeyChanged) { }
     }
 }

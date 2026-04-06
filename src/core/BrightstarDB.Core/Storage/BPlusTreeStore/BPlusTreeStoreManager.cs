@@ -26,20 +26,20 @@ namespace BrightstarDB.Storage.BPlusTreeStore
 
         internal const int PageSize = 4096; // 4kB pages
 
-        internal static readonly ConcurrentDictionary<string, MasterFile> MasterFileCache= new ConcurrentDictionary<string, MasterFile>();
+        internal static readonly ConcurrentDictionary<string, MasterFile> MasterFileCache = new ConcurrentDictionary<string, MasterFile>();
 
         public BPlusTreeStoreManager(StoreConfiguration configuration, IPersistenceManager persistenceManager)
         {
             _storeConfiguration = configuration;
             _persistenceManager = persistenceManager;
-            
+
         }
 
         #region Implementation of IStoreManager
 
         public IEnumerable<string> ListStores(string baseLocation)
         {
-            foreach(var directory in _persistenceManager.ListSubDirectories(baseLocation))
+            foreach (var directory in _persistenceManager.ListSubDirectories(baseLocation))
             {
 #if SILVERLIGHT || PORTABLE
                 // Silverlight does not have a Path.Combine that takes three params
@@ -119,11 +119,11 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                 IPageStore dataPageStore = null;
                 switch (masterFile.PersistenceType)
                 {
-                        case PersistenceType.AppendOnly:
+                    case PersistenceType.AppendOnly:
                         dataPageStore = new AppendOnlyFilePageStore(_persistenceManager, dataFilePath, PageSize, readOnly, _storeConfiguration.DisableBackgroundWrites);
                         break;
-                        case PersistenceType.Rewrite:
-                        dataPageStore = new BinaryFilePageStore(_persistenceManager, dataFilePath, PageSize, readOnly, 
+                    case PersistenceType.Rewrite:
+                        dataPageStore = new BinaryFilePageStore(_persistenceManager, dataFilePath, PageSize, readOnly,
                             latestCommitPoint.CommitNumber, latestCommitPoint.NextCommitNumber, _storeConfiguration.DisableBackgroundWrites);
                         break;
                 }
@@ -192,7 +192,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
 
         public virtual ITransactionLog GetTransactionLog(string storeLocation)
         {
-            
+
             return new PersistentTransactionLog(_persistenceManager, storeLocation);
         }
 
@@ -221,7 +221,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                 _persistenceManager.DeleteFile(storePath);
             }
             _persistenceManager.CreateFile(storePath);
-            
+
             switch (masterFile.PersistenceType)
             {
                 case PersistenceType.AppendOnly:
@@ -304,7 +304,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                     default:
                         throw new BrightstarInternalException("Unrecognized target store type: " + storePersistenceType);
                 }
-                
+
                 // Copy Data
                 ulong destStorePageId = srcStore.CopyTo(destPageStore, 1ul);
 

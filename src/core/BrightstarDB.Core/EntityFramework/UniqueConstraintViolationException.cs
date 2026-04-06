@@ -10,8 +10,8 @@ namespace BrightstarDB.EntityFramework
     public class UniqueConstraintViolationException : EntityFrameworkException
     {
         private readonly IList<string> _nonUniqueIdentifiers;
- 
-        internal UniqueConstraintViolationException() : base(Strings.EntityFramework_UniqueConstraintViolation){}
+
+        internal UniqueConstraintViolationException() : base(Strings.EntityFramework_UniqueConstraintViolation) { }
         internal UniqueConstraintViolationException(IEnumerable<string> violationIds)
             : base(Strings.EntityFramework_UniqueConstraintViolation)
         {

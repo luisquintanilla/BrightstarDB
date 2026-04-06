@@ -5,7 +5,7 @@ using BrightstarDB.Storage;
 
 namespace BrightstarDB.Server
 {
-    internal sealed class PreconditionSink: ITripleSink
+    internal sealed class PreconditionSink : ITripleSink
     {
         private readonly IStore _store;
         private StringWriter _failedPreconditionsWriter;
@@ -40,7 +40,7 @@ namespace BrightstarDB.Server
             var triplesEnum = _store.Match((Constants.WildcardUri.Equals(subject)) ? null : subject,
                                            (Constants.WildcardUri.Equals(predicate)) ? null : predicate,
                                            (Constants.WildcardUri.Equals(obj) && !isLiteral) ? null : obj,
-                                           isLiteral, dataType, langCode, 
+                                           isLiteral, dataType, langCode,
                                            (Constants.WildcardUri.Equals(graphUri)) ? null : graphUri);
             if (_preconditionType == PreconditionType.ExistsPrecondition)
             {

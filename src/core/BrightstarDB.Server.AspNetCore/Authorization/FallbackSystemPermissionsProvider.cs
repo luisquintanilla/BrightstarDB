@@ -18,7 +18,7 @@ namespace BrightstarDB.Server.AspNetCore.Authorization
         /// </summary>
         /// <param name="authenticatedPermissions">The fixed set of system permissions
         /// to be granted to authenticated users</param>
-        public FallbackSystemPermissionsProvider(SystemPermissions authenticatedPermissions):this(authenticatedPermissions, SystemPermissions.None)
+        public FallbackSystemPermissionsProvider(SystemPermissions authenticatedPermissions) : this(authenticatedPermissions, SystemPermissions.None)
         {
         }
 

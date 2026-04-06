@@ -15,13 +15,13 @@ namespace BrightstarDB
         /// Used to indicate an exception that has occurred in Brightstar
         ///</summary>
         ///<param name="msg">The exception message</param>
-        internal BrightstarInternalException(string msg) : base(msg){}
+        internal BrightstarInternalException(string msg) : base(msg) { }
 
         ///<summary>
         /// Used to indicate an exception that has occurred in brightstar
         ///</summary>
         ///<param name="msg">The exception message</param>
         ///<param name="inner">The exception that caused this exception to be raised</param>
-        internal BrightstarInternalException(string msg, Exception inner) : base(msg, inner) {}
+        internal BrightstarInternalException(string msg, Exception inner) : base(msg, inner) { }
     }
 }

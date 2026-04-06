@@ -22,7 +22,7 @@ namespace BrightstarDB.Tests
             _client = BrightstarService.GetClient("type=embedded;storesDirectory=c:\\brightstar");
 #endif
         }
-        
+
         [Test]
         public void TestInsert()
         {
@@ -66,7 +66,7 @@ INSERT DATA {
 <http://example/book2> dc:creator ""Edmund Wells"" .
 }");
 
-            ExecuteUpdate(storeName, 
+            ExecuteUpdate(storeName,
                 @"PREFIX dc: <http://purl.org/dc/elements/1.1/>
 
 DELETE DATA
@@ -85,7 +85,7 @@ DELETE DATA
         public void TestDeleteInsert()
         {
             var storeName = CreateStore("TestDeleteInsert");
-            ExecuteUpdate(storeName, 
+            ExecuteUpdate(storeName,
                 @"PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
 INSERT DATA {
 <http://example/president25> foaf:givenName ""Bill"" .
@@ -105,7 +105,7 @@ WHERE
                                                "PREFIX foaf: <http://xmlns.com/foaf/0.1/> SELECT ?fn WHERE { ?x foaf:givenName ?fn }");
             var resultsDoc = XDocument.Load(results);
             Assert.AreEqual(3, resultsDoc.SparqlResultRows().Count());
-            Assert.IsTrue(resultsDoc.SparqlResultRows().All(r=>r.GetColumnValue("fn").ToString().Equals("William")));
+            Assert.IsTrue(resultsDoc.SparqlResultRows().All(r => r.GetColumnValue("fn").ToString().Equals("William")));
         }
 
         [Test]
@@ -141,7 +141,7 @@ WHERE
                                                "PREFIX dc: <http://purl.org/dc/elements/1.1/> SELECT ?b ?t WHERE { ?b dc:title ?t}");
             var resultsDoc = XDocument.Load(results);
             Assert.AreEqual(2, resultsDoc.SparqlResultRows().Count());
-            Assert.IsTrue(resultsDoc.SparqlResultRows().Any(r=>r.GetColumnValue("b").Equals(new Uri("http://example/book2")) && r.GetColumnValue("t").ToString().Equals("David Copperfield")));
+            Assert.IsTrue(resultsDoc.SparqlResultRows().Any(r => r.GetColumnValue("b").Equals(new Uri("http://example/book2")) && r.GetColumnValue("t").ToString().Equals("David Copperfield")));
             Assert.IsTrue(resultsDoc.SparqlResultRows().Any(r => r.GetColumnValue("b").Equals(new Uri("http://example/book3")) && r.GetColumnValue("t").ToString().Equals("SPARQL 1.1 Tutorial")));
 
         }
@@ -412,7 +412,7 @@ INSERT DATA {
             Assert.AreEqual(7, resultsDoc.SparqlResultRows().Count());
 
 
-            ExecuteUpdate(storeName,"CLEAR GRAPH <http://example/bookStore>");
+            ExecuteUpdate(storeName, "CLEAR GRAPH <http://example/bookStore>");
 
             results = _client.ExecuteQuery(storeName,
                                                "SELECT ?s ?p ?o FROM <http://example/bookStore> WHERE { ?s ?p ?o }");

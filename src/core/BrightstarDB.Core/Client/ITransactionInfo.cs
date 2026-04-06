@@ -17,7 +17,7 @@ namespace BrightstarDB.Client
         /// Get the store-unique identifier for this transaction
         /// </summary>
         ulong Id { get; }
-        
+
         /// <summary>
         /// Get the type of transaction
         /// </summary>
@@ -27,7 +27,7 @@ namespace BrightstarDB.Client
         /// Get the status of the transaction
         /// </summary>
         TransactionStatus Status { get; }
-        
+
         /// <summary>
         /// Get the unique identifier of the job that processed this transaction
         /// </summary>

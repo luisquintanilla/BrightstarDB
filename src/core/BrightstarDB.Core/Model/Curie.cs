@@ -32,7 +32,7 @@ namespace BrightstarDB.Model
                 }
             }
         }
-       
+
         public static Uri ResolveCurie(Curie c, Dictionary<string, string> mappings)
         {
             if (mappings.Keys.Contains(c.Prefix))

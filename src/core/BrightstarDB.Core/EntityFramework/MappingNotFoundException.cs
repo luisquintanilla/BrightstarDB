@@ -17,7 +17,7 @@ namespace BrightstarDB.EntityFramework
         /// </summary>
         /// <param name="unmappedType">The type for which an entity mapping was not found</param>
         public MappingNotFoundException(Type unmappedType) :
-            base(String.Format("No URI mapping found for class {0}", unmappedType ))
+            base(String.Format("No URI mapping found for class {0}", unmappedType))
         {
             UnmappedType = unmappedType;
         }

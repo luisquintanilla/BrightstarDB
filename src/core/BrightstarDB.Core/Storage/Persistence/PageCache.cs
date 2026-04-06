@@ -13,7 +13,7 @@
 
         private static IPageCache CreatePageCache()
         {
-            int cacheCapacity = (MBytesToBytes/BPlusTreeStore.BPlusTreeStoreManager.PageSize) * Configuration.PageCacheSize;
+            int cacheCapacity = (MBytesToBytes / BPlusTreeStore.BPlusTreeStoreManager.PageSize) * Configuration.PageCacheSize;
             //return new CircularBufferPageCache(cacheCapacity);
             return new LruPageCache(cacheCapacity);
         }

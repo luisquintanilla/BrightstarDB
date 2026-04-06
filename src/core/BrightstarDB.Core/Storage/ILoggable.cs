@@ -30,6 +30,6 @@ namespace BrightstarDB.Storage
         /// </summary>
         /// <param name="logStream"></param>
         void ReadTransactionDataFromStream(Stream logStream);
-        
+
     }
 }

@@ -24,7 +24,7 @@ namespace BrightstarDB.Update
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            
+
         }
 
         #endregion
@@ -89,7 +89,7 @@ namespace BrightstarDB.Update
             else if (t.Object is BlankNode)
             {
                 ret.Object = String.Format("{0}/{1}/{2}", Constants.GeneratedUriPrefix, uniqueImportId,
-                                            ((BlankNode) t.Object).InternalID);
+                                            ((BlankNode)t.Object).InternalID);
             }
             // Graph is set by the caller (UpdateGraph sets t.Graph = graphUri)
             return ret;
@@ -157,14 +157,14 @@ namespace BrightstarDB.Update
             _store.DeleteGraph(graphUri);
         }
 
-        public void DeleteGraphs(IEnumerable<string> graphUris )
+        public void DeleteGraphs(IEnumerable<string> graphUris)
         {
             _store.DeleteGraphs(graphUris);
         }
 
         public IEnumerable<Uri> ListGraphs()
         {
-            return _store.GetGraphUris().Where(g=>!Constants.DefaultGraphUri.Equals(g)).Select(g => new Uri(g));
+            return _store.GetGraphUris().Where(g => !Constants.DefaultGraphUri.Equals(g)).Select(g => new Uri(g));
         }
 
         public IEnumerable<string> ListGraphNames()

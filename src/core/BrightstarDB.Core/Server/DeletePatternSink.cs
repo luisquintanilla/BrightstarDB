@@ -69,15 +69,15 @@ namespace BrightstarDB.Server
             else
             {
                 _store.DeleteTriple(new Model.Triple
-                                        {
-                                            Graph = graphUri,
-                                            IsLiteral = isLiteral,
-                                            Subject = s,
-                                            Predicate = p,
-                                            Object = o,
-                                            DataType = dataType,
-                                            LangCode = langCode
-                                        });
+                {
+                    Graph = graphUri,
+                    IsLiteral = isLiteral,
+                    Subject = s,
+                    Predicate = p,
+                    Object = o,
+                    DataType = dataType,
+                    LangCode = langCode
+                });
             }
         }
 
@@ -91,6 +91,6 @@ namespace BrightstarDB.Server
             return;
         }
 
-        
+
     }
 }

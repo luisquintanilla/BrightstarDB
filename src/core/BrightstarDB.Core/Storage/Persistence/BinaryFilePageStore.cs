@@ -66,7 +66,7 @@ namespace BrightstarDB.Storage.Persistence
         /// </summary>
         private bool _disposed;
 
-        
+
         private readonly object _restartLock = new object();
 
         public BinaryFilePageStore(IPersistenceManager persistenceManager, string filePath, int pageSize, bool readOnly,
@@ -80,7 +80,7 @@ namespace BrightstarDB.Storage.Persistence
             PageSize = _nominalPageSize - 8;
             CanWrite = !readOnly;
             OpenInputStream();
-            _nextPageId = (ulong) _inputStream.Length/((uint) _nominalPageSize*2) + 1;
+            _nextPageId = (ulong)_inputStream.Length / ((uint)_nominalPageSize * 2) + 1;
             if (CanWrite)
             {
                 if (!disableBackgroundWrites)
@@ -125,7 +125,7 @@ namespace BrightstarDB.Storage.Persistence
                     profiler.Incr("PageCache Hit");
                     return page;
                 }
-               
+
                 // Not found in memory, so go to the disk
                 profiler.Incr("PageCache Miss");
                 using (profiler.Step("Load Page"))
@@ -181,7 +181,7 @@ namespace BrightstarDB.Storage.Persistence
                 {
                     using (var outputStream = _persistenceManager.GetOutputStream(_filePath, FileMode.Open))
                     {
-                        foreach (var pageId in _modifiedPages.Keys.OrderBy(x=>x))
+                        foreach (var pageId in _modifiedPages.Keys.OrderBy(x => x))
                         {
                             var page = PageCache.Instance.Lookup(_partitionId, pageId) as BinaryFilePage;
                             if (page != null && page.IsDirty)

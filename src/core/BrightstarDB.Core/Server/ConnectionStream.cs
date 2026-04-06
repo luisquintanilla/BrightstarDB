@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace BrightstarDB.Server
 {
-    
+
     internal class ConnectionStream : Stream
     {
         /// <summary>
@@ -22,7 +22,7 @@ namespace BrightstarDB.Server
         /// The current write position
         /// </summary>
         private int _writePos;
-        
+
         /// <summary>
         /// The number of bytes currently available. When bytes are read this number is decreased, when written
         /// the number is incremented.
@@ -67,7 +67,7 @@ namespace BrightstarDB.Server
         }
 
         public override void Flush()
-        {            
+        {
         }
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -103,7 +103,7 @@ namespace BrightstarDB.Server
                     Array.ConstrainedCopy(_buffer, 0, outputBuffer, offset + bytesToEnd, bytesToProvide - bytesToEnd);
                 }
                 _available -= bytesToProvide;
-                _readPos = (_readPos + bytesToProvide)%_buffer.Length;
+                _readPos = (_readPos + bytesToProvide) % _buffer.Length;
             }
             return bytesToProvide;
         }
@@ -128,7 +128,7 @@ namespace BrightstarDB.Server
                     Array.ConstrainedCopy(dataBuffer, offset + bytesToEnd, _buffer, 0, bytesToWrite - bytesToEnd);
                 }
                 _available += bytesToWrite;
-                _writePos = (_writePos + bytesToWrite)%_buffer.Length;
+                _writePos = (_writePos + bytesToWrite) % _buffer.Length;
             }
             _dataAvailable.Set();
         }
@@ -139,7 +139,7 @@ namespace BrightstarDB.Server
         /// <param name="newSize">The minimum size to increase the buffer to</param>
         private void ExpandBuffer(int newSize)
         {
-            int newBuffSize = Math.Max(_buffer.Length*4, newSize);
+            int newBuffSize = Math.Max(_buffer.Length * 4, newSize);
             var newBuffer = new byte[newBuffSize];
             if (_readPos + _available <= _buffer.Length)
             {

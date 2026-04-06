@@ -337,13 +337,13 @@ namespace BrightstarDB.Server
                     _jobExecutionStatus.TryAdd(
                         job.JobId.ToString(),
                         new JobExecutionStatus
-                            {
-                                JobId = job.JobId,
-                                JobStatus = JobStatus.Pending,
-                                Queued = DateTime.UtcNow,
-                                Label = job.Label,
-                                WaitEvent = new AutoResetEvent(false)
-                            }))
+                        {
+                            JobId = job.JobId,
+                            JobStatus = JobStatus.Pending,
+                            Queued = DateTime.UtcNow,
+                            Label = job.Label,
+                            WaitEvent = new AutoResetEvent(false)
+                        }))
                 {
                     _jobs.Enqueue(job);
                     queuedJob = true;
@@ -391,14 +391,14 @@ namespace BrightstarDB.Server
             var exportJob = new ExportJob(jobId, jobLabel, this, fileName, graphUri, exportFormat);
             _jobExecutionStatus.TryAdd(jobId.ToString(),
                                        new JobExecutionStatus
-                                           {
-                                               JobId = jobId,
-                                               JobStatus = JobStatus.Started,
-                                               Queued = DateTime.UtcNow,
-                                               Started = DateTime.UtcNow,
-                                               Label = jobLabel,
-                                               WaitEvent = new AutoResetEvent(false)
-                                           });
+                                       {
+                                           JobId = jobId,
+                                           JobStatus = JobStatus.Started,
+                                           Queued = DateTime.UtcNow,
+                                           Started = DateTime.UtcNow,
+                                           Label = jobLabel,
+                                           WaitEvent = new AutoResetEvent(false)
+                                       });
             exportJob.Run((id, ex) =>
                               {
                                   JobExecutionStatus jobExecutionStatus;

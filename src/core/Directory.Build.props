@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <LangVersion>14.0</LangVersion>
-    <ImplicitUsings>disable</ImplicitUsings>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <SignAssembly>true</SignAssembly>

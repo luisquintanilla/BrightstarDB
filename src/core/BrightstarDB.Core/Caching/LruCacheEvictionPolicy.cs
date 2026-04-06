@@ -29,7 +29,7 @@ namespace BrightstarDB.Caching
         /// </summary>
         public LruCacheEvictionPolicy()
         {
-            _highPriorityEntries= new ConcurrentDictionary<string, TimestampedCacheEntry>();
+            _highPriorityEntries = new ConcurrentDictionary<string, TimestampedCacheEntry>();
             _normalPriorityEntries = new ConcurrentDictionary<string, TimestampedCacheEntry>();
         }
 
@@ -55,17 +55,17 @@ namespace BrightstarDB.Caching
             }
             long evictedBytes = 0;
             TimestampedCacheEntry removed;
-            foreach(var lpEntry in _normalPriorityEntries.Values.OrderBy(e=>e.Timestamp))
+            foreach (var lpEntry in _normalPriorityEntries.Values.OrderBy(e => e.Timestamp))
             {
                 if (_normalPriorityEntries.TryRemove(lpEntry.Key, out removed))
                 {
                     evictedBytes += cache.EvictEntry(lpEntry.Key);
                 }
-                if(evictedBytes >= target) break;
+                if (evictedBytes >= target) break;
             }
             if (evictedBytes < target)
             {
-                foreach(var npEntry in _highPriorityEntries.Values.OrderBy(e=>e.Timestamp))
+                foreach (var npEntry in _highPriorityEntries.Values.OrderBy(e => e.Timestamp))
                 {
                     if (_highPriorityEntries.TryRemove(npEntry.Key, out removed))
                     {
@@ -83,7 +83,7 @@ namespace BrightstarDB.Caching
         /// <param name="cache"></param>
         public void Initialize(AbstractCache cache)
         {
-            foreach(var entry in cache.ListEntries())
+            foreach (var entry in cache.ListEntries())
             {
                 NotifyInsert(entry.Key, entry.Size, entry.Priority);
             }

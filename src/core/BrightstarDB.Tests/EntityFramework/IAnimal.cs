@@ -7,7 +7,7 @@ namespace BrightstarDB.Tests.EntityFramework
     {
         [Identifier("bsi:Animals/")]
         string Id { get; }
-        
+
         string Name { get; set; }
 
         [InverseProperty("Pet")]

@@ -22,7 +22,7 @@ namespace BrightstarDB.EntityFramework.Query
 
         protected bool IsTrue(Expression expr)
         {
-            return (expr is BooleanFlagExpression) && ((BooleanFlagExpression) expr).Value;
+            return (expr is BooleanFlagExpression) && ((BooleanFlagExpression)expr).Value;
         }
 
         public override Expression Visit(Expression node)
@@ -57,11 +57,11 @@ namespace BrightstarDB.EntityFramework.Query
                             // Check left and right expression content are optimisable
                             IsTrue(Visit(expression.Left)) && IsTrue(Visit(expression.Right)));
                     break;
- 
+
                 case ExpressionType.OrElse:
                 case ExpressionType.AndAlso:
                     _inBooleanExpression = true;
-                    ret = 
+                    ret =
                         new BooleanFlagExpression(
                             // Check left and right expression content are optimisable
                             IsTrue(Visit(expression.Left)) && IsTrue(Visit(expression.Right)));
@@ -98,7 +98,7 @@ namespace BrightstarDB.EntityFramework.Query
 
         protected override Expression VisitConstant(ConstantExpression expression)
         {
-            if (expression.Type == typeof (bool) && ((bool) expression.Value == false))
+            if (expression.Type == typeof(bool) && ((bool)expression.Value == false))
             {
                 // False comparisons are more complex as they have to take into account unbound properties
                 return new BooleanFlagExpression(false);
@@ -126,7 +126,7 @@ namespace BrightstarDB.EntityFramework.Query
         }
     }
 
-    internal class BooleanFlagExpression : Expression 
+    internal class BooleanFlagExpression : Expression
     {
         public BooleanFlagExpression(bool value)
         {
@@ -141,7 +141,7 @@ namespace BrightstarDB.EntityFramework.Query
 
         #region Overrides of ExtensionExpression
 
-        protected override Expression  VisitChildren(ExpressionVisitor visitor)
+        protected override Expression VisitChildren(ExpressionVisitor visitor)
         {
             return this;
         }

@@ -11,7 +11,7 @@ namespace BrightstarDB.Client
         /// The identity of the resource that this data object wraps.
         /// </summary>
         /// <returns>The identity of the resource</returns>
-        string Identity{ get; }
+        string Identity { get; }
 
         /// <summary>
         /// Flag indicating if this is a new data object that will be
@@ -68,7 +68,7 @@ namespace BrightstarDB.Client
         /// <param name="lang">OPTIONAL: The language code of the literal value. This parameter is ignored if <paramref name="value"/> is an <see cref="IDataObject"/></param>
         /// <returns>This IDataOjbect to allow chained calls</returns>
         IDataObject AddProperty(IDataObject type, object value, string lang = null);
-        
+
         /// <summary>
         /// Adds a new property value to this object
         /// </summary>

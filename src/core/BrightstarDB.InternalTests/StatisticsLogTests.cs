@@ -42,7 +42,7 @@ namespace BrightstarDB.InternalTests
             Directory.CreateDirectory(storePath);
             var log = new PersistentStatisticsLog(_persistenceManager, storePath);
             var timestamp = DateTime.Now;
-            var predicates = new Dictionary<string, ulong> {{"http://example.org/p1", 1}, {"http://example.org/p2", 2}};
+            var predicates = new Dictionary<string, ulong> { { "http://example.org/p1", 1 }, { "http://example.org/p2", 2 } };
             log.AppendStatistics(new StoreStatistics(1, timestamp, 3, predicates));
             Assert.IsTrue(File.Exists(Path.Combine(storePath, "stats.bs")));
             Assert.IsTrue(File.Exists(Path.Combine(storePath, "statsheaders.bs")));
@@ -79,7 +79,7 @@ namespace BrightstarDB.InternalTests
             // Create a new log instance
             log = new PersistentStatisticsLog(_persistenceManager, storePath);
             timestamp = DateTime.Now;
-            predicates = new Dictionary<string, ulong>{{"http://example.org/p1", 2}, {"http://example.org/p2", 2}, {"http://example.org/p3", 3}};
+            predicates = new Dictionary<string, ulong> { { "http://example.org/p1", 2 }, { "http://example.org/p2", 2 }, { "http://example.org/p3", 3 } };
             log.AppendStatistics(new StoreStatistics(2, timestamp, 7, predicates));
 
             // Retrieve stats via a new log instance

@@ -9,7 +9,7 @@ namespace BrightstarDB.Tests.EntityFramework
     [Entity]
     public interface IStringKeyEntity
     {
-        [Identifier("http://example.org/auto-entity/", KeyProperties = new[]{"Name"})]
+        [Identifier("http://example.org/auto-entity/", KeyProperties = new[] { "Name" })]
         string Id { get; }
 
         string Name { get; set; }

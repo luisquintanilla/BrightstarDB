@@ -13,7 +13,7 @@ namespace BrightstarDB.Tests.EntityFramework
 
         [InverseProperty("MainSkill")]
         IPerson Expert { get; set; }
-        
+
         [PropertyType("broader")]
         ISkill Parent { get; set; }
 

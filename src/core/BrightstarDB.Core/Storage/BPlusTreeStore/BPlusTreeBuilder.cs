@@ -22,18 +22,18 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             _leafLoadFactor = _config.LeafLoadFactor;
             _internalBranchFactor = _config.InternalBranchFactor;
         }
-        
-        public ulong Build(ulong txnId, IEnumerable<KeyValuePair<byte[], byte []>> orderedValues, BrightstarProfiler profiler = null)
+
+        public ulong Build(ulong txnId, IEnumerable<KeyValuePair<byte[], byte[]>> orderedValues, BrightstarProfiler profiler = null)
         {
             var nodeList = MakeInternalNodes(txnId, MakeLeafNodes(txnId, orderedValues.GetEnumerator(), profiler), profiler).ToList();
-            while(nodeList.Count > 1)
+            while (nodeList.Count > 1)
             {
                 nodeList = MakeInternalNodes(txnId, nodeList, profiler).ToList();
             }
             return nodeList[0].Value;
         }
 
-        private IEnumerable<KeyValuePair<byte[], ulong>>MakeInternalNodes(ulong txnId, IEnumerable<KeyValuePair<byte[], ulong >> children, BrightstarProfiler profiler)
+        private IEnumerable<KeyValuePair<byte[], ulong>> MakeInternalNodes(ulong txnId, IEnumerable<KeyValuePair<byte[], ulong>> children, BrightstarProfiler profiler)
         {
             var enumerator = children.GetEnumerator();
             var childList = enumerator.Next(_internalBranchFactor).ToList();
@@ -46,7 +46,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             byte[] prevNodeKey = childList[0].Key;
             IInternalNode prevNode = MakeInternalNode(txnId, childList);
             childList = enumerator.Next(_internalBranchFactor).ToList();
-            while(childList.Count > 0)
+            while (childList.Count > 0)
             {
                 IInternalNode nextNode = MakeInternalNode(txnId, childList);
                 var nextNodeKey = childList[0].Key;
@@ -60,17 +60,17 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                 prevNodeKey = nextNodeKey;
                 childList = enumerator.Next(_internalBranchFactor).ToList();
             }
-            
+
             yield return WriteNode(txnId, prevNode, prevNodeKey, profiler);
         }
 
-        private IInternalNode MakeInternalNode(ulong txnId, KeyValuePair<byte[], ulong > onlyChild)
+        private IInternalNode MakeInternalNode(ulong txnId, KeyValuePair<byte[], ulong> onlyChild)
         {
             var nodePage = _pageStore.Create(txnId);
             return MakeInternalNode(nodePage, onlyChild.Value);
         }
 
-        private IInternalNode MakeInternalNode(ulong txnId, List<KeyValuePair<byte[], ulong >> keyValuePairs)
+        private IInternalNode MakeInternalNode(ulong txnId, List<KeyValuePair<byte[], ulong>> keyValuePairs)
         {
             if (keyValuePairs.Count == 1)
             {
@@ -87,7 +87,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             return MakeInternalNode(nodePage, keys, childPointers);
         }
 
-        private IEnumerable<KeyValuePair<byte[], ulong >> MakeLeafNodes(ulong txnId, IEnumerator<KeyValuePair<byte[], byte[]>> orderedValues, BrightstarProfiler profiler = null)
+        private IEnumerable<KeyValuePair<byte[], ulong>> MakeLeafNodes(ulong txnId, IEnumerator<KeyValuePair<byte[], byte[]>> orderedValues, BrightstarProfiler profiler = null)
         {
             ILeafNode prevNode = MakeLeafNode(txnId, orderedValues.Next(_leafLoadFactor));
             if (prevNode.KeyCount < _leafLoadFactor)
@@ -123,13 +123,13 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             return new KeyValuePair<byte[], ulong>(node.LeftmostKey, node.PageId);
         }
 
-        private KeyValuePair<byte[], ulong > WriteNode(ulong  txnId, IInternalNode node, byte[] lowestLeafKey, BrightstarProfiler profiler)
+        private KeyValuePair<byte[], ulong> WriteNode(ulong txnId, IInternalNode node, byte[] lowestLeafKey, BrightstarProfiler profiler)
         {
             //_pageStore.Write(txnId, node.PageId, node.GetData(), profiler:profiler);
             return new KeyValuePair<byte[], ulong>(lowestLeafKey, node.PageId);
         }
 
-        private ILeafNode MakeLeafNode(ulong txnId, IEnumerable<KeyValuePair<byte [], byte []>> orderedValues)
+        private ILeafNode MakeLeafNode(ulong txnId, IEnumerable<KeyValuePair<byte[], byte[]>> orderedValues)
         {
             var leafPage = _pageStore.Create(txnId);
             return MakeLeafNode(leafPage, orderedValues, _leafLoadFactor);

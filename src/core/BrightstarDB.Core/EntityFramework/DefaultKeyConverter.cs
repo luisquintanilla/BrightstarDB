@@ -46,15 +46,15 @@ namespace BrightstarDB.EntityFramework
             string ret;
             if (v is int)
             {
-                ret=((int)v).ToString(CultureInfo.InvariantCulture);
+                ret = ((int)v).ToString(CultureInfo.InvariantCulture);
             }
             else if (v is long)
             {
-                ret=((long) v).ToString(CultureInfo.InvariantCulture);
+                ret = ((long)v).ToString(CultureInfo.InvariantCulture);
             }
             else if (v is decimal)
             {
-                ret = ((decimal) v).ToString(CultureInfo.InvariantCulture);
+                ret = ((decimal)v).ToString(CultureInfo.InvariantCulture);
             }
             else if (v is string)
             {

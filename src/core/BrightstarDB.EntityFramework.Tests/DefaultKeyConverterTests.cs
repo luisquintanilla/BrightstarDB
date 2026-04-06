@@ -56,7 +56,7 @@ namespace BrightstarDB.EntityFramework.Tests
         public void TestConvertBrightstarEntityObject()
         {
             var converter = new DefaultKeyConverter();
-            var mock = new MockEntityObject{Key="foo"};
+            var mock = new MockEntityObject { Key = "foo" };
             Assert.That(converter.Convert(mock), Is.EqualTo("foo"));
         }
 
@@ -64,9 +64,9 @@ namespace BrightstarDB.EntityFramework.Tests
         public void TestConvertMultipleValues()
         {
             var converter = new DefaultKeyConverter();
-            var objectValue = new MockEntityObject {Key = "foo"};
+            var objectValue = new MockEntityObject { Key = "foo" };
             const int intValue = 42;
-            Assert.That(converter.GenerateKey(new object[]{objectValue, intValue},"/", typeof(MockEntityObject)),
+            Assert.That(converter.GenerateKey(new object[] { objectValue, intValue }, "/", typeof(MockEntityObject)),
                 Is.EqualTo("foo/42"));
         }
 
@@ -74,7 +74,7 @@ namespace BrightstarDB.EntityFramework.Tests
         public void TestConvertMultipleValuesIgnoresNulls()
         {
             var converter = new DefaultKeyConverter();
-            Assert.That(converter.GenerateKey(new object[]{null, 42}, "/", typeof(MockEntityObject)), 
+            Assert.That(converter.GenerateKey(new object[] { null, 42 }, "/", typeof(MockEntityObject)),
                 Is.EqualTo("42"));
         }
 

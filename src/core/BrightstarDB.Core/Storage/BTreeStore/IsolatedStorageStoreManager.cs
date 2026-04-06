@@ -7,7 +7,7 @@ namespace BrightstarDB.Storage.BTreeStore
     {
         public IsolatedStorageStoreManager(StoreConfiguration storeConfiguration) : base(storeConfiguration, new IsolatedStoragePersistanceManager())
         {
-            
+
         }
     }
 }

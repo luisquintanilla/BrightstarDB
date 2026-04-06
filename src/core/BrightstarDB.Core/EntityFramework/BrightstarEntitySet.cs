@@ -11,7 +11,7 @@ namespace BrightstarDB.EntityFramework
     /// within a domain context object
     /// </summary>
     /// <typeparam name="T">The type of domain object that this set provides access to</typeparam>
-    public class BrightstarEntitySet<T> : EntityFrameworkQueryable<T>, IEntitySet<T> where T: class
+    public class BrightstarEntitySet<T> : EntityFrameworkQueryable<T>, IEntitySet<T> where T : class
     {
         private readonly BrightstarEntityContext _context;
 
@@ -69,7 +69,7 @@ namespace BrightstarDB.EntityFramework
         public void AddRange(IEnumerable<T> items)
         {
             if (items == null) throw new ArgumentNullException("items");
-            foreach(var t in items) Add(t, null);
+            foreach (var t in items) Add(t, null);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace BrightstarDB.EntityFramework
         {
             if (item == null) throw new ArgumentNullException("item");
             var beo = item as BrightstarEntityObject;
-            if(beo == null)
+            if (beo == null)
             {
                 throw new EntityFrameworkException("Only items of type {0} can be added to an BrightstarEntitySet", typeof(BrightstarEntityObject).FullName);
             }
@@ -143,7 +143,7 @@ namespace BrightstarDB.EntityFramework
         public void AddOrUpdateRange(IEnumerable<T> items)
         {
             if (items == null) throw new ArgumentNullException("items");
-            foreach(var item in items) AddOrUpdate(item);
+            foreach (var item in items) AddOrUpdate(item);
         }
     }
 }

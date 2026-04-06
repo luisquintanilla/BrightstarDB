@@ -89,7 +89,7 @@ namespace BrightstarDB.Server.AspNetCore.Models
                 ErrorMessage = FormatExceptionMessages(ex);
                 return;
             }
-            if ( returnFormat == SparqlResultsFormat.Xml)
+            if (returnFormat == SparqlResultsFormat.Xml)
             {
                 XDocument resultsDoc = XDocument.Load(resultsStream);
                 HasFormattedResults = true;

@@ -28,6 +28,6 @@ namespace BrightstarDB.Tests.EntityFramework
 
         IJobRole JobRole { get; set; }
 
-        ICollection<Uri> Websites { get; set; } 
+        ICollection<Uri> Websites { get; set; }
     }
 }

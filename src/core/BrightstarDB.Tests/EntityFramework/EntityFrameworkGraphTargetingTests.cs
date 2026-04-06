@@ -13,7 +13,7 @@ namespace BrightstarDB.Tests.EntityFramework
         private const string TestStoreLocation = "c:\\brightstar";
         private readonly string _storeName = "EntityFrameworkGraphTargetingTests_" + DateTime.Now.Ticks;
 
-        private MyEntityContext NewContext(bool optimisticLocking, string updateGraph = null, IEnumerable<string> datasetGraphs = null, string versioningGraph = null )
+        private MyEntityContext NewContext(bool optimisticLocking, string updateGraph = null, IEnumerable<string> datasetGraphs = null, string versioningGraph = null)
         {
             var connectionString =
                 String.Format("type=embedded;storesDirectory={0};storeName={1}",
@@ -47,7 +47,7 @@ namespace BrightstarDB.Tests.EntityFramework
                                 "SELECT ?p ?o ?g FROM NAMED <" + update + "> FROM NAMED <" +
                                 Constants.DefaultGraphUri + "> WHERE { GRAPH ?g { <http://www.networkedplanet.com/people/" + alice.Id + "> ?p ?o }}");
             var resultsDoc = XDocument.Load(results);
-            Assert.IsTrue(resultsDoc.SparqlResultRows().All(r=>r.GetColumnValue("g").ToString().Equals(update)));
+            Assert.IsTrue(resultsDoc.SparqlResultRows().All(r => r.GetColumnValue("g").ToString().Equals(update)));
         }
 
         [Test]

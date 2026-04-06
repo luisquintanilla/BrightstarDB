@@ -60,8 +60,8 @@ namespace BrightstarDB.Server
                 {
                     string[] graphs = String.IsNullOrEmpty(exportJob._graphUri)
                                           ? null
-                                          : new[] {exportJob._graphUri};
-                    var triples = exportJob._storeWorker.ReadStore.Match(null, null, null, graphs:graphs);
+                                          : new[] { exportJob._graphUri };
+                    var triples = exportJob._storeWorker.ReadStore.Match(null, null, null, graphs: graphs);
                     var sw = new StreamWriter(stream);
                     var sink = GetWriterSink(exportJob._exportFormat, sw);
                     var nw = new BrightstarTripleSinkAdapter(sink);
@@ -92,14 +92,14 @@ namespace BrightstarDB.Server
             if (exportFormat.MatchesMediaType(RdfFormat.NTriples))
             {
                 return new NTriplesWriter(textWriter);
-            } 
+            }
             if (exportFormat.MatchesMediaType(RdfFormat.NQuads))
             {
                 return new NQuadsWriter(textWriter);
             }
             if (exportFormat.MatchesMediaType(RdfFormat.RdfXml))
             {
-                var xw = XmlWriter.Create(textWriter, new XmlWriterSettings {CloseOutput = false, Indent = true});
+                var xw = XmlWriter.Create(textWriter, new XmlWriterSettings { CloseOutput = false, Indent = true });
                 return new RdfXmlWriter(xw);
             }
             throw new BrightstarClientException(String.Format(Strings.ExportJob_UnsupportedExportFormat, exportFormat.MediaTypes[0]));

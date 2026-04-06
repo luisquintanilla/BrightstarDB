@@ -15,16 +15,16 @@ namespace BrightstarDB.Dto
         /// 
         /// </summary>
         public int PersistenceType { get; set; }
- 
+
         /// <summary>
         /// 
         /// </summary>
-        public CreateStoreRequestObject(){}
+        public CreateStoreRequestObject() { }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="storeName"></param>
-        public CreateStoreRequestObject(string storeName):this(storeName, null){}
+        public CreateStoreRequestObject(string storeName) : this(storeName, null) { }
         /// <summary>
         /// 
         /// </summary>
@@ -35,7 +35,7 @@ namespace BrightstarDB.Dto
             StoreName = storeName;
             if (persistenceType.HasValue)
             {
-                PersistenceType = (int) persistenceType;
+                PersistenceType = (int)persistenceType;
             }
             else
             {

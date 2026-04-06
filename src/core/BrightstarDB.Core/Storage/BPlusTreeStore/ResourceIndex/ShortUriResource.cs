@@ -22,9 +22,9 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
         public byte[] GetData()
         {
             var buff = new byte[64];
-            buff[0] = (byte) ResourceHeaderFlags.IsShort;
+            buff[0] = (byte)ResourceHeaderFlags.IsShort;
             var valueBytes = Encoding.UTF8.GetBytes(_value);
-            buff[1] = (byte) valueBytes.Length;
+            buff[1] = (byte)valueBytes.Length;
             valueBytes.CopyTo(buff, 2);
             return buff;
         }

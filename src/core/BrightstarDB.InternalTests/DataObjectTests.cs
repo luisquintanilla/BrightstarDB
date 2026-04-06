@@ -31,7 +31,7 @@ namespace BrightstarDB.InternalTests
             Assert.IsNotNull(context);
         }
 
-       
+
         [Test]
         public void TestGetEmbeddedDataContextByConnectionString()
         {
@@ -95,7 +95,7 @@ namespace BrightstarDB.InternalTests
             var storeName = Guid.NewGuid().ToString();
             var store = context.CreateStore(storeName);
             Assert.IsNotNull(store);
-            store = context.OpenStore(storeName, new Dictionary<string, string> { {"people", "http://www.networkedplanet.com/people/"}});
+            store = context.OpenStore(storeName, new Dictionary<string, string> { { "people", "http://www.networkedplanet.com/people/" } });
             Assert.IsNotNull(store);
         }
 
@@ -218,7 +218,7 @@ namespace BrightstarDB.InternalTests
             Assert.IsNotNull(store);
             var p1 = store.MakeDataObject();
             Assert.IsNotNull(p1);
-            
+
             p1.SetProperty(store.MakeDataObject("http://www.np.com/label"), "graham");
 
             store.SaveChanges();
@@ -228,7 +228,7 @@ namespace BrightstarDB.InternalTests
             var p2 = store.GetDataObject(p1.Identity);
             Assert.IsNotNull(p2);
             Assert.AreEqual(p1.Identity, p2.Identity);
-            
+
         }
 
         [Test]
@@ -242,7 +242,7 @@ namespace BrightstarDB.InternalTests
             var p1 = store.MakeDataObject();
             Assert.IsNotNull(p1);
 
-            var labelType = store.MakeDataObject("http://www.np.com/label"); 
+            var labelType = store.MakeDataObject("http://www.np.com/label");
             p1.SetProperty(labelType, "graham");
 
             store.SaveChanges();
@@ -363,7 +363,7 @@ namespace BrightstarDB.InternalTests
             p2.RemovePropertiesOfType(ageType);
 
             Assert.AreEqual(0, ((DataObject)p2).Triples.Count());
-            Assert.AreEqual(0, ((EmbeddedDataObjectStore)store).AddTriples.Count());           
+            Assert.AreEqual(0, ((EmbeddedDataObjectStore)store).AddTriples.Count());
         }
 
 
@@ -394,14 +394,14 @@ namespace BrightstarDB.InternalTests
             var storeId = Guid.NewGuid().ToString();
             context.CreateStore(storeId);
             var store = context.OpenStore(storeId, new Dictionary<string, string>
-                                                       { { "ont", "http://www.networkedplanet.com/types/" }, 
+                                                       { { "ont", "http://www.networkedplanet.com/types/" },
                                                                                { "rdfs", "http://www.w3.org/2000/01/rdf-schema#" },
                                                                                { "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"} });
 
             var gra = store.MakeDataObject()
                         .SetType(store.MakeDataObject("http://www.networkedplanet.com/types/person"))
                         .SetProperty(store.MakeDataObject("http://www.networkedplanet.com/types/age"), 23)
-                        .SetProperty(store.MakeDataObject("http://www.networkedplanet.com/types/worksfor"), 
+                        .SetProperty(store.MakeDataObject("http://www.networkedplanet.com/types/worksfor"),
                                         store.MakeDataObject("http://www.networkedplanet.com/companies/np")
                                      );
             Assert.IsNotNull(gra);
@@ -414,7 +414,7 @@ namespace BrightstarDB.InternalTests
                                         store.MakeDataObject("http://www.networkedplanet.com/companies/np")
                                             .SetProperty("rdfs:label", "Networked Planet")
                                      )
-                        .SetProperty("ont:email", store.MakeListDataObject(new List<string> { "kal@networkedplanet.com"}));
+                        .SetProperty("ont:email", store.MakeListDataObject(new List<string> { "kal@networkedplanet.com" }));
             Assert.IsNotNull(kal);
 
             store.SaveChanges();
@@ -427,11 +427,11 @@ namespace BrightstarDB.InternalTests
             var storeId = Guid.NewGuid().ToString();
             context.CreateStore(storeId);
             var store = context.OpenStore(storeId, new Dictionary<string, string>
-                                                       { { "ont", "http://www.networkedplanet.com/types/" }, 
+                                                       { { "ont", "http://www.networkedplanet.com/types/" },
                                                                                { "rdfs", "http://www.w3.org/2000/01/rdf-schema#" },
                                                                                { "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"} });
 
-            var list = store.MakeListDataObject(new[] {"bob", "gra"});
+            var list = store.MakeListDataObject(new[] { "bob", "gra" });
 
             Assert.AreEqual("bob", list.GetPropertyValue("rdf:first"));
             Assert.IsInstanceOf(typeof(IDataObject), list.GetPropertyValue("rdf:rest"));
@@ -477,7 +477,7 @@ namespace BrightstarDB.InternalTests
             store.SaveChanges();
 
             var p2 = store.GetDataObject(p1.Identity);
-            Assert.AreEqual(2, ((DataObject)p2).Triples.Count());            
+            Assert.AreEqual(2, ((DataObject)p2).Triples.Count());
         }
 
         [Test]
@@ -527,8 +527,8 @@ namespace BrightstarDB.InternalTests
             Assert.IsNotNull(label);
             Assert.AreEqual("graham", label);
         }
-        
-            
+
+
 
         [Test]
         public void TestCurieObjectGetPropertyPersisted()
@@ -541,7 +541,7 @@ namespace BrightstarDB.InternalTests
 
             var p1 = store.MakeDataObject();
             Assert.IsNotNull(p1);
-            
+
             //object type
             var productType = store.MakeDataObject("http://www.networkedplanet.com/schemas/product");
             p1.SetType(productType);
@@ -579,7 +579,7 @@ namespace BrightstarDB.InternalTests
             store.SaveChanges();
 
             var p3 = store.GetDataObject(p1.Identity);
-            Assert.AreEqual(1, ((DataObject)p3).Triples.Count());                        
+            Assert.AreEqual(1, ((DataObject)p3).Triples.Count());
         }
 
         [Test]
@@ -653,7 +653,7 @@ namespace BrightstarDB.InternalTests
             IDataObjectContext context = new EmbeddedDataObjectContext(new ConnectionString("type=embedded;storesDirectory=" + Configuration.StoreLocation + "\\"));
             var storeId = Guid.NewGuid().ToString();
             var store = context.CreateStore(storeId, new Dictionary<string, string>
-                                                         { { "ont", "http://www.networkedplanet.com/types/" }, 
+                                                         { { "ont", "http://www.networkedplanet.com/types/" },
                                                                                { "rdfs", "http://www.w3.org/2000/01/rdf-schema#" },
                                                                                { "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"} });
 
@@ -662,7 +662,7 @@ namespace BrightstarDB.InternalTests
             store.SaveChanges();
 
             store = context.OpenStore(storeId, new Dictionary<string, string>
-                                                   { { "ont", "http://www.networkedplanet.com/types/" }, 
+                                                   { { "ont", "http://www.networkedplanet.com/types/" },
                                                                                { "rdfs", "http://www.w3.org/2000/01/rdf-schema#" },
                                                                                { "rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#"} });
 
@@ -758,7 +758,7 @@ namespace BrightstarDB.InternalTests
             var obj3 = store.GetDataObject("http://www.np.com/objects/3");
             var obj3Related = obj3.GetPropertyValues("http://www.np.com/types/p1").OfType<IDataObject>().ToList();
             Assert.AreEqual(1, obj1Related.Count());
-            Assert.IsTrue(obj1Related.Any(r=>r.Identity.Equals("http://www.np.com/objects/2")));
+            Assert.IsTrue(obj1Related.Any(r => r.Identity.Equals("http://www.np.com/objects/2")));
             Assert.AreEqual(1, obj3Related.Count());
             Assert.IsTrue(obj3Related.Any(r => r.Identity.Equals("http://www.np.com/objects/4")));
 
@@ -824,7 +824,7 @@ namespace BrightstarDB.InternalTests
             IDataObjectContext context = new EmbeddedDataObjectContext(new ConnectionString("type=embedded;storesDirectory=" + Configuration.StoreLocation + "\\"));
             var storeId = Guid.NewGuid().ToString();
             var store = context.CreateStore(storeId);
-            
+
             //products
             var productType = store.MakeDataObject("http://www.networkedplanet.com/schemas/product");
 
@@ -863,7 +863,7 @@ namespace BrightstarDB.InternalTests
             brightstarDb.SetProperty(name, "Brightstar DB");
 
             store.SaveChanges();
-            store = context.OpenStore(storeId, new Dictionary<string, string> { { "products", "http://www.networkedplanet.com/products/" }});
+            store = context.OpenStore(storeId, new Dictionary<string, string> { { "products", "http://www.networkedplanet.com/products/" } });
 
             var getObjectByFullIdentity = store.GetDataObject("http://www.networkedplanet.com/products/brightstar");
             Assert.AreEqual(2, ((DataObject)getObjectByFullIdentity).Triples.Count());
@@ -874,7 +874,7 @@ namespace BrightstarDB.InternalTests
             Assert.AreEqual(2, ((DataObject)getObjectByCurie).Triples.Count());
             Assert.IsNotNull(getObjectByCurie.GetPropertyValue(name), "Name property is null");
             Assert.AreEqual("Brightstar DB", getObjectByCurie.GetPropertyValue(name));
-            
+
 
         }
 
@@ -896,11 +896,11 @@ namespace BrightstarDB.InternalTests
             rdf.SetType(categoryType);
             var topicmaps = store.MakeDataObject("http://www.networkedplanet.com/categories/topicmaps");
             topicmaps.SetType(categoryType);
-            
+
             store.SaveChanges();
             store = context.OpenStore(storeId);
 
-            
+
             var allCategories = store.BindDataObjectsWithSparql("SELECT ?cat WHERE {?cat a <http://www.networkedplanet.com/schemas/category>}").ToList();
             Assert.IsNotNull(allCategories);
             Assert.AreEqual(4, allCategories.Count);
@@ -919,7 +919,7 @@ namespace BrightstarDB.InternalTests
             nosql = store.GetDataObject("http://www.networkedplanet.com/categories/nosql");
 
             Assert.AreEqual(0, ((DataObject)nosql).Triples.Count());
-            
+
 
         }
 
@@ -1128,8 +1128,8 @@ namespace BrightstarDB.InternalTests
             store1.SaveChanges();
 
             // Create a context that updates a new "inferred" graph and add a property
-            var store2 = context.OpenStore(storeName, prefixes, updateGraph:inferredGraphUri ,
-                                           defaultDataSet: new[] {Constants.DefaultGraphUri});
+            var store2 = context.OpenStore(storeName, prefixes, updateGraph: inferredGraphUri,
+                                           defaultDataSet: new[] { Constants.DefaultGraphUri });
             johnSmith = store2.GetDataObject("resource:John_Smith");
             fullname = store2.GetDataObject("foaf:name");
             Assert.IsNotNull(johnSmith, "Could not find base data object in store2");
@@ -1142,7 +1142,7 @@ namespace BrightstarDB.InternalTests
 
             // Create a context that reads from both the default and inferred graphs
             var store3 = context.OpenStore(storeName, prefixes, updateGraph: Constants.DefaultGraphUri,
-                                           defaultDataSet: new string[] {Constants.DefaultGraphUri, inferredGraphUri});
+                                           defaultDataSet: new string[] { Constants.DefaultGraphUri, inferredGraphUri });
             johnSmith = store3.GetDataObject("resource:John_Smith");
             Assert.IsNotNull(johnSmith, "Could not find base data object in store3");
             var fn = johnSmith.GetPropertyValue("foaf:name");
@@ -1150,7 +1150,7 @@ namespace BrightstarDB.InternalTests
             Assert.AreEqual("John Smith", fn);
 
             // Create a context that reads only from the inferred graph
-            var store4 = context.OpenStore(storeName, prefixes, updateGraph: inferredGraphUri, defaultDataSet:new string[]{inferredGraphUri});
+            var store4 = context.OpenStore(storeName, prefixes, updateGraph: inferredGraphUri, defaultDataSet: new string[] { inferredGraphUri });
             johnSmith = store4.GetDataObject("resource:John_Smith");
             Assert.IsNotNull(johnSmith);
             fn = johnSmith.GetPropertyValue("foaf:name");
@@ -1227,7 +1227,7 @@ namespace BrightstarDB.InternalTests
 
 
             var store4 = context.OpenStore(storeName, prefixes, updateGraph: graph1,
-                                           defaultDataSet: new string[] {graph1});
+                                           defaultDataSet: new string[] { graph1 });
             updateDataObject = store4.GetDataObject("resource:Alice");
             Assert.IsNotNull(updateDataObject);
             updateDataObject.Delete();
@@ -1241,7 +1241,7 @@ namespace BrightstarDB.InternalTests
             Assert.IsNotNull(updateDataObject.GetPropertyValue("foaf:name"));
             Assert.AreEqual("Alice Test", updateDataObject.GetPropertyValue("foaf:name").ToString());
             Assert.AreEqual("alice@example.org", updateDataObject.GetPropertyValue("foaf:mbox").ToString());
-            
+
         }
 
         [Test]
@@ -1251,12 +1251,12 @@ namespace BrightstarDB.InternalTests
             var storeName = "TestVersioningGraph_" + DateTime.Now.Ticks;
             const string versionGraph = "http://example.org/graphs/versioning";
 
-            var store1 = context.CreateStore(storeName, versionTrackingGraph:versionGraph);
+            var store1 = context.CreateStore(storeName, versionTrackingGraph: versionGraph);
             var store1Alice = store1.MakeDataObject("http://example.org/alice");
             store1Alice.SetProperty("http://example.org/age", 21);
             store1.SaveChanges();
 
-            var store2 = context.OpenStore(storeName, versionTrackingGraph:versionGraph);
+            var store2 = context.OpenStore(storeName, versionTrackingGraph: versionGraph);
             var store2Alice = store2.GetDataObject("http://example.org/alice");
             store2Alice.SetProperty("http://example.org/age", 22);
             store2.SaveChanges();
@@ -1301,7 +1301,7 @@ namespace BrightstarDB.InternalTests
                     new ConnectionString("type=embedded;storesDirectory=" + Configuration.StoreLocation + "\\"));
         }
 
-        private void SetUpData(IDataObjectContext context, string storeName, out Dictionary<string,string> namespaceMappings)
+        private void SetUpData(IDataObjectContext context, string storeName, out Dictionary<string, string> namespaceMappings)
         {
             namespaceMappings = new Dictionary<string, string>
                                     {
@@ -1316,11 +1316,11 @@ namespace BrightstarDB.InternalTests
             var salary = store.MakeDataObject("schema:salary");
             //add 10 people
             // salaries = 10000, 20000, ... 100000
-            for(var i = 0; i<10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var p = store.MakeDataObject("people:personname" + i);
                 p.SetType(personType);
-                var pay = (i + 1)*10000;
+                var pay = (i + 1) * 10000;
                 p.SetProperty(salary, pay);
             }
             store.SaveChanges();
@@ -1331,6 +1331,6 @@ namespace BrightstarDB.InternalTests
 
             Assert.AreEqual(10, people.Count());
         }
-       
+
     }
 }

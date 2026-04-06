@@ -16,7 +16,7 @@ namespace BrightstarDB.EntityFramework.Tests
         [Test]
         public void TestRound()
         {
-            var q = Context.Companies.Where(c => Math.Round(c.CurrentSharePrice) > 10).Select(c=>c.Id);
+            var q = Context.Companies.Where(c => Math.Round(c.CurrentSharePrice) > 10).Select(c => c.Id);
             var results = q.ToList();
             AssertQuerySparql(
                 @"SELECT ?v1 WHERE {
@@ -26,7 +26,7 @@ FILTER((ROUND(?v0)) > '10.00'^^<http://www.w3.org/2001/XMLSchema#decimal>).
 BIND(STRAFTER(STR(?c), 'http://www.brightstardb.com/.well-known/genid/') AS ?v1)}"
                 );
 
-            q = Context.Companies.Where(c => Math.Round(c.CurrentMarketCap) > 100).Select(c=>c.Id);
+            q = Context.Companies.Where(c => Math.Round(c.CurrentMarketCap) > 100).Select(c => c.Id);
             results = q.ToList();
             AssertQuerySparql(
                 @"SELECT ?v1 WHERE {
@@ -40,7 +40,7 @@ BIND(STRAFTER(STR(?c), 'http://www.brightstardb.com/.well-known/genid/') AS ?v1)
         [Test]
         public void TestFloor()
         {
-            var q = Context.Companies.Where(c => Math.Floor(c.CurrentSharePrice) > 10).Select(c=>c.Id);
+            var q = Context.Companies.Where(c => Math.Floor(c.CurrentSharePrice) > 10).Select(c => c.Id);
             var results = q.ToList();
             AssertQuerySparql(
                 @"SELECT ?v1 WHERE {
@@ -50,7 +50,7 @@ FILTER((FLOOR(?v0)) > '10.00'^^<http://www.w3.org/2001/XMLSchema#decimal>).
 BIND(STRAFTER(STR(?c), 'http://www.brightstardb.com/.well-known/genid/') AS ?v1)}"
                 );
 
-            q = Context.Companies.Where(c => Math.Floor(c.CurrentMarketCap) > 100).Select(c=>c.Id);
+            q = Context.Companies.Where(c => Math.Floor(c.CurrentMarketCap) > 100).Select(c => c.Id);
             results = q.ToList();
             AssertQuerySparql(
                 @"SELECT ?v1 WHERE {
@@ -64,7 +64,7 @@ BIND(STRAFTER(STR(?c), 'http://www.brightstardb.com/.well-known/genid/') AS ?v1)
         [Test]
         public void TestCeiling()
         {
-            var q = Context.Companies.Where(c => Math.Ceiling(c.CurrentSharePrice) > 10).Select(c=>c.Id);
+            var q = Context.Companies.Where(c => Math.Ceiling(c.CurrentSharePrice) > 10).Select(c => c.Id);
             var results = q.ToList();
             AssertQuerySparql(
                 @"SELECT ?v1 WHERE {

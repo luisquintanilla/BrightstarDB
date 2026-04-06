@@ -37,7 +37,7 @@ namespace BrightstarDB.Storage.Persistence
         /// <param name="pageOffset">The offset into the page data buffer to start writing to. Defaults to 0</param>
         /// <param name="len">The number of bytes to write. Defaults to all bytes in <paramref name="buff"/> from the specified <paramref name="srcOffset"/></param>
         /// <param name="profiler"></param>
-        void Write(ulong commitId, ulong pageId, byte[] buff, int srcOffset=0, int pageOffset = 0, int len = -1, BrightstarProfiler profiler= null);
+        void Write(ulong commitId, ulong pageId, byte[] buff, int srcOffset = 0, int pageOffset = 0, int len = -1, BrightstarProfiler profiler = null);
 
         /// <summary>
         /// Returns a boolean flag indicating if the page with the specified page ID is writeable

@@ -29,7 +29,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
 
         public void Remove(INode node)
         {
-            if(node.IsLeaf)
+            if (node.IsLeaf)
             {
                 _leafNodeCache.Remove(node.PageId);
             }
@@ -62,11 +62,11 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                 {
                     node = internalNode;
                     hit = (node != null);
-                } 
+                }
             }
             return hit;
         }
 
-        
+
     }
 }

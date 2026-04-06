@@ -6,7 +6,7 @@ namespace BrightstarDB.EntityFramework
     /// Collection class used for tracking related entities on an unattached entity object
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class UnattachedEntityCollection<T> :List<T>, IEntityCollection<T>
+    internal class UnattachedEntityCollection<T> : List<T>, IEntityCollection<T>
     {
         #region Implementation of IEntityCollection
 

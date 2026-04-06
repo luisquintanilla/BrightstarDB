@@ -50,9 +50,9 @@ namespace BrightstarDB.Client
         }
 
         internal SparqlResult(string resultString, ISerializationFormat resultFormat, SparqlQueryContext sparqlQueryContext) :
-            this(new StringReader(resultString), resultFormat, sparqlQueryContext )
+            this(new StringReader(resultString), resultFormat, sparqlQueryContext)
         {
-            
+
         }
 
 
@@ -69,12 +69,12 @@ namespace BrightstarDB.Client
                 if (ResultSet == null)
                 {
                     throw new ArgumentException(
-                        $"Result object must be either a {typeof (IGraph).FullName} or a {typeof (SparqlResultSet).FullName} instance. Got a {resultObject.GetType().FullName}");
+                        $"Result object must be either a {typeof(IGraph).FullName} or a {typeof(SparqlResultSet).FullName} instance. Got a {resultObject.GetType().FullName}");
                 }
                 ResultFormat = sparqlQueryContext.SparqlResultsFormat ?? SparqlResultsFormat.Xml;
             }
 
-            
+
             if (resultObject is IGraph)
             {
                 ResultGraph = resultObject as IGraph;

@@ -53,7 +53,7 @@ namespace BrightstarDB.Client
         /// <returns>The newly created data object store</returns>
         /// <remarks>When creating a new store through this API the default data set used for queries will be automatically set to the single update graph specified by the 
         /// <paramref name="updateGraph"/> parameter (or the default graph if the parameter is ommitted).</remarks>
-        IDataObjectStore CreateStore(string storeName, Dictionary<string, string> namespaceMappings = null, bool? optimisticLockingEnabled = null, 
+        IDataObjectStore CreateStore(string storeName, Dictionary<string, string> namespaceMappings = null, bool? optimisticLockingEnabled = null,
             PersistenceType? persistenceType = null,
             string updateGraph = null, string versionTrackingGraph = null);
 

@@ -8,9 +8,9 @@ namespace BrightstarDB.Storage.BTreeStore
     internal class RelatedResourceList : PersistentBTree<RelatedResource>
     {
         [Obsolete("This method provided for serialization")]
-        public RelatedResourceList() {}
+        public RelatedResourceList() { }
 
-        public RelatedResourceList(ulong objectId, int keyCount, Store store):base(objectId,keyCount,store){}
+        public RelatedResourceList(ulong objectId, int keyCount, Store store) : base(objectId, keyCount, store) { }
 
         public void AddRelatedResource(ulong rid, ulong graphId)
         {
@@ -26,12 +26,12 @@ namespace BrightstarDB.Storage.BTreeStore
             }
             else if (existingNode != null)
             {
-                var relatedResource = new RelatedResource {Rid = rid, Graph = new List<ulong> {graphId}};
+                var relatedResource = new RelatedResource { Rid = rid, Graph = new List<ulong> { graphId } };
                 Insert(existingNode, new Entry<RelatedResource>(rid, relatedResource));
             }
             else
             {
-                var relatedResource = new RelatedResource {Rid = rid, Graph = new List<ulong> {graphId}};
+                var relatedResource = new RelatedResource { Rid = rid, Graph = new List<ulong> { graphId } };
                 Insert(rid, relatedResource);
             }
         }
@@ -63,5 +63,5 @@ namespace BrightstarDB.Storage.BTreeStore
         }
     }
 
-    
+
 }

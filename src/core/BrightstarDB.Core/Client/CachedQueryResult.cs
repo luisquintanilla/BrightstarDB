@@ -58,7 +58,7 @@ namespace BrightstarDB.Client
 #else
             BitConverter.GetBytes(Timestamp.ToBinary());
 #endif
-            byte[] buff = new byte[resultByteSize+8];
+            byte[] buff = new byte[resultByteSize + 8];
             Array.Copy(BitConverter.GetBytes(Timestamp.Ticks), buff, 8);
             Encoding.UTF8.GetBytes(Result, 0, Result.Length, buff, 8);
             return buff;

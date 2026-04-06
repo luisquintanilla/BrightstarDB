@@ -24,7 +24,7 @@ namespace BrightstarDB.Storage.BTreeStore
         {
             var count = SerializationUtils.WriteVarint(dataStream, _nodeId);
             count += SerializationUtils.WriteVarint(dataStream, _parentNodeId);
-            count += SerializationUtils.WriteVarint(dataStream, (ulong) ChildNodes.Count);
+            count += SerializationUtils.WriteVarint(dataStream, (ulong)ChildNodes.Count);
             foreach (var childNode in ChildNodes)
             {
                 count += SerializationUtils.WriteVarint(dataStream, childNode);
@@ -47,7 +47,7 @@ namespace BrightstarDB.Storage.BTreeStore
             _parentNodeId = SerializationUtils.ReadVarint(dataStream);
             var childNodeCount = SerializationUtils.ReadVarint(dataStream);
             ChildNodes = new List<ulong>();
-            for (var i=0ul; i < childNodeCount; i++)
+            for (var i = 0ul; i < childNodeCount; i++)
             {
                 ChildNodes.Add(SerializationUtils.ReadVarint(dataStream));
             }

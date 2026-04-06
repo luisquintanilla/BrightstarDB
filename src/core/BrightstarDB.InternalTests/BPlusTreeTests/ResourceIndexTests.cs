@@ -142,15 +142,15 @@ namespace BrightstarDB.InternalTests.BPlusTreeTests
                 resourceIndex.Save(0, null);
                 pageStore.Commit(0ul, null);
             }
-            
-            using(pageStore = TestUtils.OpenPageStore("TestAssertShortUri.data", false))
+
+            using (pageStore = TestUtils.OpenPageStore("TestAssertShortUri.data", false))
             {
                 var resourceIndex = new ResourceIndex(pageStore, null, resourceIndexRoot);
                 Assert.AreEqual(resourceId, resourceIndex.GetResourceId(shortenedUri, false, null, null, true));
                 var resource = resourceIndex.GetResource(resourceId, true);
                 Assert.IsNotNull(resource);
                 Assert.AreEqual(shortenedUri, resource.Value);
-                Assert.IsFalse(resource.IsLiteral);                
+                Assert.IsFalse(resource.IsLiteral);
             }
         }
 

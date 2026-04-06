@@ -10,16 +10,16 @@
         /// <param name="removedItemIndex">The index of the item to be overwritten by this operation, all items one or more places higher than this will shift down one place</param>
         public static void ShiftDown<T>(this T[] arry, int removedItemIndex)
         {
-            for(int i = removedItemIndex; i < (arry.Length - 1); i++)
+            for (int i = removedItemIndex; i < (arry.Length - 1); i++)
             {
                 arry[i] = arry[i + 1];
             }
         }
 
-        public static int Compare(this byte[]arry, byte[] other)
+        public static int Compare(this byte[] arry, byte[] other)
         {
             int ret = 0;
-            for(int i =arry.Length-1; i >=0 && ret == 0; i--)
+            for (int i = arry.Length - 1; i >= 0 && ret == 0; i--)
             {
                 ret = arry[i] - other[i];
             }

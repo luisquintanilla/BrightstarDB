@@ -24,7 +24,7 @@ namespace BrightstarDB.InternalTests
             using (var fs = new FileStream(TestPaths.DataPath + "BSBM_370k.nt", FileMode.Open))
             {
                 var parser = new NTriplesParser();
-                parser.Parse(fs, new NoopParser(), Constants.DefaultGraphUri);                
+                parser.Parse(fs, new NoopParser(), Constants.DefaultGraphUri);
             }
             t.Stop();
             Console.WriteLine("Time for Brightstar Parser is " + t.ElapsedMilliseconds);
@@ -82,7 +82,7 @@ namespace BrightstarDB.InternalTests
         public void TestBasicNtriples()
         {
             var ntp = new NTriplesParser();
-            using (var fs = new FileStream(TestPaths.DataPath+"simple.txt", FileMode.Open))
+            using (var fs = new FileStream(TestPaths.DataPath + "simple.txt", FileMode.Open))
             {
                 ntp.Parse(fs, new NoopParser(), Constants.DefaultGraphUri);
             }
@@ -92,7 +92,7 @@ namespace BrightstarDB.InternalTests
         public void TestBasicNQuads()
         {
             var ntp = new NTriplesParser();
-            ntp.Parse(new FileStream(TestPaths.DataPath+"nquads.txt", FileMode.Open), new NoopParser(), Constants.DefaultGraphUri);
+            ntp.Parse(new FileStream(TestPaths.DataPath + "nquads.txt", FileMode.Open), new NoopParser(), Constants.DefaultGraphUri);
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace BrightstarDB.InternalTests
 <http://example.org/s> <http://example.org/p2> ""\\users\\tom""";
             var parser = new NTriplesParser();
             var sink = new LoggingTripleSink();
-            parser.Parse(new StringReader(ntriples), sink, "http://example.org/g" );
+            parser.Parse(new StringReader(ntriples), sink, "http://example.org/g");
 
             Assert.That(sink.Triples, Has.Count.EqualTo(2));
             var triple1 = sink.Triples.FirstOrDefault(t => t.Predicate.Equals("http://example.org/p1"));
@@ -115,7 +115,7 @@ namespace BrightstarDB.InternalTests
             Assert.That(triple2.Object, Is.EqualTo(@"\users\tom"));
         }
 
-        public class NoopParser : BaseRdfHandler , ITripleSink
+        public class NoopParser : BaseRdfHandler, ITripleSink
         {
             protected override bool HandleTripleInternal(Triple t)
             {
@@ -164,15 +164,15 @@ namespace BrightstarDB.InternalTests
                                bool objIsLiteral, string dataType, string langCode, string graphUri)
             {
                 Triples.Add(new Model.Triple
-                    {
-                        Subject = subject,
-                        Predicate = predicate,
-                        Object = obj,
-                        DataType = dataType,
-                        Graph = graphUri,
-                        IsLiteral = objIsLiteral,
-                        LangCode = langCode
-                    });
+                {
+                    Subject = subject,
+                    Predicate = predicate,
+                    Object = obj,
+                    DataType = dataType,
+                    Graph = graphUri,
+                    IsLiteral = objIsLiteral,
+                    LangCode = langCode
+                });
             }
 
             public void Close()

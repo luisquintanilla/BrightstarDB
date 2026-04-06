@@ -48,7 +48,7 @@ namespace BrightstarDB.EntityFramework
         /// <returns>True if the type is a generic collection, false otherwise</returns>
         public static bool IsGenericCollection(this Type t)
         {
-            return (t.IsGenericType() && typeof (IEnumerable<>).IsAssignableFrom(t.GetGenericTypeDefinition()));
+            return (t.IsGenericType() && typeof(IEnumerable<>).IsAssignableFrom(t.GetGenericTypeDefinition()));
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace BrightstarDB.EntityFramework
         /// <returns>True if the type is a generic nullable, false otherwise</returns>
         public static bool IsNullable(this Type t)
         {
-            return t.IsGenericType() && typeof (Nullable<>).IsAssignableFrom(t.GetGenericTypeDefinition());
+            return t.IsGenericType() && typeof(Nullable<>).IsAssignableFrom(t.GetGenericTypeDefinition());
         }
 
         ///<summary>

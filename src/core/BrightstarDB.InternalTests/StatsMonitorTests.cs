@@ -13,22 +13,22 @@ namespace BrightstarDB.InternalTests
     public class StatsMonitorTests
     {
         [Test]
-       public void TestTriggerByTransaction()
-       {
-           Configuration.StatsUpdateTransactionCount = 10;
+        public void TestTriggerByTransaction()
+        {
+            Configuration.StatsUpdateTransactionCount = 10;
             Configuration.StatsUpdateTimespan = 0;
-           bool triggered = false;
-           var statsMonitor = new StatsMonitor();
-           statsMonitor.Initialize(new StoreStatistics(10UL, DateTime.UtcNow, 0UL, new Dictionary<string, ulong>()),
-               18UL, () => { triggered = true; });
-           statsMonitor.OnJobScheduled();
-           Assert.IsFalse(triggered);
-           statsMonitor.OnJobScheduled();
-           Assert.IsTrue(triggered);
+            bool triggered = false;
+            var statsMonitor = new StatsMonitor();
+            statsMonitor.Initialize(new StoreStatistics(10UL, DateTime.UtcNow, 0UL, new Dictionary<string, ulong>()),
+                18UL, () => { triggered = true; });
+            statsMonitor.OnJobScheduled();
+            Assert.IsFalse(triggered);
+            statsMonitor.OnJobScheduled();
+            Assert.IsTrue(triggered);
             triggered = false;
             statsMonitor.OnJobScheduled();
             Assert.IsFalse(triggered, "Monitor should not retrigger on txn immediately after firing.");
-       }
+        }
 
         [Test]
         public void TestTriggerByTimespan()
@@ -37,7 +37,7 @@ namespace BrightstarDB.InternalTests
             Configuration.StatsUpdateTransactionCount = 0;
             bool triggered = false;
             var statsMonitor = new StatsMonitor();
-            statsMonitor.Initialize(new StoreStatistics(10UL, DateTime.UtcNow.Subtract(TimeSpan.FromSeconds(59)),0UL, new Dictionary<string, ulong>()),
+            statsMonitor.Initialize(new StoreStatistics(10UL, DateTime.UtcNow.Subtract(TimeSpan.FromSeconds(59)), 0UL, new Dictionary<string, ulong>()),
                 12UL, () => { triggered = true; });
             statsMonitor.OnJobScheduled();
             Assert.IsFalse(triggered);

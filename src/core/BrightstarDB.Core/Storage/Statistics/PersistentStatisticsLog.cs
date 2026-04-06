@@ -43,7 +43,7 @@ namespace BrightstarDB.Storage.Statistics
                         {
                             headerReader.BaseStream.Seek(offset, SeekOrigin.Begin);
                             var header = StoreStatisticsHeaderRecord.Load(headerReader);
-                            recordStream.Seek(header.StartOffset, SeekOrigin.Begin); 
+                            recordStream.Seek(header.StartOffset, SeekOrigin.Begin);
                             var recordReader = new StreamReader(recordStream);
                             var record = StoreStatisticsRecord.Load(recordReader);
                             yield return

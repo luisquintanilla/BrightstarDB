@@ -17,7 +17,7 @@ namespace BrightstarDB.Server.AspNetCore.Authorization
 
         private readonly Dictionary<string, Dictionary<string, StorePermissions>> _storeUsers;
         private readonly Dictionary<string, Dictionary<string, StorePermissions>> _storeClaims;
- 
+
         /// <summary>
         /// Create a new provider with a fixed collection of user and claim permimssions for stores
         /// </summary>
@@ -39,7 +39,7 @@ namespace BrightstarDB.Server.AspNetCore.Authorization
             _storeUsers = new Dictionary<string, Dictionary<string, StorePermissions>>();
             _storeClaims = new Dictionary<string, Dictionary<string, StorePermissions>>();
             if (configEl == null) throw new ArgumentNullException("configEl");
-            foreach (var el in configEl.ChildNodes.OfType<XmlElement>().Where(x=>x.LocalName.Equals(StoreEl)))
+            foreach (var el in configEl.ChildNodes.OfType<XmlElement>().Where(x => x.LocalName.Equals(StoreEl)))
             {
                 ProcessStorePermissions(el);
             }

@@ -22,7 +22,7 @@ namespace BrightstarDB.Tests.BPlusTreeTests
 
         public IPage Retrieve(ulong pageId, BrightstarProfiler profiler)
         {
-            return _pages[(int) pageId];
+            return _pages[(int)pageId];
         }
 
         public IPage Create(ulong commitId)

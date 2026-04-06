@@ -8,11 +8,11 @@ namespace BrightstarDB.Query
 #endif
     internal class BrightstarLiteralNode : VDS.RDF.LiteralNode
     {
-        private BrightstarLiteralNode(string value, string langCode)  : base(value, langCode, false)
-        {            
+        private BrightstarLiteralNode(string value, string langCode) : base(value, langCode, false)
+        {
         }
 
-        private BrightstarLiteralNode(string value, Uri datatype) : base(value, datatype, false){}
+        private BrightstarLiteralNode(string value, Uri datatype) : base(value, datatype, false) { }
 
         /// <summary>
         /// Create a literal node. For plain literals (no language, PlainLiteral or null datatype),

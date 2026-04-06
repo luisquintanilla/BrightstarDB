@@ -23,7 +23,7 @@ namespace BrightstarDB.Server
         protected virtual void Log()
         {
             // check server config to see if txn logging is enabled.             
-        } 
+        }
 
         public abstract void Run();
 
@@ -47,6 +47,6 @@ namespace BrightstarDB.Server
             get { return ExceptionDetail; }
         }
 
-       
+
     }
 }

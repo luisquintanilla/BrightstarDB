@@ -45,7 +45,7 @@ namespace BrightstarDB.Dto
         /// <summary>
         /// 
         /// </summary>
-        public StoreResponseModel(){}
+        public StoreResponseModel() { }
 
         /// <summary>
         /// 

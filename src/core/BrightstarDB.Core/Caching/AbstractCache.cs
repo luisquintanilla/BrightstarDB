@@ -32,12 +32,12 @@ namespace BrightstarDB.Caching
         {
             CacheSize = 0;
             _cacheMaxSize = cacheMaxSize;
-            _highwaterMark = (long)(highwaterMark > 0 ? highwaterMark : cacheMaxSize*0.9);
+            _highwaterMark = (long)(highwaterMark > 0 ? highwaterMark : cacheMaxSize * 0.9);
             _lowwaterMark =
                 (long)
                 (lowwaterMark > 0
                      ? lowwaterMark
-                     : (highwaterMark > 0 ? highwaterMark - (cacheMaxSize*0.25) : cacheMaxSize*0.65));
+                     : (highwaterMark > 0 ? highwaterMark - (cacheMaxSize * 0.25) : cacheMaxSize * 0.65));
             if (_lowwaterMark <= 0) _lowwaterMark = highwaterMark;
             CacheEvictionPolicy = cacheEvictionPolicy;
         }
@@ -96,7 +96,7 @@ namespace BrightstarDB.Caching
         {
             if (key == null) throw new ArgumentNullException(nameof(key));
             long entrySize = RemoveEntry(key);
-            lock(_cacheLock)
+            lock (_cacheLock)
             {
                 CacheSize -= entrySize;
             }
@@ -118,7 +118,7 @@ namespace BrightstarDB.Caching
         /// Provides an enumeration over the entries in the cache.
         /// </summary>
         /// <returns></returns>
-        public abstract IEnumerable<AbstractCacheEntry> ListEntries(); 
+        public abstract IEnumerable<AbstractCacheEntry> ListEntries();
 
         /// <summary>
         /// Implemented in derived classes to add a new entry to the cache
@@ -135,7 +135,7 @@ namespace BrightstarDB.Caching
         /// <param name="key">The key to lookup</param>
         /// <returns>The cache entry found or null if there was no match on <paramref name="key"/></returns>
         protected abstract AbstractCacheEntry GetEntry(string key);
-        
+
         /// <summary>
         /// Called by the eviction policy to remove an item from the cache
         /// </summary>

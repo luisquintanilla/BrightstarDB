@@ -219,15 +219,15 @@ namespace BrightstarDB.Client
             {
                 return RegisterDataObject(new DataObject(this, Curie.ResolveCurie(new Curie(identity), _namespaceMappings).ToString()));
             }
-            
+
             Uri uri;
             var validUri = Uri.TryCreate(identity, UriKind.Absolute, out uri);
-            if(validUri)
+            if (validUri)
             {
                 // Use uri.ToString() to allow for correct unescaping of identity
                 return RegisterDataObject(new DataObject(this, uri.ToString()));
             }
-            
+
             throw new ArgumentException(Strings.InvalidDataObjectIdentity, "identity");
         }
 
@@ -261,7 +261,7 @@ namespace BrightstarDB.Client
             _nonExistencePreconditions.RemoveWhere(x => deletePatterns.Any(x.MatchesWithWildcard));
 
             var nePreconditions = _nonExistencePreconditions.Items.ToList();
-            
+
             if (_savingChanges != null)
             {
                 _savingChanges(this, new DataObjectStoreChangeEventArgs(
@@ -359,15 +359,15 @@ namespace BrightstarDB.Client
                                     bool isLiteral = false, string datatype = null, string language = null)
         {
             var t = new Triple
-                {
-                    Subject = subject,
-                    Predicate = predicate,
-                    Object = @object,
-                    Graph = graph,
-                    IsLiteral = isLiteral,
-                    DataType = datatype,
-                    LangCode = language
-                };
+            {
+                Subject = subject,
+                Predicate = predicate,
+                Object = @object,
+                Graph = graph,
+                IsLiteral = isLiteral,
+                DataType = datatype,
+                LangCode = language
+            };
             if (matchExisting)
             {
                 Preconditions.Add(t);
@@ -428,22 +428,22 @@ namespace BrightstarDB.Client
         {
             var queryResults = BindDataObjectsWithSparql(String.Format(InverseOfSparql, pred.Identity, obj.Identity));
             var matchTriple = new Triple
-                                   {
-                                       Subject = null,
-                                       Predicate = pred.Identity,
-                                       Object = obj.Identity,
-                                       IsLiteral = false
-                                   };
-            foreach(var x in queryResults)
+            {
+                Subject = null,
+                Predicate = pred.Identity,
+                Object = obj.Identity,
+                IsLiteral = false
+            };
+            foreach (var x in queryResults)
             {
                 matchTriple.Subject = x.Identity;
-                if(!_deletePatterns.GetMatches(matchTriple).Any())
+                if (!_deletePatterns.GetMatches(matchTriple).Any())
                 {
                     yield return x;
                 }
             }
             matchTriple.Subject = null;
-            foreach(var addTriple in _addTriples.GetMatches(matchTriple))
+            foreach (var addTriple in _addTriples.GetMatches(matchTriple))
             {
                 yield return MakeDataObject(addTriple.Subject);
             }
@@ -468,7 +468,7 @@ namespace BrightstarDB.Client
                     Graph = r["g"].ToString()
                 }
             );
-        } 
+        }
 
         /// <summary>
         /// Adds preconditions to validate that there is no existing resource with the URI
@@ -480,13 +480,13 @@ namespace BrightstarDB.Client
         {
             _nonExistencePreconditions.RemoveBySubjectPredicate(identity, DataObject.TypeDataObject.Identity);
             _nonExistencePreconditions.AddRange(
-                types.Select(x=>new Triple{Subject = identity, Predicate = DataObject.TypeDataObject.Identity, Object = x, Graph = Constants.WildcardUri}));
+                types.Select(x => new Triple { Subject = identity, Predicate = DataObject.TypeDataObject.Identity, Object = x, Graph = Constants.WildcardUri }));
         }
 
         public void ReplaceIdentity(string oldIdentity, string newIdentity)
         {
             // Replace any references in the AddTriples collection
-            foreach (var addTriple in AddTriples.GetMatches(new Triple{Subject=null, Predicate=null, Object=oldIdentity, IsLiteral = false}).ToList())
+            foreach (var addTriple in AddTriples.GetMatches(new Triple { Subject = null, Predicate = null, Object = oldIdentity, IsLiteral = false }).ToList())
             {
                 AddTriples.Add(new Triple
                 {

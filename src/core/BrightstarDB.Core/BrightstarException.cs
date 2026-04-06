@@ -14,7 +14,7 @@ namespace BrightstarDB
 #endif
     public abstract class BrightstarException : Exception
     {
-        internal BrightstarException(string msg) :base(msg){}
-        internal BrightstarException(string msg, Exception inner) : base(msg, inner){}
+        internal BrightstarException(string msg) : base(msg) { }
+        internal BrightstarException(string msg, Exception inner) : base(msg, inner) { }
     }
 }

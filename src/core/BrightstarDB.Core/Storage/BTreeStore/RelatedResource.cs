@@ -29,7 +29,7 @@ namespace BrightstarDB.Storage.BTreeStore
             var graphCount = SerializationUtils.ReadVarint(dataStream);
 
             Graph = new List<ulong>();
-            for (ulong i=0;i < graphCount;i++)
+            for (ulong i = 0; i < graphCount; i++)
             {
                 Graph.Add(SerializationUtils.ReadVarint(dataStream));
             }
@@ -52,7 +52,7 @@ namespace BrightstarDB.Storage.BTreeStore
 
         public int CompareTo(object obj)
         {
-            var other = (RelatedResource) obj;
+            var other = (RelatedResource)obj;
             return Rid.CompareTo(other.Rid);
         }
 

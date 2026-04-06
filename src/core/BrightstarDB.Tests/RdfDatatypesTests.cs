@@ -134,7 +134,7 @@ namespace BrightstarDB.Tests
             var bsString = RdfDatatypes.GetLiteralString(v);
             var bsParsed = (float)RdfDatatypes.ParseLiteralString(bsString, RdfDatatypes.Float, null);
             Assert.That(bsParsed, Is.EqualTo(v));
-            
+
         }
 
         [Test]

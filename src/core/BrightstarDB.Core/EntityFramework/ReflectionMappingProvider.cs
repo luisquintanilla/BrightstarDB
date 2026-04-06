@@ -38,8 +38,8 @@ namespace BrightstarDB.EntityFramework
                 assemblyMappings = GetAssemblyMappingInfo(contextAssembly);
                 _assemblyMappings[contextAssembly.FullName] = assemblyMappings;
             }
-            var queryableGeneric = typeof (IQueryable<object>).GetGenericTypeDefinition();
-            foreach(var p in contextType.GetProperties())
+            var queryableGeneric = typeof(IQueryable<object>).GetGenericTypeDefinition();
+            foreach (var p in contextType.GetProperties())
             {
                 if (p.PropertyType.IsGenericType() &&
                     queryableGeneric.IsAssignableFrom(p.PropertyType.GetGenericTypeDefinition()))
@@ -91,9 +91,9 @@ namespace BrightstarDB.EntityFramework
         private static void AddMappingsForType(EntityMappingStore mappingStore, AssemblyMappingInfo assemblyMappingInfo, Type mappedType)
         {
             var entityAttribute =
-                mappedType.GetTypeInfo().GetCustomAttributes(typeof (EntityAttribute), false).OfType<EntityAttribute>().
+                mappedType.GetTypeInfo().GetCustomAttributes(typeof(EntityAttribute), false).OfType<EntityAttribute>().
                     FirstOrDefault();
-            
+
             if (entityAttribute != null)
             {
                 var entityTypeIdentifier = entityAttribute.Identifier ?? GetImplTypeName(mappedType);
@@ -103,7 +103,7 @@ namespace BrightstarDB.EntityFramework
                 if (identityProperty != null)
                 {
                     var identifierAttr =
-                        identityProperty.GetCustomAttributes(typeof (IdentifierAttribute), true).Cast
+                        identityProperty.GetCustomAttributes(typeof(IdentifierAttribute), true).Cast
                             <IdentifierAttribute>().FirstOrDefault();
                     var identityInfo = GetIdentityInfo(assemblyMappingInfo, mappedType, identityProperty, identifierAttr);
                     mappingStore.SetIdentityInfo(mappedType, identityInfo);
@@ -199,8 +199,8 @@ namespace BrightstarDB.EntityFramework
                         var propertyUri = assemblyMappingInfo.ResolveIdentifier(propertyName);
 
                         mappingStore.SetPropertyHint(p,
-                            IsResource(p.PropertyType) ? 
-                            new PropertyHint(PropertyMappingType.Arc, propertyUri) : 
+                            IsResource(p.PropertyType) ?
+                            new PropertyHint(PropertyMappingType.Arc, propertyUri) :
                             new PropertyHint(PropertyMappingType.Property, propertyUri));
                     }
                 }
@@ -255,7 +255,7 @@ namespace BrightstarDB.EntityFramework
                         inverseProperty.DeclaringType.FullName));
             }
             var propertyTypeAttr =
-                property.GetCustomAttributes(typeof (PropertyTypeAttribute), false).OfType<PropertyTypeAttribute>().
+                property.GetCustomAttributes(typeof(PropertyTypeAttribute), false).OfType<PropertyTypeAttribute>().
                     FirstOrDefault();
             if (propertyTypeAttr == null)
             {
@@ -275,7 +275,7 @@ namespace BrightstarDB.EntityFramework
             {
                 targetType = targetType.GetGenericArguments().FirstOrDefault();
             }
-            return 
+            return
                 targetType.GetTypeInfo().GetCustomAttributes(typeof(EntityAttribute), false).Any();
         }
 
@@ -290,12 +290,12 @@ namespace BrightstarDB.EntityFramework
             string identityPrefix = type.Name.StartsWith("I") ? type.Name.Substring(1) : type.Name;
             var identityProperty =
                 properties.FirstOrDefault(p =>
-                                          p.GetCustomAttributes(typeof (IdentifierAttribute), true)
+                                          p.GetCustomAttributes(typeof(IdentifierAttribute), true)
                                            .OfType<IdentifierAttribute>().Any());
-            if (identityProperty == null) identityProperty = properties.FirstOrDefault(p=>p.Name.Equals(identityPrefix + "Id"));
-            if (identityProperty == null) identityProperty = properties.FirstOrDefault(p=>p.Name.Equals(identityPrefix + "ID"));
-            if (identityProperty == null) identityProperty = properties.FirstOrDefault(p=>p.Name.Equals("Id"));
-            if (identityProperty == null) identityProperty = properties.FirstOrDefault(p=>p.Name.Equals("ID"));
+            if (identityProperty == null) identityProperty = properties.FirstOrDefault(p => p.Name.Equals(identityPrefix + "Id"));
+            if (identityProperty == null) identityProperty = properties.FirstOrDefault(p => p.Name.Equals(identityPrefix + "ID"));
+            if (identityProperty == null) identityProperty = properties.FirstOrDefault(p => p.Name.Equals("Id"));
+            if (identityProperty == null) identityProperty = properties.FirstOrDefault(p => p.Name.Equals("ID"));
             if (identityProperty != null)
             {
                 ValidateIdentityProperty(identityProperty);
@@ -355,7 +355,7 @@ namespace BrightstarDB.EntityFramework
         {
             var ret = new AssemblyMappingInfo();
             var baseIdentifierAttr =
-                assembly.GetCustomAttributes(typeof (TypeIdentifierPrefixAttribute)).OfType<TypeIdentifierPrefixAttribute>().
+                assembly.GetCustomAttributes(typeof(TypeIdentifierPrefixAttribute)).OfType<TypeIdentifierPrefixAttribute>().
                     FirstOrDefault();
             if (baseIdentifierAttr != null)
             {
@@ -366,7 +366,7 @@ namespace BrightstarDB.EntityFramework
                 ret.BaseUri = DefaultBaseUri;
             }
 
-            foreach(var prefixAttr in assembly.GetCustomAttributes(typeof(NamespaceDeclarationAttribute)).OfType<NamespaceDeclarationAttribute>())
+            foreach (var prefixAttr in assembly.GetCustomAttributes(typeof(NamespaceDeclarationAttribute)).OfType<NamespaceDeclarationAttribute>())
             {
                 ret.PrefixMappings[prefixAttr.Prefix] = prefixAttr.Reference;
             }

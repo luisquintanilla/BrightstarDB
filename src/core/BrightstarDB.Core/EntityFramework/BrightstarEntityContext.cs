@@ -96,7 +96,7 @@ namespace BrightstarDB.EntityFramework
         /// <summary>
         /// Provides an enumeration over all entities currently tracked by this domain context
         /// </summary>
-        public IEnumerable<BrightstarEntityObject> TrackedObjects { get { return _trackedObjects.Values.SelectMany(v=>v); } }
+        public IEnumerable<BrightstarEntityObject> TrackedObjects { get { return _trackedObjects.Values.SelectMany(v => v); } }
 
         /// <summary>
         /// Attempt to add the specified object to this context
@@ -120,7 +120,7 @@ namespace BrightstarDB.EntityFramework
                 EntitySetInfo entitySetInfo;
                 if (_entitySets.TryGetValue(i, out entitySetInfo))
                 {
-                    entitySetInfo.addMethodInfo.Invoke(entitySetInfo.entitySet, new[] {o});
+                    entitySetInfo.addMethodInfo.Invoke(entitySetInfo.entitySet, new[] { o });
                     added = true;
                 }
             }
@@ -251,8 +251,8 @@ namespace BrightstarDB.EntityFramework
                     var entitySetInfo = new EntitySetInfo
                     {
                         entitySet = p.GetValue(this, null) as IEntitySet,
-                        addMethodInfo = p.PropertyType.GetMethod("Add", new Type[] {entityType}),
-                        addOrUpdateMethodInfo = p.PropertyType.GetMethod("AddOrUpdate", new Type[] {entityType})
+                        addMethodInfo = p.PropertyType.GetMethod("Add", new Type[] { entityType }),
+                        addOrUpdateMethodInfo = p.PropertyType.GetMethod("AddOrUpdate", new Type[] { entityType })
                     };
                     entitySets[entityType] = entitySetInfo;
                 }
@@ -290,7 +290,7 @@ namespace BrightstarDB.EntityFramework
         {
             var cstr = new ConnectionString(Configuration.ConnectionString);
             AssertStoreFromConnectionString(cstr);
-            _store = OpenStore(cstr, updateGraphUri:updateGraphUri, datasetGraphUris:datasetGraphUris, versionGraphUri:versionGraphUri);
+            _store = OpenStore(cstr, updateGraphUri: updateGraphUri, datasetGraphUris: datasetGraphUris, versionGraphUri: versionGraphUri);
             _trackedObjects = new Dictionary<string, List<BrightstarEntityObject>>();
         }
 
@@ -361,7 +361,7 @@ namespace BrightstarDB.EntityFramework
             }
             else
             {
-                trackedObjects = new List<BrightstarEntityObject> {obj};
+                trackedObjects = new List<BrightstarEntityObject> { obj };
                 _trackedObjects[obj.DataObject.Identity] = trackedObjects;
             }
         }
@@ -476,7 +476,7 @@ namespace BrightstarDB.EntityFramework
         /// <param name="entities">The objects to be refreshed</param>
         public override void Refresh(RefreshMode mode, IEnumerable entities)
         {
-            foreach(var e in entities) Refresh(mode, e);
+            foreach (var e in entities) Refresh(mode, e);
         }
 
         /// <summary>
@@ -561,30 +561,30 @@ namespace BrightstarDB.EntityFramework
                 var literal = row[0] as ILiteralNode;
                 if (literal == null)
                 {
-                    if (typeof (Uri) == typeof (T))
+                    if (typeof(Uri) == typeof(T))
                     {
                         var uriNode = row[0] as IUriNode;
                         if (uriNode != null)
                         {
                             object v = uriNode.Uri;
-                            yield return (T) v;
+                            yield return (T)v;
                         }
                     }
-                    if (typeof (string) == typeof (T))
+                    if (typeof(string) == typeof(T))
                     {
                         object v = row[0].ToString();
-                        yield return (T) v;
+                        yield return (T)v;
                     }
                 }
                 else
                 {
-                    if (typeof (string) == typeof (T))
+                    if (typeof(string) == typeof(T))
                     {
-                        yield return (T) (object) literal.Value;
+                        yield return (T)(object)literal.Value;
                     }
                     else
                     {
-                        yield return (T) converter(literal.Value, literal.Language);
+                        yield return (T)converter(literal.Value, literal.Language);
                     }
                 }
             }
@@ -789,7 +789,7 @@ namespace BrightstarDB.EntityFramework
             if (resultSet.ResultsType == SparqlResultsType.Boolean && resultSet.Result)
             {
                 var dataObject = _store.MakeDataObject(instanceIdentifier);
-                yield return BindDataObject<T>(dataObject, GetImplType(typeof (T)));
+                yield return BindDataObject<T>(dataObject, GetImplType(typeof(T)));
             }
         }
 
@@ -803,15 +803,15 @@ namespace BrightstarDB.EntityFramework
             public object DefaultValue;
         }
 
-        
+
         private Func<string, string, object> GetStringConverter(Type targetType)
         {
             if (typeof(BrightstarEntityObject).IsAssignableFrom(GetImplType(targetType)))
             {
-                return (s,l) => BindSingleBrightstarObject(targetType, s);
+                return (s, l) => BindSingleBrightstarObject(targetType, s);
             }
-            if (targetType == typeof (PlainLiteral)) return (s, l) => new PlainLiteral(s, l);
-            if (targetType == typeof(string)) return (x,l) => x;
+            if (targetType == typeof(PlainLiteral)) return (s, l) => new PlainLiteral(s, l);
+            if (targetType == typeof(string)) return (x, l) => x;
             if (targetType == typeof(bool)) return (x, l) => Convert.ToBoolean(x);
             if (targetType == typeof(int)) return (x, l) => Convert.ToInt32(x);
             if (targetType == typeof(short)) return (x, l) => Convert.ToInt16(x);
@@ -825,7 +825,7 @@ namespace BrightstarDB.EntityFramework
             if (targetType == typeof(UInt16)) return (x, l) => Convert.ToUInt16(x);
             if (targetType == typeof(UInt32)) return (x, l) => Convert.ToUInt32(x);
             if (targetType == typeof(UInt64)) return (x, l) => Convert.ToUInt64(x);
-            var stringConstructor = targetType.GetConstructor(new Type[] {typeof (string)});
+            var stringConstructor = targetType.GetConstructor(new Type[] { typeof(string) });
             if (stringConstructor != null) return (x, l) => stringConstructor.Invoke(new object[] { x });
             return null;
         }
@@ -936,7 +936,7 @@ namespace BrightstarDB.EntityFramework
         public T CreateObject<T>() where T : class
         {
             var dataObject = CreateDataObject(typeof(T));
-            var bindType = GetImplType(typeof (T));
+            var bindType = GetImplType(typeof(T));
 
             return ((T)Activator.CreateInstance(bindType, this, dataObject));
         }
@@ -952,7 +952,7 @@ namespace BrightstarDB.EntityFramework
             string prefix = identifierInfo == null ? null : identifierInfo.BaseUri;
             var dataObject = identifierInfo != null && identifierInfo.KeyProperties != null
                 ? null
-                : _store.MakeNewDataObject( String.Empty.Equals(prefix) ? Constants.GeneratedUriPrefix : prefix);
+                : _store.MakeNewDataObject(String.Empty.Equals(prefix) ? Constants.GeneratedUriPrefix : prefix);
             if (dataObject != null)
             {
                 IEnumerable<string> typeIds = EntityMappingStore.MapTypeToUris(domainObjectType);
@@ -992,7 +992,7 @@ namespace BrightstarDB.EntityFramework
 
         internal T Bind<T>(IDataObject dataObject) where T : class
         {
-            return Bind(dataObject, typeof (T)) as T;
+            return Bind(dataObject, typeof(T)) as T;
         }
 
         /// <summary>
@@ -1004,7 +1004,7 @@ namespace BrightstarDB.EntityFramework
         internal IEnumerable<BrightstarEntityObject> GetTrackedObjects(IDataObject dataObject)
         {
             return _trackedObjects.ContainsKey(dataObject.Identity)
-                       ? (IEnumerable<BrightstarEntityObject>) _trackedObjects[dataObject.Identity]
+                       ? (IEnumerable<BrightstarEntityObject>)_trackedObjects[dataObject.Identity]
                        : new BrightstarEntityObject[0];
         }
 
@@ -1020,9 +1020,9 @@ namespace BrightstarDB.EntityFramework
 
         internal IEnumerable<PropertyInfo> GetArcProperties(Type t, string propertyType)
         {
-            return from p in t.GetProperties() 
-                   let ph = GetPropertyHint(p) 
-                   where ph != null && ph.MappingType == PropertyMappingType.Arc && ph.SchemaTypeUri.Equals(propertyType) 
+            return from p in t.GetProperties()
+                   let ph = GetPropertyHint(p)
+                   where ph != null && ph.MappingType == PropertyMappingType.Arc && ph.SchemaTypeUri.Equals(propertyType)
                    select p;
         }
 
@@ -1038,7 +1038,7 @@ namespace BrightstarDB.EntityFramework
 
         internal bool IsCollectionProperty(PropertyInfo p)
         {
-            return typeof (IEnumerable).IsAssignableFrom(p.PropertyType);
+            return typeof(IEnumerable).IsAssignableFrom(p.PropertyType);
         }
 
         internal Type GetItemType(PropertyInfo p)
@@ -1058,7 +1058,7 @@ namespace BrightstarDB.EntityFramework
             }
             foreach (var srcObject in GetTrackedObjects(subj.DataObject))
             {
-                foreach(var srcProperty in GetArcProperties(srcObject.GetType(), propertyType))
+                foreach (var srcProperty in GetArcProperties(srcObject.GetType(), propertyType))
                 {
                     if (IsCollectionProperty(srcProperty))
                     {
@@ -1079,7 +1079,8 @@ namespace BrightstarDB.EntityFramework
                         if (srcProperty.PropertyType.Equals(obj.GetType()))
                         {
                             srcObject.UpdateProperty(srcProperty.Name, obj);
-                        } else
+                        }
+                        else
                         {
                             srcObject.UpdateProperty(srcProperty.Name, Bind(obj.DataObject, srcProperty.PropertyType) as BrightstarEntityObject);
                         }
@@ -1097,15 +1098,15 @@ namespace BrightstarDB.EntityFramework
                         {
                             destObject.UpdatePropertyCollection(destProperty.Name, subj, null);
                         }
-                            /* ISSUE #125 - Don't force type coercion when setting inverse properties
-                             * Only update if the data object can be bound to the type of the inverse property
-                        else
-                        {
-                            destObject.UpdatePropertyCollection(destProperty.Name,
-                                                                Bind(subj.DataObject, itemType) as
-                                                                BrightstarEntityObject, null);
-                        }
-                             */
+                        /* ISSUE #125 - Don't force type coercion when setting inverse properties
+                         * Only update if the data object can be bound to the type of the inverse property
+                    else
+                    {
+                        destObject.UpdatePropertyCollection(destProperty.Name,
+                                                            Bind(subj.DataObject, itemType) as
+                                                            BrightstarEntityObject, null);
+                    }
+                         */
                         else
                         {
                             var itemTypeUri = MapTypeToUri(itemType);
@@ -1126,15 +1127,15 @@ namespace BrightstarDB.EntityFramework
                         {
                             destObject.UpdateProperty(destProperty.Name, subj);
                         }
-                            /* ISSUE #125 - Don't force type coercion when setting inverse properties
-                             * Only update if the data object can be bound to the type of the inverse property
-                        else
-                        {
-                            destObject.UpdateProperty(destProperty.Name,
-                                                      Bind(subj.DataObject, destProperty.PropertyType) as
-                                                      BrightstarEntityObject);
-                        }
-                             */
+                        /* ISSUE #125 - Don't force type coercion when setting inverse properties
+                         * Only update if the data object can be bound to the type of the inverse property
+                    else
+                    {
+                        destObject.UpdateProperty(destProperty.Name,
+                                                  Bind(subj.DataObject, destProperty.PropertyType) as
+                                                  BrightstarEntityObject);
+                    }
+                         */
                         else
                         {
                             var itemTypeUri = MapTypeToUri(destProperty.PropertyType);
@@ -1153,9 +1154,9 @@ namespace BrightstarDB.EntityFramework
         internal void RemoveArc(IDataObject subj, string propertyType, IDataObject obj)
         {
             subj.RemoveProperty(propertyType, obj);
-            foreach(var srcObject in GetTrackedObjects(subj))
+            foreach (var srcObject in GetTrackedObjects(subj))
             {
-                foreach(var srcProperty in GetArcProperties(srcObject.GetType(), propertyType))
+                foreach (var srcProperty in GetArcProperties(srcObject.GetType(), propertyType))
                 {
                     if (IsCollectionProperty(srcProperty))
                     {
@@ -1213,7 +1214,7 @@ namespace BrightstarDB.EntityFramework
             {
                 throw new MappingNotFoundException(typeof(T));
             }
-            var implType = EntityMappingStore.GetImplType(typeof (T));
+            var implType = EntityMappingStore.GetImplType(typeof(T));
             List<BrightstarEntityObject> trackedObjects;
             if (_trackedObjects.TryGetValue(beo.DataObject.Identity, out trackedObjects))
             {
@@ -1221,12 +1222,12 @@ namespace BrightstarDB.EntityFramework
                 if (ret != null) return ret;
             }
             var dataObject = beo.DataObject;
-            foreach(var typeUri in EntityMappingStore.MapTypeToUris(implType))
+            foreach (var typeUri in EntityMappingStore.MapTypeToUris(implType))
             {
                 var typeDo = GetDataObject(new Uri(typeUri), false);
                 dataObject.AddProperty(DataObject.TypeDataObject, typeDo);
             }
-            return (T) Activator.CreateInstance(implType, this, beo.DataObject);
+            return (T)Activator.CreateInstance(implType, this, beo.DataObject);
         }
 
         /// <summary>
@@ -1234,13 +1235,13 @@ namespace BrightstarDB.EntityFramework
         /// </summary>
         /// <typeparam name="T">The entity type whose type identifier is to be removed</typeparam>
         /// <param name="beo">An existing entity bound to the resource to be updated</param>
-        public void Unbecome<T>(BrightstarEntityObject beo) 
+        public void Unbecome<T>(BrightstarEntityObject beo)
         {
             if (!EntityMappingStore.IsKnownInterface(typeof(T)))
             {
                 throw new MappingNotFoundException(typeof(T));
             }
-            var typeUri = EntityMappingStore.GetMappedInterfaceTypeUri(EntityMappingStore.GetImplType(typeof (T)));
+            var typeUri = EntityMappingStore.GetMappedInterfaceTypeUri(EntityMappingStore.GetImplType(typeof(T)));
             if (!String.IsNullOrEmpty(typeUri))
             {
                 var typeDo = GetDataObject(new Uri(typeUri), false);

@@ -6,6 +6,6 @@
     /// </summary>
     public class BrightstarStoreIsReadOnlyException : BrightstarClientException
     {
-        internal BrightstarStoreIsReadOnlyException() : base(Strings.BrightstarServiceClient_StoreIsReadOnly){}
+        internal BrightstarStoreIsReadOnlyException() : base(Strings.BrightstarServiceClient_StoreIsReadOnly) { }
     }
 }

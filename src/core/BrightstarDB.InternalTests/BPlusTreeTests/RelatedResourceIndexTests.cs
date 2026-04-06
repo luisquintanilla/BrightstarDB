@@ -11,7 +11,7 @@ namespace BrightstarDB.InternalTests.BPlusTreeTests
         public void TestInsertRelatedResource()
         {
             ulong relatedResourceIndexRoot;
-            using(var pageStore = TestUtils.CreateEmptyPageStore("TestInsertRelatedResource.dat"))
+            using (var pageStore = TestUtils.CreateEmptyPageStore("TestInsertRelatedResource.dat"))
             {
                 var relatedResourceIndex = new RelatedResourceIndex(0, pageStore);
                 relatedResourceIndex.AddRelatedResource(0, 1ul, 2ul, 3ul, 4);
@@ -23,7 +23,7 @@ namespace BrightstarDB.InternalTests.BPlusTreeTests
                 pageStore.Commit(0ul, null);
             }
 
-            using(var pageStore = TestUtils.OpenPageStore("TestInsertRelatedResource.dat", true))
+            using (var pageStore = TestUtils.OpenPageStore("TestInsertRelatedResource.dat", true))
             {
                 var relatedResourceIndex = new RelatedResourceIndex(pageStore, relatedResourceIndexRoot, null);
                 var relatedResourceIds = relatedResourceIndex.EnumerateRelatedResources(1ul, 2ul, 4, null).ToList();
@@ -127,7 +127,7 @@ namespace BrightstarDB.InternalTests.BPlusTreeTests
                 Assert.AreEqual(8, relatedResourceIds[3].GraphId);
 
                 relatedResourceIndex.DeleteRelatedResource(1, 1, 2, 3, 4, null);
-                Assert.AreEqual(3, relatedResourceIndex.EnumerateRelatedResources(1,2).Count());
+                Assert.AreEqual(3, relatedResourceIndex.EnumerateRelatedResources(1, 2).Count());
 
                 relatedResourceIndex.DeleteRelatedResource(1, 1, 2, 7, 8, null);
                 Assert.AreEqual(2, relatedResourceIndex.EnumerateRelatedResources(1, 2).Count());

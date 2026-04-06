@@ -5,6 +5,6 @@ namespace BrightstarDB.Storage
     /// </summary>
     internal enum StoreType
     {
-        Standard  = 0
+        Standard = 0
     }
 }

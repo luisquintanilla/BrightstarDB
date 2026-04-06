@@ -58,7 +58,7 @@ namespace BrightstarDB.Client
             if (deletePatterns.Any(p => IsGraphTargeted(p) && IsGrounded(p)))
             {
                 deleteCmds.AppendLine("DELETE DATA {");
-                foreach (var patternGroup in deletePatterns.Where(p => IsGraphTargeted(p) && IsGrounded(p)).GroupBy(p=>p.Graph))
+                foreach (var patternGroup in deletePatterns.Where(p => IsGraphTargeted(p) && IsGrounded(p)).GroupBy(p => p.Graph))
                 {
                     deleteCmds.AppendFormat("GRAPH <{0}> {{", patternGroup.Key);
                     deleteCmds.AppendLine();
@@ -70,7 +70,7 @@ namespace BrightstarDB.Client
                 }
                 deleteCmds.AppendLine("};");
             }
-            foreach (var deletePattern in deletePatterns.Where(p=>IsGraphTargeted(p) && !IsGrounded(p)))
+            foreach (var deletePattern in deletePatterns.Where(p => IsGraphTargeted(p) && !IsGrounded(p)))
             {
                 deleteCmds.AppendFormat("WITH <{0}> DELETE {{ {1} }} WHERE {{ {1} }};",
                                         deletePattern.Graph, FormatDeletePattern(deletePattern, ref propId));
@@ -129,7 +129,7 @@ namespace BrightstarDB.Client
         private static string FormatDeletePatternItem(string literal, string dataType, string languageCode)
         {
             var builder = new StringBuilder();
-            builder.AppendFormat("\"{0}\"", literal );
+            builder.AppendFormat("\"{0}\"", literal);
             if (dataType != null)
             {
                 builder.Append("^^");
@@ -153,7 +153,7 @@ namespace BrightstarDB.Client
         private static void FormatGroundedDeleteForGraphs(IEnumerable<string> graphUris, string deleteData,
                                                           StringBuilder buff)
         {
-            
+
             buff.AppendLine("DELETE DATA {");
             foreach (var g in graphUris)
             {
@@ -209,7 +209,7 @@ namespace BrightstarDB.Client
         //            else
         //            {
         //                AppendTriplePattern(deletePattern, deleteOp);
-                        
+
         //            }
         //            deleteOp.AppendLine();
         //        }

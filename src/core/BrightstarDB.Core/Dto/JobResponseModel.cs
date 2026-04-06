@@ -41,7 +41,7 @@ namespace BrightstarDB.Dto
         /// <summary>
         /// Get the Date/Time when the job was queued to be processed as an ISO 8601 string in UTC
         /// </summary>
-        public string QueuedTimeUtc { get { return QueuedTime == DateTime.MinValue ? null :  QueuedTime.ToUniversalTime().ToString("O"); } }
+        public string QueuedTimeUtc { get { return QueuedTime == DateTime.MinValue ? null : QueuedTime.ToUniversalTime().ToString("O"); } }
 
         /// <summary>
         /// Get the Date/Time when the job started to be processed as an ISO 8601 string in UTC
@@ -57,12 +57,12 @@ namespace BrightstarDB.Dto
         /// Get or set the string identifier for the current job status
         /// </summary>
         public string JobStatus { get; set; }
-        
+
         /// <summary>
         /// Get or set the informational status message for the job
         /// </summary>
         public string StatusMessage { get; set; }
-        
+
         /// <summary>
         /// Get or set the name of the store where this job runs
         /// </summary>

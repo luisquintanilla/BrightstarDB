@@ -36,7 +36,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
             _dataTypeId = BitConverter.ToUInt64(data, 9);
             _valuePage = BitConverter.ToUInt64(data, 17);
             _valueSegment = data[25];
-            var prefixLength = (int) data[26];
+            var prefixLength = (int)data[26];
             _prefix = Encoding.UTF8.GetString(data, 27, prefixLength);
             _resourceTable = resourceTable;
         }
@@ -58,7 +58,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
 
         public bool Matches(string resourceValue, bool isLiteral, ulong dataTypeId, ulong langCodeId)
         {
-            if ( isLiteral && dataTypeId == _dataTypeId && langCodeId == _langCodeId && resourceValue.StartsWith(_prefix))
+            if (isLiteral && dataTypeId == _dataTypeId && langCodeId == _langCodeId && resourceValue.StartsWith(_prefix))
             {
                 return resourceValue.Equals(Value);
             }

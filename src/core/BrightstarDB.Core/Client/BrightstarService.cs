@@ -22,7 +22,7 @@ namespace BrightstarDB.Client
         /// </summary>
         /// <param name="allowJobsToConclude">If true all stores will complete any registered jobs. If false, only the current 
         /// running job is allowed to conclude and all other queued jobs are lost.</param>
-        public static void Shutdown(bool allowJobsToConclude=true)
+        public static void Shutdown(bool allowJobsToConclude = true)
         {
             ServerCoreManager.Shutdown(allowJobsToConclude);
 #if PORTABLE
@@ -50,7 +50,7 @@ namespace BrightstarDB.Client
         public static IBrightstarService GetClient(EmbeddedServiceConfiguration serviceConfigurationOptions = null)
         {
             var configuration = Configuration.ConnectionString;
-            if(String.IsNullOrEmpty(configuration))
+            if (String.IsNullOrEmpty(configuration))
             {
                 throw new BrightstarClientException(Strings.BrightstarServiceClient_NoConnectionStringConfiguration);
             }
@@ -111,7 +111,7 @@ namespace BrightstarDB.Client
         ///<returns>The new data object context</returns>
         public static IDataObjectContext GetDataObjectContext(string connectionString)
         {
-            return GetDataObjectContext(new ConnectionString(connectionString));            
+            return GetDataObjectContext(new ConnectionString(connectionString));
         }
 
         ///<summary>
@@ -146,7 +146,7 @@ namespace BrightstarDB.Client
 
                 case ConnectionType.Sparql:
                     return MakeSparqlDataObjectContext(connectionString);
-                    
+
                 default:
                     throw new BrightstarClientException("Unable to create valid context with connection string " +
                                                         connectionString.Value +

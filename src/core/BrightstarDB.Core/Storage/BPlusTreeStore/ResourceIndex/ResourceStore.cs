@@ -36,8 +36,8 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
         public IResource FromBTreeValue(byte[] btreeValue)
         {
             var header = btreeValue[0];
-            bool isShort = ((header & (byte) ResourceHeaderFlags.IsShort) == (byte) ResourceHeaderFlags.IsShort);
-            bool isLiteral = ((header & (byte) ResourceHeaderFlags.IsLiteral) == (byte) ResourceHeaderFlags.IsLiteral);
+            bool isShort = ((header & (byte)ResourceHeaderFlags.IsShort) == (byte)ResourceHeaderFlags.IsShort);
+            bool isLiteral = ((header & (byte)ResourceHeaderFlags.IsLiteral) == (byte)ResourceHeaderFlags.IsLiteral);
             if (isShort)
             {
                 if (isLiteral)
@@ -46,7 +46,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
                 }
                 return new ShortUriResource(btreeValue);
             }
-            if(isLiteral)
+            if (isLiteral)
             {
                 return new LongLiteralResource(_resourceTable, btreeValue);
             }

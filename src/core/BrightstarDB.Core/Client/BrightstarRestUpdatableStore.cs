@@ -31,7 +31,7 @@ namespace BrightstarDB.Client
             return new SparqlResult(resultStream, resultFormat, queryContext);
         }
 
-        public void ApplyTransaction(IEnumerable<ITriple> existencePreconditions, IEnumerable<ITriple> nonexistencePreconditions, 
+        public void ApplyTransaction(IEnumerable<ITriple> existencePreconditions, IEnumerable<ITriple> nonexistencePreconditions,
             IEnumerable<ITriple> deletePatterns, IEnumerable<ITriple> inserts, string updateGraphUri)
         {
             var existencePreconditionsData = SerializeTriples(existencePreconditions);
@@ -49,7 +49,7 @@ namespace BrightstarDB.Client
             using (var writer = new StringWriter())
             {
                 var sink = new BrightstarTripleSinkAdapter(new NQuadsWriter(writer));
-                foreach(var t in triples) sink.Triple(t);
+                foreach (var t in triples) sink.Triple(t);
                 writer.Close();
                 return writer.ToString();
             }
@@ -64,13 +64,13 @@ namespace BrightstarDB.Client
         {
             var jobInfo = _client.ExecuteTransaction(_storeName,
                                                      new UpdateTransactionData
-                                                         {
-                                                             ExistencePreconditions = existencePreconditions,
-                                                             NonexistencePreconditions = nonexistencePreconditions,
-                                                             DeletePatterns = patternsToDelete,
-                                                             InsertData = triplesToAdd,
-                                                             DefaultGraphUri = defaultGraphUri
-                                                         });
+                                                     {
+                                                         ExistencePreconditions = existencePreconditions,
+                                                         NonexistencePreconditions = nonexistencePreconditions,
+                                                         DeletePatterns = patternsToDelete,
+                                                         InsertData = triplesToAdd,
+                                                         DefaultGraphUri = defaultGraphUri
+                                                     });
 
             while (!(jobInfo.JobCompletedOk || jobInfo.JobCompletedWithErrors))
             {

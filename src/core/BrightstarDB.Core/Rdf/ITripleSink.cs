@@ -20,8 +20,8 @@
         /// <param name="langCode">The language code for the object literal or null if the object is not a literal</param>
         /// <param name="graphUri">The graph URI for the statement</param>
         void Triple(string subject, bool subjectIsBNode,
-            string predicate, bool predicateIsBNode, 
-            string obj, bool objIsBNode, bool objIsLiteral, 
+            string predicate, bool predicateIsBNode,
+            string obj, bool objIsBNode, bool objIsLiteral,
             string dataType, string langCode, string graphUri);
 
         /// <summary>

@@ -23,7 +23,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
         /// <param name="pageStore"></param>
         /// <param name="keySize">The size of the B+ tree's key (in bytes)</param>
         /// <param name="dataSize">The size of the values stored in leaf nodes (in bytes)</param>
-        public BPlusTree(ulong txnId, IPageStore pageStore, int keySize = 8, int dataSize = 64) 
+        public BPlusTree(ulong txnId, IPageStore pageStore, int keySize = 8, int dataSize = 64)
         {
             _config = new BPlusTreeConfiguration(pageStore, keySize, dataSize, pageStore.PageSize);
             _pageStore = pageStore;
@@ -178,7 +178,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
         /// <param name="toKey">The highest key to return in the enumeration</param>
         /// <param name="profiler"></param>
         /// <returns>An enumeration of key-value pairs from the BTree</returns>
-        public IEnumerable<KeyValuePair<byte[], byte[]>> Scan(byte[] fromKey, byte[] toKey, BrightstarProfiler profiler )
+        public IEnumerable<KeyValuePair<byte[], byte[]>> Scan(byte[] fromKey, byte[] toKey, BrightstarProfiler profiler)
         {
             using (profiler.Step("Scan BTree Range"))
             {
@@ -190,7 +190,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             }
         }
 
-        public IEnumerable<KeyValuePair<byte[], byte []>> Scan(BrightstarProfiler profiler)
+        public IEnumerable<KeyValuePair<byte[], byte[]>> Scan(BrightstarProfiler profiler)
         {
             using (profiler.Step("Scan Entire BTree"))
             {
@@ -203,9 +203,9 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             if (node is IInternalNode)
             {
                 var internalNode = node as IInternalNode;
-                foreach(var childNodeId in internalNode.Scan())
+                foreach (var childNodeId in internalNode.Scan())
                 {
-                    foreach(var entry in Scan(GetNode(childNodeId, profiler), profiler))
+                    foreach (var entry in Scan(GetNode(childNodeId, profiler), profiler))
                     {
                         yield return entry;
                     }
@@ -214,7 +214,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             if (node is ILeafNode)
             {
                 var leaf = node as ILeafNode;
-                foreach(var entry in leaf.Scan())
+                foreach (var entry in leaf.Scan())
                 {
                     yield return entry;
                 }
@@ -226,9 +226,9 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             if (node is IInternalNode)
             {
                 var internalNode = node as IInternalNode;
-                foreach(var childNodeId in internalNode.Scan(fromKey, toKey))
+                foreach (var childNodeId in internalNode.Scan(fromKey, toKey))
                 {
-                    foreach(var entry in Scan(GetNode(childNodeId, profiler), fromKey, toKey, profiler))
+                    foreach (var entry in Scan(GetNode(childNodeId, profiler), fromKey, toKey, profiler))
                     {
                         yield return entry;
                     }
@@ -237,7 +237,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             else if (node is ILeafNode)
             {
                 var leaf = node as ILeafNode;
-                foreach(var entry in leaf.Scan(fromKey, toKey))
+                foreach (var entry in leaf.Scan(fromKey, toKey))
                 {
                     yield return entry;
                 }
@@ -297,8 +297,8 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                         }
                     }
                     bool hasRightSibling = parentInternalNode.GetRightSiblingId(childNodeId, out rightSiblingId);
-                    
-                        
+
+
                     if (hasRightSibling)
                     {
                         rightSibling = GetNode(rightSiblingId, profiler) as ILeafNode;
@@ -656,7 +656,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             return numLoaded;
         }
 
-        
+
 
         #region Node factory methods
 

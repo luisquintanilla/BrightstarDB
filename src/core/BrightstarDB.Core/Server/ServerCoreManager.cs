@@ -20,7 +20,7 @@ namespace BrightstarDB.Server
             PersistenceType = Configuration.PersistenceType;
         }
 
-        public static void Shutdown(bool completeJobs=true)
+        public static void Shutdown(bool completeJobs = true)
         {
             lock (UpdateLock)
             {

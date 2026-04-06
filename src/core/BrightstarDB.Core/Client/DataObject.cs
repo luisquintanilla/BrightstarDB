@@ -315,11 +315,11 @@ namespace BrightstarDB.Client
             if (!_store.DeletePatterns.GetMatches(Identity, type.Identity, Constants.WildcardUri).Any())
             {
                 AddDeleteTriples(new Triple
-                    {
-                        Subject = Identity,
-                        Predicate = type.Identity,
-                        Object = Constants.WildcardUri
-                    });
+                {
+                    Subject = Identity,
+                    Predicate = type.Identity,
+                    Object = Constants.WildcardUri
+                });
             }
             _triples.RemoveAll(t => t.Predicate.Equals(type.Identity));
             _store.AddTriples.RemoveBySubjectPredicate(Identity, type.Identity);
@@ -344,7 +344,7 @@ namespace BrightstarDB.Client
         public IDataObject RemoveInversePropertiesOfType(IDataObject type)
         {
             CheckLoaded();
-            AddDeleteTriples(new Triple{Subject = Constants.WildcardUri, Predicate = type.Identity, Object = Identity, IsLiteral = false});
+            AddDeleteTriples(new Triple { Subject = Constants.WildcardUri, Predicate = type.Identity, Object = Identity, IsLiteral = false });
             _store.AddTriples.RemoveByPredicateObject(type.Identity, Identity);
             return this;
         }
@@ -396,7 +396,7 @@ namespace BrightstarDB.Client
         {
             CheckLoaded();
             return _triples.Select(t => t.Predicate).Distinct().Select(x => _store.MakeDataObject(x));
-        } 
+        }
 
         ///<summary>
         /// Returns all data objects that have a property of the specified type where
@@ -432,9 +432,9 @@ namespace BrightstarDB.Client
             // remove all add triples for this DataObject or references to it.
             _store.AddTriples.RemoveBySubject(Identity);
             _store.AddTriples.RemoveByObject(Identity);
-            
+
             // delete triples where this DataObject is the object
-            AddDeleteTriples(new Triple {Subject = Constants.WildcardUri, Predicate = Constants.WildcardUri, Object = Identity});
+            AddDeleteTriples(new Triple { Subject = Constants.WildcardUri, Predicate = Constants.WildcardUri, Object = Identity });
 
             // remove all triples from current state
             _triples.Clear();
@@ -484,15 +484,15 @@ namespace BrightstarDB.Client
         private Triple ReplaceIdentity(ITriple t, string newIdentity)
         {
             return new Triple
-                {
-                    Subject = t.Subject.Equals(_identity) ? newIdentity : t.Subject,
-                    Predicate = t.Predicate,
-                    IsLiteral = t.IsLiteral,
-                    Object = t.Object.Equals(_identity) && !t.IsLiteral ? newIdentity : t.Object,
-                    DataType = t.DataType,
-                    LangCode = t.LangCode,
-                    Graph = t.Graph
-                };
+            {
+                Subject = t.Subject.Equals(_identity) ? newIdentity : t.Subject,
+                Predicate = t.Predicate,
+                IsLiteral = t.IsLiteral,
+                Object = t.Object.Equals(_identity) && !t.IsLiteral ? newIdentity : t.Object,
+                DataType = t.DataType,
+                LangCode = t.LangCode,
+                Graph = t.Graph
+            };
         }
         /// <summary>
         /// Sets the property of this object to the specified data object
@@ -508,13 +508,13 @@ namespace BrightstarDB.Client
 
             // create a new value triple
             var triple = new Triple
-                             {
-                                 Subject = Identity,
-                                 Predicate = type.Identity,
-                                 Object = value.Identity,
-                                 IsLiteral = false,
-                                 Graph = _store.UpdateGraphUri
-                             };
+            {
+                Subject = Identity,
+                Predicate = type.Identity,
+                Object = value.Identity,
+                IsLiteral = false,
+                Graph = _store.UpdateGraphUri
+            };
 
             // use common method for updating local state and the txn
             SetTriple(triple);
@@ -551,30 +551,30 @@ namespace BrightstarDB.Client
             {
                 // Update of version property has slightly different handling due to different target graph
                 var triple = new Triple
-                    {
-                        Subject = Identity,
-                        Predicate = Constants.VersionPredicateUri,
-                        IsLiteral = true,
-                        Object = value,
-                        DataType = dataType,
-                        LangCode = langCode,
-                        Graph = _store.VersionGraphUri
-                    };
+                {
+                    Subject = Identity,
+                    Predicate = Constants.VersionPredicateUri,
+                    IsLiteral = true,
+                    Object = value,
+                    DataType = dataType,
+                    LangCode = langCode,
+                    Graph = _store.VersionGraphUri
+                };
                 SetVersionTriple(triple);
             }
             else
             {
                 // create a new value triple
                 var triple = new Triple
-                    {
-                        Subject = Identity,
-                        Predicate = type.Identity,
-                        IsLiteral = true,
-                        Object = value,
-                        DataType = dataType,
-                        LangCode = langCode,
-                        Graph = _store.UpdateGraphUri
-                    };
+                {
+                    Subject = Identity,
+                    Predicate = type.Identity,
+                    IsLiteral = true,
+                    Object = value,
+                    DataType = dataType,
+                    LangCode = langCode,
+                    Graph = _store.UpdateGraphUri
+                };
 
                 // use common method for updating local state and the txn
                 SetTriple(triple);
@@ -600,11 +600,11 @@ namespace BrightstarDB.Client
             if (!_isNew && !_store.DeletePatterns.GetMatches(triple.Subject, triple.Predicate, Constants.WildcardUri).Any())
             {
                 AddDeleteTriples(new Triple
-                    {
-                        Subject = triple.Subject,
-                        Predicate = triple.Predicate,
-                        Object = Constants.WildcardUri
-                    });
+                {
+                    Subject = triple.Subject,
+                    Predicate = triple.Predicate,
+                    Object = Constants.WildcardUri
+                });
             }
 
             // add new triple to current triples
@@ -651,13 +651,13 @@ namespace BrightstarDB.Client
             CheckLoaded();
 
             var triple = new Triple
-                             {
-                                 Graph = _store.UpdateGraphUri,
-                                 IsLiteral = false,
-                                 Object = value.Identity,
-                                 Predicate = type.Identity,
-                                 Subject = Identity
-                             };
+            {
+                Graph = _store.UpdateGraphUri,
+                IsLiteral = false,
+                Object = value.Identity,
+                Predicate = type.Identity,
+                Subject = Identity
+            };
 
             // add to DataObject state triples
             _triples.Add(triple);
@@ -671,15 +671,15 @@ namespace BrightstarDB.Client
             CheckLoaded();
 
             var triple = new Triple
-                             {
-                                 Graph = _store.UpdateGraphUri,
-                                 IsLiteral = true,
-                                 Object = value,
-                                 DataType = dataType,
-                                 LangCode = langCode,
-                                 Predicate = type.Identity,
-                                 Subject = Identity
-                             };
+            {
+                Graph = _store.UpdateGraphUri,
+                IsLiteral = true,
+                Object = value,
+                DataType = dataType,
+                LangCode = langCode,
+                Predicate = type.Identity,
+                Subject = Identity
+            };
 
             // add to DataObject state triples
             _triples.Add(triple);
@@ -703,7 +703,7 @@ namespace BrightstarDB.Client
                     Object = value.Identity,
                     IsLiteral = false
                 });
-                
+
             }
 
             // remove any matches from the list of triples to be added
@@ -719,14 +719,14 @@ namespace BrightstarDB.Client
             {
                 // add the triple into the delete txn
                 AddDeleteTriples(new Triple
-                    {
-                        Subject = Identity,
-                        Predicate = type.Identity,
-                        IsLiteral = true,
-                        Object = value,
-                        DataType = dataType,
-                        LangCode = langCode
-                    });
+                {
+                    Subject = Identity,
+                    Predicate = type.Identity,
+                    IsLiteral = true,
+                    Object = value,
+                    DataType = dataType,
+                    LangCode = langCode
+                });
             }
 
             // remove from add txn
@@ -814,7 +814,7 @@ namespace BrightstarDB.Client
                         _store.SetClassUniqueConstraints(
                             Identity,
                             _triples.Where(
-                                x => x.Predicate.Equals(TypeDataObject.Identity) && x.Subject.Equals(Identity)).Select(x=>x.Object));
+                                x => x.Predicate.Equals(TypeDataObject.Identity) && x.Subject.Equals(Identity)).Select(x => x.Object));
                     }
                 }
                 return true;
@@ -829,7 +829,7 @@ namespace BrightstarDB.Client
                         Identity,
                         _triples.Where(
                             x => x.Predicate.Equals(TypeDataObject.Identity) && x.Subject.Equals(Identity))
-                            .Select(x=>x.Object));
+                            .Select(x => x.Object));
                 }
             }
             _isLoaded = true;

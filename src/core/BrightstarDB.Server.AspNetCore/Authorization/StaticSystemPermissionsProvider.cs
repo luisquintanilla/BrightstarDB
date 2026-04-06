@@ -47,7 +47,8 @@ namespace BrightstarDB.Server.AspNetCore.Authorization
                 if (el.LocalName.Equals(UserEl))
                 {
                     ProcessPermissionsElement(el, _userPermissions);
-                } else if (el.LocalName.Equals(ClaimEl))
+                }
+                else if (el.LocalName.Equals(ClaimEl))
                 {
                     ProcessPermissionsElement(el, _claimPermissions);
                 }

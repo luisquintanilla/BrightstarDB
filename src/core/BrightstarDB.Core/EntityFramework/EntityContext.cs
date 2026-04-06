@@ -80,7 +80,7 @@ namespace BrightstarDB.EntityFramework
         /// by <paramref name="instanceIdentifier"/> is an instance of the resource identifier by <paramref name="typeIdentifier"/>,
         /// the enumeration returns a single object, otherwise it returns no objects.</returns>
         public abstract IEnumerable<T> ExecuteInstanceQuery<T>(string instanceIdentifier, string typeIdentifier);
- 
+
         /// <summary>
         /// Returns the property hint for the specified .NET property
         /// </summary>
@@ -166,7 +166,7 @@ namespace BrightstarDB.EntityFramework
             }
             return
                 o.GetType().GetProperties().Where(
-                    p => p.GetCustomAttributes(typeof (IdentifierAttribute), true).Any()).Select(
+                    p => p.GetCustomAttributes(typeof(IdentifierAttribute), true).Any()).Select(
                         p => p.GetValue(o, null).ToString()).FirstOrDefault();
         }
 

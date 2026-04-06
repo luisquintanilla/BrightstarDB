@@ -204,7 +204,7 @@ namespace BrightstarDB.CodeGeneration
             {
                 Console.WriteLine("Loading project " + project.ProjectFile.Path);
                 var results = project.Build().First();
-                Console.WriteLine("Project Build " + (results.Succeeded?"Succeeded" : "FAILED"));
+                Console.WriteLine("Project Build " + (results.Succeeded ? "Succeeded" : "FAILED"));
                 if (!results.Succeeded)
                 {
                     throw new Exception("Analysis build failed for project: " + results.ProjectFilePath + "\n" + log);
@@ -279,7 +279,7 @@ namespace BrightstarDB.CodeGeneration
             Func<INamedTypeSymbol, string> entityNamespaceSelector = null,
             Func<INamedTypeSymbol, string> entityNameSelector = null,
             Func<INamedTypeSymbol, Accessibility> entityAccessibilitySelector = null,
-            Func<INamedTypeSymbol, bool> interfacePredicate = null, 
+            Func<INamedTypeSymbol, bool> interfacePredicate = null,
             string brightstarAssemblyPath = null)
         {
             if (brightstarAssemblyPath == null)
@@ -437,7 +437,7 @@ namespace BrightstarDB.CodeGeneration
             string brightstarAssemblyPath)
         {
             Compilation compilation;
-            
+
             var references = new[]
             {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
@@ -632,7 +632,7 @@ namespace BrightstarDB.CodeGeneration
             {
                 var baseType = compilation
                     .GetTypeByMetadataName(Constants.BrightstarEntityContext);
-                
+
                 if (baseType == null)
                 {
                     throw new InvalidOperationException(
@@ -722,7 +722,7 @@ namespace BrightstarDB.CodeGeneration
                                                             })))
                                         })));
 
-                
+
 
                 var initializeContextInvocation = syntaxGenerator
                     .InvocationExpression(
@@ -871,7 +871,7 @@ namespace BrightstarDB.CodeGeneration
             private IEnumerable<SyntaxNode> GetEntityProperties()
             {
                 var iEntitySetType = compilation.GetTypeByMetadataName(Constants.IEntitySet);
-                
+
                 // GENERATED CODE:
                 //
                 //     [foreach entity type]

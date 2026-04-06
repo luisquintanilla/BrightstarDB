@@ -15,7 +15,8 @@ namespace BrightstarDB.EntityFramework.Tests.ContextObjects
         ICollection<ICompany> ListedCompanies { get; set; }
     }
 
-    public class Market : MockEntityObject, IMarket{
+    public class Market : MockEntityObject, IMarket
+    {
         #region Implementation of IMarket
 
         public string Id

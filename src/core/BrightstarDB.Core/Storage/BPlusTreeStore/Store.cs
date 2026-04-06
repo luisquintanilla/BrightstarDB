@@ -62,7 +62,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
 
         public IEnumerable<Triple> Match(string subject, string predicate, string obj, bool isLiteral, string dataType, string langCode, string graph)
         {
-            return Match(subject, predicate, obj, isLiteral, dataType, langCode, graph == null ? null : new[] {graph});
+            return Match(subject, predicate, obj, isLiteral, dataType, langCode, graph == null ? null : new[] { graph });
         }
 
         public IEnumerable<Triple> Match(string subject, string predicate, string obj, bool isLiteral, string dataType, string langCode, IEnumerable<string> graphs)
@@ -94,15 +94,15 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             {
                 return new Triple[0];
             }
-            return BindSubject(sid, new List<int> {gid}).Select(MakeTriple);
+            return BindSubject(sid, new List<int> { gid }).Select(MakeTriple);
         }
 
         public BrightstarSparqlResultsType ExecuteSparqlQuery(SparqlQuery query, ISerializationFormat targetFormat, Stream resultsStream,
-            IEnumerable<string> defaultGraphUris, IStoreStatistics storeStatistics )
+            IEnumerable<string> defaultGraphUris, IStoreStatistics storeStatistics)
         {
             var queryHandler = new SparqlQueryHandler(targetFormat, defaultGraphUris, storeStatistics);
             // NOTE: streamWriter is not wrapped in a using because we don't want to close resultStream at this point
-            
+
             var streamWriter = new StreamWriter(resultsStream, targetFormat.Encoding);
             var resultsType = queryHandler.ExecuteSparql(query, this, streamWriter);
             return resultsType;
@@ -210,8 +210,8 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                 }
 
                 var txnId = _currentTxnId + 1;
-                ulong sid = _resourceIndex.AssertResourceInIndex(txnId, subject, profiler:profiler);
-                ulong pid = _resourceIndex.AssertResourceInIndex(txnId, predicate, profiler:profiler);
+                ulong sid = _resourceIndex.AssertResourceInIndex(txnId, subject, profiler: profiler);
+                ulong pid = _resourceIndex.AssertResourceInIndex(txnId, predicate, profiler: profiler);
                 ulong oid = _resourceIndex.AssertResourceInIndex(txnId, objValue, isObjectLiteral, dataType, langCode,
                                                                  !isObjectLiteral, profiler);
                 int gid = _graphIndex.AssertGraphId(graphUri, profiler);
@@ -268,7 +268,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             }
             string lc = triple.LangCode == null ? null : triple.LangCode.ToLowerInvariant();
             ulong oid = FindResourceId(triple.Object, triple.IsLiteral, dtStr, lc);
-            if(oid == StoreConstants.NullUlong)
+            if (oid == StoreConstants.NullUlong)
             {
                 // No object match, so no-op
                 return;
@@ -284,9 +284,9 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             {
                 ulong storePageId = Save(profiler);
                 var storeManager = StoreManagerFactory.GetStoreManager();
-                
+
                 var mf = storeManager.GetMasterFile(DirectoryPath);
-                mf.AppendCommitPoint(new CommitPoint(storePageId,_currentTxnId + 1,DateTime.UtcNow, jobId));
+                mf.AppendCommitPoint(new CommitPoint(storePageId, _currentTxnId + 1, DateTime.UtcNow, jobId));
                 _currentTxnId++;
             }
         }
@@ -339,7 +339,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
         /// </summary>
         /// <param name="jobId"></param>
         public void Consolidate(Guid jobId)
-        
+
         {
             var storeManager = StoreManagerFactory.GetStoreManager();
             var consolidatePageStore = storeManager.CreateConsolidationStore(DirectoryPath);
@@ -423,7 +423,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
         public void AddGraph(string srcGraphUri, string targetGraphUri)
         {
             // TODO: This could be made more efficient by implementing it inside the resource index class.
-            foreach(var t in Match(null, null, null, false, null, null, srcGraphUri))
+            foreach (var t in Match(null, null, null, false, null, null, srcGraphUri))
             {
                 t.Graph = targetGraphUri;
                 InsertTriple(t);
@@ -441,7 +441,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
 
         public void DeleteGraphs(IEnumerable<string> graphUris)
         {
-            foreach(var g in graphUris)
+            foreach (var g in graphUris)
             {
                 DeleteGraph(g);
             }
@@ -474,7 +474,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
 
         public void WarmupPageCache(int pagesToPreload, BrightstarProfiler profiler = null)
         {
-            int totalLoaded = _subjectRelatedResourceIndex.Preload(pagesToPreload/3, profiler);
+            int totalLoaded = _subjectRelatedResourceIndex.Preload(pagesToPreload / 3, profiler);
             totalLoaded += _objectRelatedResourceIndex.Preload(pagesToPreload - totalLoaded, profiler);
             totalLoaded += _resourceIndex.Preload(pagesToPreload - totalLoaded, profiler);
             _resourceTable.Preload(pagesToPreload - totalLoaded, profiler);
@@ -565,7 +565,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             var buff = new byte[128];
             BitConverter.GetBytes(1).CopyTo(buff, 0);
 
-            using(var sha1 = SHA1.Create())
+            using (var sha1 = SHA1.Create())
             {
                 BitConverter.GetBytes(_currentTxnId + 1).CopyTo(buff, 4);
                 BitConverter.GetBytes(graphIndexId).CopyTo(buff, 12);
@@ -579,7 +579,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             return buff;
         }
 
-#endregion
+        #endregion
 
         private ulong FindResourceId(string resourceValue, bool isLiteral = false, string dataType = null,
                                      string langCode = null)
@@ -601,7 +601,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             return _resourceIndex.GetResourceId(resourceValue, isLiteral, dataType, langCode, !isLiteral);
         }
 
-        private static readonly List<int> AllGraphs = new List<int>{-1};
+        private static readonly List<int> AllGraphs = new List<int> { -1 };
         private List<int> LookupGraphIds(IEnumerable<string> graphs)
         {
             if (graphs == null) return AllGraphs;
@@ -736,7 +736,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             return Bind(sid, pid, oid, gids);
         }
 
-#region Triple Pattern Binding
+        #region Triple Pattern Binding
         private IEnumerable<Tuple<ulong, ulong, ulong, int>> Bind(ulong s = StoreConstants.NullUlong, ulong p = StoreConstants.NullUlong,
                                                                     ulong o = StoreConstants.NullUlong,
                                                                     List<int> graphs = null)
@@ -774,18 +774,18 @@ namespace BrightstarDB.Storage.BPlusTreeStore
 
         private IEnumerable<Tuple<ulong, ulong, ulong, int>> BindSubjectPredicateObject(ulong sid, ulong pid, ulong oid, List<int> graphs)
         {
-            if (graphs.Any(g=> g<0))
+            if (graphs.Any(g => g < 0))
             {
                 // Wildcard match on graphs
                 return _subjectRelatedResourceIndex.EnumerateRelatedResources(sid, pid).Where(r => r.ResourceId == oid).Select(
                     r => new Tuple<ulong, ulong, ulong, int>(sid, pid, oid, r.GraphId));
             }
-            if (graphs.Count== 1)
+            if (graphs.Count == 1)
             {
                 // Single graph match
                 if (_subjectRelatedResourceIndex.ContainsRelatedResource(sid, pid, oid, graphs[0], null))
                 {
-                    return new []
+                    return new[]
                                {
                                    new Tuple<ulong, ulong, ulong, int>(sid, pid, oid, graphs[0])
                                };
@@ -835,7 +835,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             {
                 foreach (
                     var r in
-                        _subjectRelatedResourceIndex.EnumerateRelatedResources(sid, StoreConstants.NullUlong, graphs[0]).Where(r=>r.ResourceId == oid)
+                        _subjectRelatedResourceIndex.EnumerateRelatedResources(sid, StoreConstants.NullUlong, graphs[0]).Where(r => r.ResourceId == oid)
                     )
                 {
                     yield return new Tuple<ulong, ulong, ulong, int>(sid, r.PredicateId, oid, r.GraphId);
@@ -886,7 +886,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
 
         private IEnumerable<Tuple<ulong, ulong, ulong, int>> BindSubject(ulong sid, List<int> graphs)
         {
-            if (graphs.Any(g=>g<0))
+            if (graphs.Any(g => g < 0))
             {
                 // Match all graphs
                 return
@@ -906,7 +906,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
 
         private IEnumerable<Tuple<ulong, ulong, ulong, int>> BindPredicate(ulong pid, IEnumerable<int> graphs)
         {
-            if (graphs.Any(g=>g < 0))
+            if (graphs.Any(g => g < 0))
             {
                 // Match all graphs
                 return _subjectRelatedResourceIndex.EnumeratePredicateRelationships(pid, null).Select(
@@ -920,7 +920,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
 
         private IEnumerable<Tuple<ulong, ulong, ulong, int>> BindObject(ulong oid, List<int> graphs)
         {
-            if (graphs.Any(g=> g<0))
+            if (graphs.Any(g => g < 0))
             {
                 // Match all graphs
                 return _objectRelatedResourceIndex.EnumerateRelatedResources(oid).Select(
@@ -938,7 +938,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
 
         private IEnumerable<Tuple<ulong, ulong, ulong, int>> BindAll(IEnumerable<int> graphs)
         {
-            if (graphs.Any(g=>g<0))
+            if (graphs.Any(g => g < 0))
             {
                 return _subjectRelatedResourceIndex.EnumerateAll(g => true, null).Select(
                     r => new Tuple<ulong, ulong, ulong, int>(r.ResourceId, r.PredicateId, r.RelatedResource, r.GraphId));
@@ -949,9 +949,9 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                     r => new Tuple<ulong, ulong, ulong, int>(r.ResourceId, r.PredicateId, r.RelatedResource, r.GraphId));
         }
 
-#endregion
+        #endregion
 
-#region Implementation of IDisposable
+        #region Implementation of IDisposable
 
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -963,7 +963,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             GC.SuppressFinalize(this);
         }
 
-#endregion
+        #endregion
 
         private bool _disposed;
         private void Dispose(bool disposing)

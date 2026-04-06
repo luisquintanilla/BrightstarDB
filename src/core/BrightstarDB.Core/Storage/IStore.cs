@@ -71,7 +71,7 @@ namespace BrightstarDB.Storage
         /// <summary>
         /// Commits all updates so far to the store and returns the start position of the Store object in the store file.
         /// </summary>
-        void FlushChanges(BrightstarProfiler profiler= null);
+        void FlushChanges(BrightstarProfiler profiler = null);
 
         /// <summary>
         /// Returns a list of commit points with the most recent returned first

@@ -62,9 +62,9 @@ namespace BrightstarDB.Tests.EntityFramework
             string aliceId;
             using (var context = CreateEntityContext(storeName))
             {
-                var sales = new Department(context) {Name = "Sales", DeptId = 1};
-                var bob = new Person(context) {Name = "Bob"};
-                var alice = new Person(context) {Name = "Alice", Age = 54, Department = sales, Friends = new Collection<IPerson>{bob}};
+                var sales = new Department(context) { Name = "Sales", DeptId = 1 };
+                var bob = new Person(context) { Name = "Bob" };
+                var alice = new Person(context) { Name = "Alice", Age = 54, Department = sales, Friends = new Collection<IPerson> { bob } };
                 context.SaveChanges();
                 aliceId = alice.Id;
             }
@@ -90,8 +90,8 @@ namespace BrightstarDB.Tests.EntityFramework
             string gingerId;
             using (var context = CreateEntityContext(storeName))
             {
-                var alice = new Person {Name = "Alice", Age = 25};
-                var ginger = new Animal{Name="Ginger", Owner = alice};
+                var alice = new Person { Name = "Alice", Age = 25 };
+                var ginger = new Animal { Name = "Ginger", Owner = alice };
                 context.Add(alice);
                 context.Add(ginger);
                 context.SaveChanges();
@@ -119,7 +119,7 @@ namespace BrightstarDB.Tests.EntityFramework
             {
                 var alice = new Person { Name = "Alice", Age = 25 };
                 var ginger = new Animal { Name = "Ginger" };
-                context.AddRange(new object[] {alice, ginger});
+                context.AddRange(new object[] { alice, ginger });
                 context.SaveChanges();
                 aliceId = alice.Id;
                 gingerId = ginger.Id;
@@ -155,9 +155,9 @@ namespace BrightstarDB.Tests.EntityFramework
             Assert.That(gingerId, Is.Not.Null);
             using (var context = CreateEntityContext(storeName))
             {
-                var alice= new Person{Id=aliceId, Name="Updated Alice", Age=26};
-                var ginger = new Animal{Id=gingerId, Name = "Updated Ginger"};
-                context.AddOrUpdateRange(new object[] {alice, ginger});
+                var alice = new Person { Id = aliceId, Name = "Updated Alice", Age = 26 };
+                var ginger = new Animal { Id = gingerId, Name = "Updated Ginger" };
+                context.AddOrUpdateRange(new object[] { alice, ginger });
                 context.SaveChanges();
             }
             using (var context = CreateEntityContext(storeName))
@@ -195,14 +195,14 @@ namespace BrightstarDB.Tests.EntityFramework
         public void TestAddOrUpdateWithGeneratedId()
         {
             var storeName = "TestAddOrUpdateWithGeneratedId" + DateTime.UtcNow.Ticks;
-            var alice = new Person{Name="Alice", Age=25};
+            var alice = new Person { Name = "Alice", Age = 25 };
             using (var context = CreateEntityContext(storeName))
             {
                 context.Persons.AddOrUpdate(alice);
                 context.SaveChanges();
             }
             Assert.IsNotNull(alice.Id);
-            var updateAlice = new Person {Id = alice.Id, Name = "UpdatedAlice", Age = 26};
+            var updateAlice = new Person { Id = alice.Id, Name = "UpdatedAlice", Age = 26 };
             using (var context = CreateEntityContext(storeName))
             {
                 context.Persons.AddOrUpdate(updateAlice);
@@ -223,7 +223,7 @@ namespace BrightstarDB.Tests.EntityFramework
         public void TestAddOrUpdateWithSimpleKey()
         {
             var storeName = "TestAddOrUpdateWithSimpleKey" + DateTime.UtcNow.Ticks;
-            var alice = new StringKeyEntity { Name = "alice", Description = "Alice Entity"};
+            var alice = new StringKeyEntity { Name = "alice", Description = "Alice Entity" };
             using (var context = CreateEntityContext(storeName))
             {
                 context.StringKeyEntities.AddOrUpdate(alice);
@@ -231,7 +231,7 @@ namespace BrightstarDB.Tests.EntityFramework
             }
             Assert.IsNotNull(alice.Id);
             Assert.AreEqual("alice", alice.Id);
-            var updateAlice = new StringKeyEntity{ Id = "alice", Description= "UpdatedAlice Entity"};
+            var updateAlice = new StringKeyEntity { Id = "alice", Description = "UpdatedAlice Entity" };
             using (var context = CreateEntityContext(storeName))
             {
                 context.StringKeyEntities.AddOrUpdate(updateAlice);
@@ -252,7 +252,7 @@ namespace BrightstarDB.Tests.EntityFramework
         public void TestAddOrUpdateWithCompositeKey()
         {
             var storeName = "TestAddOrUpdateWithCompositeKey" + DateTime.UtcNow.Ticks;
-            var foo1 = new CompositeKeyEntity { First = "foo", Second = 1, Description="This is a test" };
+            var foo1 = new CompositeKeyEntity { First = "foo", Second = 1, Description = "This is a test" };
             using (var context = CreateEntityContext(storeName))
             {
                 context.CompositeKeyEntities.AddOrUpdate(foo1);
@@ -260,7 +260,7 @@ namespace BrightstarDB.Tests.EntityFramework
             }
             Assert.IsNotNull(foo1.Id);
             Assert.AreEqual("foo.1", foo1.Id);
-            var updatedFoo1 = new CompositeKeyEntity{ First = "foo", Second = 1, Description = "This is an updated test" };
+            var updatedFoo1 = new CompositeKeyEntity { First = "foo", Second = 1, Description = "This is an updated test" };
             using (var context = CreateEntityContext(storeName))
             {
                 context.CompositeKeyEntities.AddOrUpdate(updatedFoo1);
@@ -354,7 +354,7 @@ where {
 order by ?s
 ";
                     IList<Person> results;
-                    results = context.ExecuteQuery<Person>(new SparqlQueryContext(query){ExpectTriplesWithOrderedSubjects = true}).ToList();
+                    results = context.ExecuteQuery<Person>(new SparqlQueryContext(query) { ExpectTriplesWithOrderedSubjects = true }).ToList();
                     Assert.AreEqual(10, results.Count);
 
                     foreach (Person person in results)
@@ -424,7 +424,7 @@ where {
             var storeName = "TestGetSetOfEntitiesById_" + DateTime.Now.Ticks;
             using (var context = CreateEntityContext(storeName))
             {
-                context.Persons.Add(new Person{Id="alice", Name = "Alice"});
+                context.Persons.Add(new Person { Id = "alice", Name = "Alice" });
                 context.Persons.Add(new Person { Id = "bob", Name = "Bob" });
                 context.Persons.Add(new Person { Id = "carol", Name = "Carol" });
                 context.SaveChanges();
@@ -432,11 +432,11 @@ where {
 
             using (var context = CreateEntityContext(storeName))
             {
-                IEnumerable<string> lookupIds = new[] {"alice", "bob", "carol", "david"};
+                IEnumerable<string> lookupIds = new[] { "alice", "bob", "carol", "david" };
                 var results =
                     context.Persons.Where(x => lookupIds.Contains(x.Id)).ToList();
                 Assert.AreEqual(3, results.Count);
-                Assert.IsTrue(results.Any(x=>x.Id.Equals("alice") && x.Name.Equals("Alice")));
+                Assert.IsTrue(results.Any(x => x.Id.Equals("alice") && x.Name.Equals("Alice")));
                 Assert.IsTrue(results.Any(x => x.Id.Equals("bob") && x.Name.Equals("Bob")));
                 Assert.IsTrue(results.Any(x => x.Id.Equals("carol") && x.Name.Equals("Carol")));
             }
@@ -739,7 +739,7 @@ where {
                 var alice = context.Persons.Create();
                 var bob = context.Persons.Create();
                 var carol = context.Persons.Create();
-                alice.Friends = new List<IPerson> {bob, carol};
+                alice.Friends = new List<IPerson> { bob, carol };
                 context.SaveChanges();
 
                 aliceId = alice.Id;
@@ -764,7 +764,7 @@ where {
                     Assert.IsTrue(alice.Friends.Any(p => p.Id.Equals(carolId)));
                     var dave = context.Persons.Create();
                     var edwina = context.Persons.Create();
-                    alice.Friends = new List<IPerson> {dave, edwina};
+                    alice.Friends = new List<IPerson> { dave, edwina };
                     context.SaveChanges();
                     daveId = dave.Id;
                     edwinaId = edwina.Id;
@@ -790,7 +790,7 @@ where {
             }
         }
 
-        
+
         [Test]
         public void TestSetRelatedEntitiesToNullThrowsArgumentNullException()
         {
@@ -1143,7 +1143,7 @@ where {
                 }
             }
         }
-       
+
         /// <summary>
         /// Tests for a property that in its forward direction is a one-to-many property (i.e. a collection)
         /// and in its inverse is a many-to-one property (i.e. a single-valued property).
@@ -1267,12 +1267,12 @@ where {
                 using (var context = new MyEntityContext(dataObjectStore))
                 {
                     var person = new Person
-                        {
-                            Context = context,
-                            Id = "http://example.org/people/123",
-                            Name = "Kal",
-                            DateOfBirth = new DateTime(1970, 12, 12)
-                        };
+                    {
+                        Context = context,
+                        Id = "http://example.org/people/123",
+                        Name = "Kal",
+                        DateOfBirth = new DateTime(1970, 12, 12)
+                    };
 
                     context.SaveChanges();
                 }
@@ -1299,15 +1299,15 @@ where {
                     // ReSharper disable UseObjectOrCollectionInitializer
                     // Purposefully setting properties and then attaching Context property
                     var person = new Person
-                        {
-                            Name = "Kal",
-                            DateOfBirth = new DateTime(1970, 12, 12),
-                            Friends = new List<IPerson>
+                    {
+                        Name = "Kal",
+                        DateOfBirth = new DateTime(1970, 12, 12),
+                        Friends = new List<IPerson>
                                 {
                                     new Person {Name = "Gra", Id = "http://example.org/people/1234"},
                                     new Person {Name = "Stu", Id = "http://example.org/people/456"}
                                 }
-                        };
+                    };
                     person.Id = "http://example.org/people/123";
                     person.Context = context;
                     // ReSharper restore UseObjectOrCollectionInitializer
@@ -1343,10 +1343,10 @@ where {
             {
                 using (var context = new MyEntityContext(dataObjectStore))
                 {
-                    var skill = new Skill {Id = "foo", Name = "Foo"};
+                    var skill = new Skill { Id = "foo", Name = "Foo" };
                     context.Skills.Add(skill);
-                    var otherSkill = new Skill {Id = "bar", Name = "Bar", Context = context};
-                    var yetAnotherSkill = new Skill {Name = "Bletch"};
+                    var otherSkill = new Skill { Id = "bar", Name = "Bar", Context = context };
+                    var yetAnotherSkill = new Skill { Name = "Bletch" };
                     context.Skills.Add(yetAnotherSkill);
                     context.SaveChanges();
 
@@ -1377,10 +1377,10 @@ where {
             {
                 using (var context = new MyEntityContext(dataObjectStore))
                 {
-                    var skill = new Skill {Name = "Bar"};
-                    var person = new Person {Name = "Kal"};
+                    var skill = new Skill { Name = "Bar" };
+                    var person = new Person { Name = "Kal" };
                     //var person2 = new Person2 {Name = "Jen"};
-                    var company = new Company {Name = "NetworkedPlanet"};
+                    var company = new Company { Name = "NetworkedPlanet" };
                     context.Persons.Add(person);
                     //context.Person2s.Add(person2);
                     context.Skills.Add(skill);
@@ -1443,7 +1443,7 @@ where {
             {
                 using (var context = new MyEntityContext(dataStore))
                 {
-                    var fido = new UriEntity {Id = "http://brightstardb.com/instances/Animals/fido", Label = "Fido"};
+                    var fido = new UriEntity { Id = "http://brightstardb.com/instances/Animals/fido", Label = "Fido" };
                     context.UriEntities.Add(fido);
                     var bob = new UriEntity(context) { Id = "http://example.org/people/bob", Label = "Bob" };
                     context.SaveChanges();
@@ -1500,7 +1500,7 @@ where {
                 {
                     for (int i = 0; i < 10; i++)
                     {
-                        var person = new Person {Age = 40 - i, Name = "Person #" + i};
+                        var person = new Person { Age = 40 - i, Name = "Person #" + i };
                         context.Persons.Add(person);
                         people[i] = person;
                     }
@@ -1690,7 +1690,7 @@ where {
                 var context = new MyEntityContext("type=embedded;storesdirectory=c:\\brightstar;storename=" + storeName)
                 )
             {
-                var skill = new Skill {Name = "Fencing", Id = "fencing"};
+                var skill = new Skill { Name = "Fencing", Id = "fencing" };
                 context.Skills.Add(skill);
                 context.SaveChanges();
 
@@ -1762,7 +1762,7 @@ where {
                 Assert.AreEqual(2, agent7.MboxSums.Count);
                 Assert.IsTrue(agent7.MboxSums.Any(x => x.Equals("mboxsum1")));
                 Assert.IsTrue(agent7.MboxSums.Any(x => x.Equals("mboxsum2")));
-                agent7.MboxSums = new List<string> {"replacement1", "replacement2", "replacement3"};
+                agent7.MboxSums = new List<string> { "replacement1", "replacement2", "replacement3" };
                 context.SaveChanges();
             }
             using (
@@ -1801,7 +1801,7 @@ where {
                 )
             {
                 var testEntity = context.TestEntities.Create();
-                testEntity.SomeByteArray = new byte[] {0, 1, 2, 3, 4};
+                testEntity.SomeByteArray = new byte[] { 0, 1, 2, 3, 4 };
                 context.SaveChanges();
             }
             using (
@@ -1846,7 +1846,7 @@ where {
                     testEntity = context.TestEntities.FirstOrDefault(e => e.SomeGuid.Equals(testGuid));
                     Assert.IsNotNull(testEntity);
                     Assert.AreEqual(testEntityId, testEntity.Id);
-                    Assert.IsNull(context.TestEntities.FirstOrDefault(e=>e.SomeGuid.Equals(Guid.Empty)));
+                    Assert.IsNull(context.TestEntities.FirstOrDefault(e => e.SomeGuid.Equals(Guid.Empty)));
                 }
             }
         }
@@ -2133,7 +2133,7 @@ where {
             Assert.IsNotNull(nameProperty, "Could not find expected Name property on FoafPerson class");
             var generatedAttributes = nameProperty.GetCustomAttributes(false);
             Assert.AreEqual(2, generatedAttributes.Count(), "Expected 2 custom attributes on Name property of generated FoafPerson class");
-            Assert.IsTrue(generatedAttributes.Any(a=>a.GetType() == typeof(RequiredAttribute)), "Could not find expected Required attribute of FoafPerson.Name property");
+            Assert.IsTrue(generatedAttributes.Any(a => a.GetType() == typeof(RequiredAttribute)), "Could not find expected Required attribute of FoafPerson.Name property");
             var customValidation = generatedAttributes.FirstOrDefault(a => a is CustomValidationAttribute) as CustomValidationAttribute;
             Assert.IsNotNull(customValidation, "Could not find expected CustomValidation attribute on FoafPerson.Name property");
             Assert.AreEqual(typeof(MyCustomValidator), customValidation.ValidatorType, "CustomValidation.ValidatorType property does not match expected value.");
@@ -2164,7 +2164,7 @@ where {
             var foafPerson = typeof(FoafPerson);
             var generatedAttributes = foafPerson.GetTypeInfo().GetCustomAttributes(false);
             Assert.AreEqual(1, generatedAttributes.Count(), "Expected 1 custom attribute on the FoafPerson class");
-            var displayAttribute = generatedAttributes.FirstOrDefault(a=>a.GetType() == typeof(DisplayNameAttribute)) as DisplayNameAttribute;
+            var displayAttribute = generatedAttributes.FirstOrDefault(a => a.GetType() == typeof(DisplayNameAttribute)) as DisplayNameAttribute;
             Assert.IsNotNull(displayAttribute, "Could not find expected Display attribute on FoafPerson class");
             Assert.AreEqual("Person", displayAttribute.DisplayName);
         }
@@ -2249,22 +2249,22 @@ where {
             var storeName = "TestCollectionUpdatedByInverseProperty_" + DateTime.Now.Ticks;
             using (var context = CreateEntityContext(storeName))
             {
-                var dept = new Department {Name = "Research"};
+                var dept = new Department { Name = "Research" };
                 context.Departments.Add(dept);
-                
+
                 // Attach before property is set
-                var alice = new Person {Name = "Alice"};
+                var alice = new Person { Name = "Alice" };
                 context.Persons.Add(alice);
                 alice.Department = dept;
                 Assert.AreEqual(1, dept.Persons.Count);
-                
+
                 // Attach after property set
-                var bob = new Person {Name = "Bob", Department = dept};
+                var bob = new Person { Name = "Bob", Department = dept };
                 context.Persons.Add(bob);
                 Assert.AreEqual(2, dept.Persons.Count);
 
                 // Attach after property set by explicit call
-                var charlie = new Person { Name = "Charlie"};
+                var charlie = new Person { Name = "Charlie" };
                 charlie.Department = dept;
                 context.Persons.Add(charlie);
                 Assert.AreEqual(3, dept.Persons.Count);
@@ -2274,7 +2274,7 @@ where {
                 Assert.AreEqual(3, dept.Persons.Count);
                 context.Persons.Add(dave);
                 Assert.AreEqual(4, dept.Persons.Count);
-                
+
                 context.SaveChanges();
 
                 Assert.AreEqual(4, dept.Persons.Count);
@@ -2301,8 +2301,8 @@ where {
                 // Test that we can use the returned entity set for query
                 var personSet = context.EntitySet<IPerson>();
                 Assert.That(personSet, Is.Not.Null);
-                Assert.That(personSet.FirstOrDefault(x=>x.Id.Equals(p.Id)), Is.Not.Null);
-                Assert.That(personSet.FirstOrDefault(x=>x.Id.Equals(b.Id)), Is.Null);
+                Assert.That(personSet.FirstOrDefault(x => x.Id.Equals(p.Id)), Is.Not.Null);
+                Assert.That(personSet.FirstOrDefault(x => x.Id.Equals(b.Id)), Is.Null);
                 Assert.That(personSet.FirstOrDefault(x => x.Id.Equals(d.Id)), Is.Null);
 
                 var baseEntitySet = context.EntitySet<IBaseEntity>();
@@ -2325,7 +2325,7 @@ where {
             }
             using (var context = CreateEntityContext(storeName))
             {
-                var bob  = context.EntitySet<IPerson>().FirstOrDefault(x => x.Id.Equals(pid));
+                var bob = context.EntitySet<IPerson>().FirstOrDefault(x => x.Id.Equals(pid));
                 Assert.That(bob, Is.Not.Null);
                 Assert.That(bob.Name, Is.EqualTo("Bob"));
             }
@@ -2351,7 +2351,7 @@ where {
                 var repo = new Repository<IDerivedEntity>(uow);
                 var derived = repo.Create();
                 derived.BaseStringValue = "Party!";
-                derived.DateTimeProperty= new DateTime(1999, 12, 31, 23, 58, 00);
+                derived.DateTimeProperty = new DateTime(1999, 12, 31, 23, 58, 00);
                 context.SaveChanges();
                 id = derived.Id;
             }
@@ -2374,7 +2374,7 @@ where {
             var storeName = "TestRetrieveEntityWithSpaceInId_" + DateTime.Now.Ticks;
             using (var context = CreateEntityContext(storeName))
             {
-                var entity = new TestEntity {Id = "some entity", SomeString = "Some Entity"};
+                var entity = new TestEntity { Id = "some entity", SomeString = "Some Entity" };
                 context.TestEntities.Add(entity);
                 context.SaveChanges();
             }
@@ -2400,7 +2400,7 @@ where {
             var testString = "Client" + sep + "Server";
             using (var context = CreateEntityContext(storeName))
             {
-                var entity = new TestEntity {Id="test", SomeString = testString};
+                var entity = new TestEntity { Id = "test", SomeString = testString };
                 context.TestEntities.Add(entity);
                 context.SaveChanges();
             }
@@ -2420,7 +2420,7 @@ where {
             ITestEntity entity;
             using (var context = CreateEntityContext(storeName))
             {
-                entity = new TestEntity {Id="test", SomeString="Initial Value"};
+                entity = new TestEntity { Id = "test", SomeString = "Initial Value" };
                 context.TestEntities.Add(entity);
                 context.SaveChanges();
             }
@@ -2804,7 +2804,7 @@ where {
             return _unitOfWork.Context.EntitySet<T>().Create();
         }
 
-       
+
         public T GetById(string id)
         {
             return _unitOfWork.Context.EntitySet<T>().FirstOrDefault(x => x.Id == id);

@@ -85,11 +85,11 @@ namespace BrightstarDB.InternalTests
         public virtual void TestInsertTriple()
         {
             var t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/gra",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "http://www.networkedplanet.com/types/person"
-                        };
+            {
+                Subject = "http://www.networkedplanet.com/people/gra",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "http://www.networkedplanet.com/types/person"
+            };
 
             var sid = Guid.NewGuid().ToString();
             var store = StoreManager.CreateStore(Configuration.StoreLocation + "\\" + sid);
@@ -109,11 +109,11 @@ namespace BrightstarDB.InternalTests
         public virtual void TestGetAllTriples()
         {
             var t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/gra",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "http://www.networkedplanet.com/types/person"
-                        };
+            {
+                Subject = "http://www.networkedplanet.com/people/gra",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "http://www.networkedplanet.com/types/person"
+            };
 
             var sid = Guid.NewGuid().ToString();
             var store = StoreManager.CreateStore(Configuration.StoreLocation + "\\" + sid);
@@ -129,20 +129,20 @@ namespace BrightstarDB.InternalTests
         public virtual void TestInsertAndRetrieveTriplesInNamedGraphs()
         {
             var t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/gra",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "http://www.networkedplanet.com/types/person",
-                            Graph = "http://www.networkedplanet.com/graphs/1"
-                        };
+            {
+                Subject = "http://www.networkedplanet.com/people/gra",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "http://www.networkedplanet.com/types/person",
+                Graph = "http://www.networkedplanet.com/graphs/1"
+            };
 
             var t1 = new Triple
-                         {
-                             Subject = "http://www.networkedplanet.com/people/gra",
-                             Predicate = "http://www.networkedplanet.com/model/isa",
-                             Object = "http://www.networkedplanet.com/types/person",
-                             Graph = "http://www.networkedplanet.com/graphs/2"
-                         };
+            {
+                Subject = "http://www.networkedplanet.com/people/gra",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "http://www.networkedplanet.com/types/person",
+                Graph = "http://www.networkedplanet.com/graphs/2"
+            };
 
             var sid = Guid.NewGuid().ToString();
             var store = StoreManager.CreateStore(Configuration.StoreLocation + "\\" + sid);
@@ -159,20 +159,20 @@ namespace BrightstarDB.InternalTests
         public virtual void TestInsertAndRetrieveTriplesInNamedGraphs2()
         {
             var t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/gra",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "http://www.networkedplanet.com/types/person",
-                            Graph = "http://www.networkedplanet.com/graphs/1"
-                        };
+            {
+                Subject = "http://www.networkedplanet.com/people/gra",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "http://www.networkedplanet.com/types/person",
+                Graph = "http://www.networkedplanet.com/graphs/1"
+            };
 
             var t1 = new Triple
-                         {
-                             Subject = "http://www.networkedplanet.com/people/gra",
-                             Predicate = "http://www.networkedplanet.com/model/isa",
-                             Object = "http://www.networkedplanet.com/types/personX",
-                             Graph = "http://www.networkedplanet.com/graphs/2"
-                         };
+            {
+                Subject = "http://www.networkedplanet.com/people/gra",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "http://www.networkedplanet.com/types/personX",
+                Graph = "http://www.networkedplanet.com/graphs/2"
+            };
 
             var sid = Guid.NewGuid().ToString();
             var store = StoreManager.CreateStore(Configuration.StoreLocation + "\\" + sid);
@@ -194,18 +194,18 @@ namespace BrightstarDB.InternalTests
         public virtual void TestDuplicateTriplesAreNotInserted()
         {
             var t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/gra",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "http://www.networkedplanet.com/types/person",
-                        };
+            {
+                Subject = "http://www.networkedplanet.com/people/gra",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "http://www.networkedplanet.com/types/person",
+            };
 
             var t1 = new Triple
-                         {
-                             Subject = "http://www.networkedplanet.com/people/gra",
-                             Predicate = "http://www.networkedplanet.com/model/isa",
-                             Object = "http://www.networkedplanet.com/types/person",
-                         };
+            {
+                Subject = "http://www.networkedplanet.com/people/gra",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "http://www.networkedplanet.com/types/person",
+            };
 
             var sid = Guid.NewGuid().ToString();
             var store = StoreManager.CreateStore(Configuration.StoreLocation + "\\" + sid);
@@ -222,20 +222,20 @@ namespace BrightstarDB.InternalTests
         public virtual void TestDuplicateTriplesAreAllowedInDifferentGraphs()
         {
             var t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/gra",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "http://www.networkedplanet.com/types/person",
-                            Graph = "http://www.networkedplanet.com/graphs/1"
-                        };
+            {
+                Subject = "http://www.networkedplanet.com/people/gra",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "http://www.networkedplanet.com/types/person",
+                Graph = "http://www.networkedplanet.com/graphs/1"
+            };
 
             var t1 = new Triple
-                         {
-                             Subject = "http://www.networkedplanet.com/people/gra",
-                             Predicate = "http://www.networkedplanet.com/model/isa",
-                             Object = "http://www.networkedplanet.com/types/person",
-                             Graph = "http://www.networkedplanet.com/graphs/2"
-                         };
+            {
+                Subject = "http://www.networkedplanet.com/people/gra",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "http://www.networkedplanet.com/types/person",
+                Graph = "http://www.networkedplanet.com/graphs/2"
+            };
 
             var sid = Guid.NewGuid().ToString();
             var store = StoreManager.CreateStore(Configuration.StoreLocation + "\\" + sid);
@@ -261,11 +261,11 @@ namespace BrightstarDB.InternalTests
             for (int i = 0; i < 100; i++)
             {
                 var t = new Triple
-                            {
-                                Subject = "http://www.networkedplanet.com/people/" + i,
-                                Predicate = "http://www.networkedplanet.com/model/isa",
-                                Object = "http://www.networkedplanet.com/types/person"
-                            };
+                {
+                    Subject = "http://www.networkedplanet.com/people/" + i,
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "http://www.networkedplanet.com/types/person"
+                };
                 store.InsertTriple(t);
             }
             store.Commit(Guid.Empty);
@@ -283,12 +283,12 @@ namespace BrightstarDB.InternalTests
             var store = StoreManager.CreateStore(Configuration.StoreLocation + "\\" + sid);
 
             var t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "http://www.networkedplanet.com/types/person",
-                            Graph = Constants.DefaultGraphUri
-                        };
+            {
+                Subject = "http://www.networkedplanet.com/people/10",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "http://www.networkedplanet.com/types/person",
+                Graph = Constants.DefaultGraphUri
+            };
             store.InsertTriple(t);
             store.Commit(Guid.Empty);
 
@@ -305,11 +305,11 @@ namespace BrightstarDB.InternalTests
             for (int i = 0; i < 1000; i++)
             {
                 var t = new Triple
-                            {
-                                Subject = "http://www.networkedplanet.com/people/gra",
-                                Predicate = "http://www.networkedplanet.com/model/hasSkill",
-                                Object = "http://www.networkedplanet.com/skills/" + i
-                            };
+                {
+                    Subject = "http://www.networkedplanet.com/people/gra",
+                    Predicate = "http://www.networkedplanet.com/model/hasSkill",
+                    Object = "http://www.networkedplanet.com/skills/" + i
+                };
                 store.InsertTriple(t);
             }
 
@@ -326,19 +326,19 @@ namespace BrightstarDB.InternalTests
         {
             var sid = Guid.NewGuid().ToString();
             var t1 = new Triple
-                         {
-                             Subject = "http://www.networkedplanet.com/people/10",
-                             Predicate = "http://www.networkedplanet.com/model/isa",
-                             Object = "bob",
-                             IsLiteral = true
-                         };
+            {
+                Subject = "http://www.networkedplanet.com/people/10",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "bob",
+                IsLiteral = true
+            };
             var t2 = new Triple
-                         {
-                             Subject = "http://www.networkedplanet.com/people/10",
-                             Predicate = "http://www.networkedplanet.com/model/isa",
-                             Object = "kal",
-                             IsLiteral = true
-                         };
+            {
+                Subject = "http://www.networkedplanet.com/people/10",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "kal",
+                IsLiteral = true
+            };
 
             using (var store = StoreManager.CreateStore(Configuration.StoreLocation + "\\" + sid))
             {
@@ -365,12 +365,12 @@ namespace BrightstarDB.InternalTests
             var store = StoreManager.CreateStore(Configuration.StoreLocation + "\\" + sid);
 
             var t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "bob",
-                            IsLiteral = true
-                        };
+            {
+                Subject = "http://www.networkedplanet.com/people/10",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "bob",
+                IsLiteral = true
+            };
             store.InsertTriple(t);
             store.Commit(Guid.Empty);
 
@@ -401,25 +401,25 @@ namespace BrightstarDB.InternalTests
             var store = StoreManager.CreateStore(Configuration.StoreLocation + "\\" + sid);
 
             var t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "bob",
-                            LangCode = "en",
-                            DataType = RdfDatatypes.String,
-                            IsLiteral = true
-                        };
+            {
+                Subject = "http://www.networkedplanet.com/people/10",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "bob",
+                LangCode = "en",
+                DataType = RdfDatatypes.String,
+                IsLiteral = true
+            };
             store.InsertTriple(t);
 
             t = new Triple
-                    {
-                        Subject = "http://www.networkedplanet.com/people/10",
-                        Predicate = "http://www.networkedplanet.com/model/isa",
-                        Object = "bob",
-                        LangCode = "fr",
-                        DataType = RdfDatatypes.String,
-                        IsLiteral = true
-                    };
+            {
+                Subject = "http://www.networkedplanet.com/people/10",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "bob",
+                LangCode = "fr",
+                DataType = RdfDatatypes.String,
+                IsLiteral = true
+            };
             store.InsertTriple(t);
             store.Commit(Guid.Empty);
 
@@ -440,23 +440,23 @@ namespace BrightstarDB.InternalTests
             var store = StoreManager.CreateStore(Configuration.StoreLocation + "\\" + sid);
 
             var t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "24/03/76",
-                            DataType = RdfDatatypes.String,
-                            IsLiteral = true
-                        };
+            {
+                Subject = "http://www.networkedplanet.com/people/10",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "24/03/76",
+                DataType = RdfDatatypes.String,
+                IsLiteral = true
+            };
             store.InsertTriple(t);
 
             t = new Triple
-                    {
-                        Subject = "http://www.networkedplanet.com/people/10",
-                        Predicate = "http://www.networkedplanet.com/model/isa",
-                        Object = "24/03/76",
-                        DataType = RdfDatatypes.DateTime,
-                        IsLiteral = true
-                    };
+            {
+                Subject = "http://www.networkedplanet.com/people/10",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "24/03/76",
+                DataType = RdfDatatypes.DateTime,
+                IsLiteral = true
+            };
             store.InsertTriple(t);
             store.Commit(Guid.Empty);
 
@@ -518,13 +518,13 @@ namespace BrightstarDB.InternalTests
                 );
 
             var t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = doc.ToString(),
-                            DataType = RdfDatatypes.XmlLiteral,
-                            IsLiteral = true
-                        };
+            {
+                Subject = "http://www.networkedplanet.com/people/10",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = doc.ToString(),
+                DataType = RdfDatatypes.XmlLiteral,
+                IsLiteral = true
+            };
             using (var store = StoreManager.CreateStore(Configuration.StoreLocation + "\\" + sid))
             {
                 store.InsertTriple(t);
@@ -640,20 +640,20 @@ namespace BrightstarDB.InternalTests
             {
 
                 var t = new Triple
-                            {
-                                Subject = "http://www.networkedplanet.com/people/10",
-                                Predicate = "http://www.networkedplanet.com/model/isa",
-                                Object = "bob",
-                                DataType = RdfDatatypes.String,
-                                IsLiteral = true
-                            };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "bob",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
                 store.InsertTriple(t);
                 t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/worksfor",
-                            Object = "http://www.networkedplanet.com/np",
-                        };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/worksfor",
+                    Object = "http://www.networkedplanet.com/np",
+                };
                 store.InsertTriple(t);
                 store.Commit(Guid.Empty);
             }
@@ -699,26 +699,26 @@ namespace BrightstarDB.InternalTests
             Assert.AreEqual(1, store.GetCommitPoints().Count());
 
             var t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "bob",
-                            DataType = RdfDatatypes.String,
-                            IsLiteral = true
-                        };
+            {
+                Subject = "http://www.networkedplanet.com/people/10",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "bob",
+                DataType = RdfDatatypes.String,
+                IsLiteral = true
+            };
             store.InsertTriple(t);
             store.Commit(Guid.Empty);
 
             Assert.AreEqual(2, store.GetCommitPoints().Count());
 
             t = new Triple
-                    {
-                        Subject = "http://www.networkedplanet.com/people/11",
-                        Predicate = "http://www.networkedplanet.com/model/isa",
-                        Object = "bob",
-                        DataType = RdfDatatypes.String,
-                        IsLiteral = true
-                    };
+            {
+                Subject = "http://www.networkedplanet.com/people/11",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "bob",
+                DataType = RdfDatatypes.String,
+                IsLiteral = true
+            };
             store.InsertTriple(t);
             store.Commit(Guid.Empty);
 
@@ -735,26 +735,26 @@ namespace BrightstarDB.InternalTests
                 Assert.AreEqual(1, store.GetCommitPoints().Count());
 
                 var t = new Triple
-                            {
-                                Subject = "http://www.networkedplanet.com/people/10",
-                                Predicate = "http://www.networkedplanet.com/model/isa",
-                                Object = "bob",
-                                DataType = RdfDatatypes.String,
-                                IsLiteral = true
-                            };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "bob",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
                 store.InsertTriple(t);
                 store.Commit(Guid.Empty);
 
                 Assert.AreEqual(2, store.GetCommitPoints().Count());
 
                 t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/11",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "bob",
-                            DataType = RdfDatatypes.String,
-                            IsLiteral = true
-                        };
+                {
+                    Subject = "http://www.networkedplanet.com/people/11",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "bob",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
                 store.InsertTriple(t);
                 store.Commit(Guid.Empty);
 
@@ -795,13 +795,13 @@ namespace BrightstarDB.InternalTests
             Thread.Sleep(100);
 
             var t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "bob",
-                            DataType = RdfDatatypes.String,
-                            IsLiteral = true
-                        };
+            {
+                Subject = "http://www.networkedplanet.com/people/10",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "bob",
+                DataType = RdfDatatypes.String,
+                IsLiteral = true
+            };
             store.InsertTriple(t);
             store.Commit(Guid.Empty);
             Assert.AreEqual(2, store.GetCommitPoints().Count());
@@ -810,13 +810,13 @@ namespace BrightstarDB.InternalTests
             Thread.Sleep(100);
 
             t = new Triple
-                    {
-                        Subject = "http://www.networkedplanet.com/people/11",
-                        Predicate = "http://www.networkedplanet.com/model/isa",
-                        Object = "bob",
-                        DataType = RdfDatatypes.String,
-                        IsLiteral = true
-                    };
+            {
+                Subject = "http://www.networkedplanet.com/people/11",
+                Predicate = "http://www.networkedplanet.com/model/isa",
+                Object = "bob",
+                DataType = RdfDatatypes.String,
+                IsLiteral = true
+            };
             store.InsertTriple(t);
             store.Commit(Guid.Empty);
             Assert.AreEqual(3, store.GetCommitPoints().Count());
@@ -859,13 +859,13 @@ namespace BrightstarDB.InternalTests
                 Thread.Sleep(100);
 
                 var t = new Triple
-                    {
-                        Subject = "http://www.networkedplanet.com/people/10",
-                        Predicate = "http://www.networkedplanet.com/model/isa",
-                        Object = "bob",
-                        DataType = RdfDatatypes.String,
-                        IsLiteral = true
-                    };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "bob",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
                 store.InsertTriple(t);
                 store.Commit(Guid.Empty);
                 Assert.AreEqual(2, store.GetCommitPoints().Count());
@@ -874,13 +874,13 @@ namespace BrightstarDB.InternalTests
                 Thread.Sleep(100);
 
                 t = new Triple
-                    {
-                        Subject = "http://www.networkedplanet.com/people/11",
-                        Predicate = "http://www.networkedplanet.com/model/isa",
-                        Object = "bob",
-                        DataType = RdfDatatypes.String,
-                        IsLiteral = true
-                    };
+                {
+                    Subject = "http://www.networkedplanet.com/people/11",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "bob",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
                 store.InsertTriple(t);
                 store.Commit(Guid.Empty);
                 Assert.AreEqual(3, store.GetCommitPoints().Count());
@@ -927,13 +927,13 @@ namespace BrightstarDB.InternalTests
                 Assert.IsFalse(store.GetGraphUris().Any());
 
                 var t = new Triple
-                            {
-                                Subject = "http://www.networkedplanet.com/people/12",
-                                Predicate = "http://www.networkedplanet.com/model/name",
-                                Object = "bob",
-                                IsLiteral = true,
-                                DataType = RdfDatatypes.String
-                            };
+                {
+                    Subject = "http://www.networkedplanet.com/people/12",
+                    Predicate = "http://www.networkedplanet.com/model/name",
+                    Object = "bob",
+                    IsLiteral = true,
+                    DataType = RdfDatatypes.String
+                };
                 store.InsertTriple(t);
                 store.Commit(Guid.Empty);
 
@@ -942,14 +942,14 @@ namespace BrightstarDB.InternalTests
                 Assert.IsTrue(allGraphUris.Contains(Constants.DefaultGraphUri));
 
                 t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/12",
-                            Predicate = "http://www.networkedplanet.com/model/name",
-                            Object = "bob",
-                            IsLiteral = true,
-                            DataType = RdfDatatypes.String,
-                            Graph = "http://www.networkedplanet.com/graphs/1"
-                        };
+                {
+                    Subject = "http://www.networkedplanet.com/people/12",
+                    Predicate = "http://www.networkedplanet.com/model/name",
+                    Object = "bob",
+                    IsLiteral = true,
+                    DataType = RdfDatatypes.String,
+                    Graph = "http://www.networkedplanet.com/graphs/1"
+                };
                 store.InsertTriple(t);
                 store.Commit(Guid.Empty);
 
@@ -980,23 +980,23 @@ namespace BrightstarDB.InternalTests
             {
                 Assert.AreEqual(1, store.GetCommitPoints().First().CommitNumber);
                 var t = new Triple
-                            {
-                                Subject = "http://www.networkedplanet.com/people/10",
-                                Predicate = "http://www.networkedplanet.com/model/isa",
-                                Object = "bob",
-                                DataType = RdfDatatypes.String,
-                                IsLiteral = true
-                            };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "bob",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
                 store.InsertTriple(t);
 
                 t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "kal",
-                            DataType = RdfDatatypes.String,
-                            IsLiteral = true
-                        };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "kal",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
                 store.InsertTriple(t);
 
                 store.Commit(Guid.Empty);
@@ -1004,13 +1004,13 @@ namespace BrightstarDB.InternalTests
                 Assert.AreEqual(2, store.GetCommitPoints().First().CommitNumber);
 
                 t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "gra",
-                            DataType = RdfDatatypes.String,
-                            IsLiteral = true
-                        };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "gra",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
 
                 store.InsertTriple(t);
                 store.Commit(Guid.Empty);
@@ -1072,35 +1072,35 @@ namespace BrightstarDB.InternalTests
             {
 
                 var t = new Triple
-                            {
-                                Subject = "http://www.networkedplanet.com/people/10",
-                                Predicate = "http://www.networkedplanet.com/model/isa",
-                                Object = "bob",
-                                DataType = RdfDatatypes.String,
-                                IsLiteral = true
-                            };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "bob",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
                 store.InsertTriple(t);
 
                 t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "kal",
-                            DataType = RdfDatatypes.String,
-                            IsLiteral = true
-                        };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "kal",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
                 store.InsertTriple(t);
 
                 store.Commit(Guid.Empty);
 
                 t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "gra",
-                            DataType = RdfDatatypes.String,
-                            IsLiteral = true
-                        };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "gra",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
 
                 store.InsertTriple(t);
                 store.Commit(Guid.Empty);
@@ -1127,35 +1127,35 @@ namespace BrightstarDB.InternalTests
             {
 
                 var t = new Triple
-                            {
-                                Subject = "http://www.networkedplanet.com/people/10",
-                                Predicate = "http://www.networkedplanet.com/model/isa",
-                                Object = "bob",
-                                DataType = RdfDatatypes.String,
-                                IsLiteral = true
-                            };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "bob",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
                 store.InsertTriple(t);
 
                 t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "kal",
-                            DataType = RdfDatatypes.String,
-                            IsLiteral = true
-                        };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "kal",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
                 store.InsertTriple(t);
 
                 store.Commit(Guid.Empty);
 
                 t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "gra",
-                            DataType = RdfDatatypes.String,
-                            IsLiteral = true
-                        };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "gra",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
 
                 store.InsertTriple(t);
                 store.Commit(Guid.Empty);
@@ -1175,13 +1175,13 @@ namespace BrightstarDB.InternalTests
                 Assert.AreEqual(2, triples.Count());
 
                 var t = new Triple
-                        {
-                            Subject = "http://www.networkedplanet.com/people/10",
-                            Predicate = "http://www.networkedplanet.com/model/isa",
-                            Object = "gra",
-                            DataType = RdfDatatypes.String,
-                            IsLiteral = true
-                        };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "gra",
+                    DataType = RdfDatatypes.String,
+                    IsLiteral = true
+                };
                 store.InsertTriple(t);
 
                 store.Commit(Guid.Empty);
@@ -1199,13 +1199,13 @@ namespace BrightstarDB.InternalTests
             var sid = Guid.NewGuid().ToString();
             var store = StoreManager.CreateStore(Configuration.StoreLocation + "\\" + sid);
             var t = new Triple
-                        {
-                            Subject = "http://example.org/resource",
-                            Predicate = "http://example.org/description",
-                            Object = "This is <i>BAD</I> XML and it will cause us problems",
-                            DataType = RdfDatatypes.String,
-                            IsLiteral = true
-                        };
+            {
+                Subject = "http://example.org/resource",
+                Predicate = "http://example.org/description",
+                Object = "This is <i>BAD</I> XML and it will cause us problems",
+                DataType = RdfDatatypes.String,
+                IsLiteral = true
+            };
             store.InsertTriple(t);
             store.Commit(Guid.Empty);
 
@@ -1257,33 +1257,33 @@ namespace BrightstarDB.InternalTests
             job2Id = Guid.NewGuid();
             job3Id = Guid.NewGuid();
             store.InsertTriple(new Triple
-                {
-                    Subject = "http://example.org/alice",
-                    Predicate = "http://example.org/name",
-                    Object = "Alice",
-                    DataType = RdfDatatypes.String,
-                    IsLiteral = true
-                });
+            {
+                Subject = "http://example.org/alice",
+                Predicate = "http://example.org/name",
+                Object = "Alice",
+                DataType = RdfDatatypes.String,
+                IsLiteral = true
+            });
             store.Commit(job1Id);
 
             store.InsertTriple(new Triple
-                {
-                    Subject = "http://example.org/bob",
-                    Predicate = "http://example.org/name",
-                    Object = "Bob",
-                    DataType = RdfDatatypes.String,
-                    IsLiteral = true
-                });
+            {
+                Subject = "http://example.org/bob",
+                Predicate = "http://example.org/name",
+                Object = "Bob",
+                DataType = RdfDatatypes.String,
+                IsLiteral = true
+            });
             store.Commit(job2Id);
 
             store.InsertTriple(new Triple
-                {
-                    Subject = "http://example.org/Charlie",
-                    Predicate = "http://example.org/name",
-                    Object = "Charlie",
-                    DataType = RdfDatatypes.String,
-                    IsLiteral = true
-                });
+            {
+                Subject = "http://example.org/Charlie",
+                Predicate = "http://example.org/name",
+                Object = "Charlie",
+                DataType = RdfDatatypes.String,
+                IsLiteral = true
+            });
             store.Commit(job3Id);
             return store;
         }
@@ -1484,7 +1484,7 @@ namespace BrightstarDB.InternalTests
                 var task4 = tf.StartNew<int>(EnumerateStore, readStore);
                 try
                 {
-                    Task.WaitAll(new Task[] {task1, task2, task3, task4});
+                    Task.WaitAll(new Task[] { task1, task2, task3, task4 });
                 }
                 catch (Exception ex)
                 {

@@ -123,7 +123,7 @@ namespace BrightstarDB.Tests.DataObjectsTests
             _store.SaveChanges();
 
             var retrieved = _store.GetDataObject("p:Alice");
-            var dob = (DateTime) retrieved.GetPropertyValue("foaf:dateOfBirth");
+            var dob = (DateTime)retrieved.GetPropertyValue("foaf:dateOfBirth");
             Assert.AreEqual(DateTimeKind.Utc, dob.Kind);
             Assert.AreEqual(new DateTime(1970, 01, 02, 23, 58, 0, DateTimeKind.Utc), dob);
         }

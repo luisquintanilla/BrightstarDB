@@ -15,8 +15,8 @@ namespace BrightstarDB.Query
         /// </summary>
         private readonly IStore _store;
 
-        private List<string> _graphUris = new List<string>{Constants.DefaultGraphUri};
-        private List<string> _defaultGraphUris = new List<string>{Constants.DefaultGraphUri};
+        private List<string> _graphUris = new List<string> { Constants.DefaultGraphUri };
+        private List<string> _defaultGraphUris = new List<string> { Constants.DefaultGraphUri };
 
         public StoreSparqlDataset(IStore store)
         {
@@ -243,8 +243,8 @@ namespace BrightstarDB.Query
                 return new Triple[0];
             }
             return _store.Match(GetNodeMatchString(subj),
-                                GetNodeMatchString(pred), 
-                                null, 
+                                GetNodeMatchString(pred),
+                                null,
                                 graphs: _graphUris)
                 .Select(MakeVdsTriple);
         }
@@ -300,9 +300,9 @@ namespace BrightstarDB.Query
             switch (node.NodeType)
             {
                 case NodeType.Uri:
-                    return ((IUriNode) node).Uri.ToString();
+                    return ((IUriNode)node).Uri.ToString();
                 case NodeType.Literal:
-                    return ((ILiteralNode) node).Value;
+                    return ((ILiteralNode)node).Value;
                 case NodeType.Blank:
                     // return ((IBlankNode)node).InternalID;
                     var s = node.ToString();
@@ -494,17 +494,17 @@ namespace BrightstarDB.Query
 
         public IEnumerable<Uri> DefaultGraphUris
         {
-            get { return _defaultGraphUris.Select(s=>new Uri(s)); }
+            get { return _defaultGraphUris.Select(s => new Uri(s)); }
         }
 
         public IEnumerable<string> GetActiveGraphUris()
         {
             return _graphUris;
-        } 
+        }
 
         public IEnumerable<Uri> ActiveGraphUris
         {
-            get { return _graphUris.Select(s=>new Uri(s)); }
+            get { return _graphUris.Select(s => new Uri(s)); }
         }
 
         public IGraph DefaultGraph
@@ -531,7 +531,7 @@ namespace BrightstarDB.Query
         {
             get
             {
-                return _store.GetGraphUris().Where(x=>!x.Equals(Constants.DefaultGraphUri)).Select(x => new Uri(x));
+                return _store.GetGraphUris().Where(x => !x.Equals(Constants.DefaultGraphUri)).Select(x => new Uri(x));
             }
         }
 

@@ -5,15 +5,15 @@ namespace BrightstarDB.EntityFramework
     /// <summary>
     /// Assembly attribute that specifies the default base URI for all PropertyType and Entity attributes
     /// </summary>
-    [AttributeUsage(AttributeTargets.Assembly, AllowMultiple=false)]
+    [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
     public class TypeIdentifierPrefixAttribute : Attribute
     {
         /// <summary>
         /// Get or set the base URI to use for all <see cref="PropertyTypeAttribute"/> and <see cref="EntityAttribute"/> attributes that
         /// have relative URIs
         /// </summary>
-        public string BaseUri {get;set;}
-        
+        public string BaseUri { get; set; }
+
         /// <summary>
         /// Creates a new instace of this assembly attribute
         /// </summary>

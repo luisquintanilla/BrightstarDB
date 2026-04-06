@@ -35,7 +35,7 @@ namespace BrightstarDB.Analysis
         /// <summary>
         /// The reports for the child nodes of this node
         /// </summary>
-        [XmlElement(Type = typeof (NodeReport), ElementName = "Node")]
+        [XmlElement(Type = typeof(NodeReport), ElementName = "Node")]
         public List<NodeReport> Children { get; set; }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace BrightstarDB.Analysis
         /// referenced from this node
         /// </summary>
         [XmlElement(Type = typeof(BTreeReport), ElementName = "RelatedResourceList")]
-        public List<BTreeReport> RelatedResourceLists { get; set; } 
+        public List<BTreeReport> RelatedResourceLists { get; set; }
 
         /// <summary>
         /// Creates an empty node report

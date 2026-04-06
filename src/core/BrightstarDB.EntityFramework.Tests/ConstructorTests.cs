@@ -23,7 +23,7 @@ namespace BrightstarDB.EntityFramework.Tests
         {
             var q =
                 Context.Companies.Where(c => c.ListedOn.Id.Equals("FTSE")).Select(
-                    c => new StockQuote {Ticker = c.TickerSymbol, Price = c.CurrentSharePrice});
+                    c => new StockQuote { Ticker = c.TickerSymbol, Price = c.CurrentSharePrice });
             var results = q.ToList();
             AssertQuerySparql(@"SELECT ?v1 ?v2 WHERE {
 ?c a <http://www.networkedplanet.com/schemas/test/Company> .

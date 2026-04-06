@@ -23,7 +23,7 @@ namespace BrightstarDB.Tests.DataObjectsTests
         {
             var doContext = BrightstarService.GetDataObjectContext("type=dotNetRdf;configuration=" + Path.Combine(TestContext.CurrentContext.TestDirectory, Configuration.DataLocation) +
                                                                    "dataObjectStoreConfig.ttl");
-            Assert.Throws<BrightstarClientException>(()=> doContext.OpenStore("http://www.brightstardb.com/tests#peopleStore"), "The store 'http://www.brightstardb.com/tests#peopleStore' does not exist or cannot be accessed.");
+            Assert.Throws<BrightstarClientException>(() => doContext.OpenStore("http://www.brightstardb.com/tests#peopleStore"), "The store 'http://www.brightstardb.com/tests#peopleStore' does not exist or cannot be accessed.");
         }
 
         [Test]

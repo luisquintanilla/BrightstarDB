@@ -15,7 +15,7 @@ namespace BrightstarDB.Storage.Persistence
         void InsertOrUpdate(string partition, IPageCacheItem page);
         IPageCacheItem Lookup(string partition, ulong pageId);
         void Clear(string partition);
-        int FreePages { get;}
+        int FreePages { get; }
 
         void Clear();
     }

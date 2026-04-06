@@ -20,7 +20,7 @@ namespace BrightstarDB.Storage.BTreeStore
 
         public ulong ObjectId
         {
-             get { return _objectId; }
+            get { return _objectId; }
         }
 
         public int Save(BinaryWriter dataStream, ulong offset = 0ul)
@@ -31,6 +31,6 @@ namespace BrightstarDB.Storage.BTreeStore
         public void Read(BinaryReader dataStream)
         {
             _objectId = SerializationUtils.ReadVarint(dataStream);
-        }       
+        }
     }
 }

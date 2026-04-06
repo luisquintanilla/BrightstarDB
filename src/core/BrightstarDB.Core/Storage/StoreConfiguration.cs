@@ -5,7 +5,7 @@ namespace BrightstarDB.Storage
     /// <summary>
     /// Class that wraps the different store configuration options we support
     /// </summary>
-    public class StoreConfiguration 
+    public class StoreConfiguration
 #if !(NETSTANDARD16)
         : ICloneable
 #endif
@@ -18,7 +18,7 @@ namespace BrightstarDB.Storage
         /// </summary>
         public bool UseIsolatedStorage { get; set; }
 #endif
-        
+
         /// <summary>
         /// The implementation of the abstract persistence layer used by the store.
         /// </summary>
@@ -58,15 +58,15 @@ namespace BrightstarDB.Storage
         public object Clone()
         {
             return new StoreConfiguration
-                {
+            {
 #if !SILVERLIGHT
-                    UseIsolatedStorage = this.UseIsolatedStorage,
+                UseIsolatedStorage = this.UseIsolatedStorage,
 #endif
-                    PersistenceManager = this.PersistenceManager,
-                    StoreManagerType = this.StoreManagerType,
-                    PersistenceType = this.PersistenceType,
-                    DisableBackgroundWrites = this.DisableBackgroundWrites
-                };
+                PersistenceManager = this.PersistenceManager,
+                StoreManagerType = this.StoreManagerType,
+                PersistenceType = this.PersistenceType,
+                DisableBackgroundWrites = this.DisableBackgroundWrites
+            };
         }
     }
 }

@@ -11,7 +11,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
 {
     internal class ConcurrentResourceIdCache : IResourceIdCache
     {
-        private ConcurrentDictionary<string, ulong > _cache = new ConcurrentDictionary<string, ulong>();
+        private ConcurrentDictionary<string, ulong> _cache = new ConcurrentDictionary<string, ulong>();
 
         #region Implementation of IResourceIdCache
 

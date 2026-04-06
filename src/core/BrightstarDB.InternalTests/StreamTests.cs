@@ -53,11 +53,11 @@ namespace BrightstarDB.InternalTests
 
             Thread.Sleep(1000);
 
-            var sr = new StreamReader(consumerStream);                   
+            var sr = new StreamReader(consumerStream);
             var result = sr.ReadToEnd();
             Assert.IsTrue(result.StartsWith("stream content 0"));
             Assert.IsTrue(result.EndsWith("stream content 999\r\n"));
-            
+
             Task.WaitAll(t);
         }
 

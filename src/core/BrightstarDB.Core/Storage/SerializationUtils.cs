@@ -8,7 +8,7 @@ namespace BrightstarDB.Storage
     {
         public static int WriteString(BinaryWriter dataStream, string data)
         {
-            var bytes = Encoding.UTF8.GetBytes(data);                
+            var bytes = Encoding.UTF8.GetBytes(data);
             var count = WriteVarint(dataStream, (ulong)bytes.Count());
             dataStream.Write(bytes);
             return count;
@@ -16,7 +16,7 @@ namespace BrightstarDB.Storage
 
         public static string ReadString(BinaryReader dataStream)
         {
-            var byteCount = (int) ReadVarint(dataStream);
+            var byteCount = (int)ReadVarint(dataStream);
             return Encoding.UTF8.GetString(dataStream.ReadBytes(byteCount), 0, byteCount);
         }
 
@@ -32,11 +32,11 @@ namespace BrightstarDB.Storage
             var buffer = new byte[10];
             do
             {
-                buffer[count] = (byte) ((value & 0x7F) | 0x80);
+                buffer[count] = (byte)((value & 0x7F) | 0x80);
                 count++;
             } while ((value >>= 7) != 0);
 
-            buffer[count - 1] &= 0x7F; 
+            buffer[count - 1] &= 0x7F;
             dataStream.Write(buffer, 0, count);
 
             return count;

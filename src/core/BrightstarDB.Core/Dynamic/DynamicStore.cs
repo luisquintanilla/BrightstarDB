@@ -18,7 +18,7 @@ namespace BrightstarDB.Dynamic
         /// <param name="store"></param>
         public DynamicStore(IDataObjectStore store)
         {
-            _store = store;            
+            _store = store;
         }
 
         /// <summary>

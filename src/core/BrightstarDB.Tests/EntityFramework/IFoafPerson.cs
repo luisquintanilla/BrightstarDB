@@ -22,7 +22,7 @@ namespace BrightstarDB.Tests.EntityFramework
 #if !PORTABLE
         [PropertyType("http://xmlns.com/foaf/0.1/name")]
         [Required]
-        [CustomValidation(typeof(MyCustomValidator), "ValidateName", ErrorMessage="Custom error message")]
+        [CustomValidation(typeof(MyCustomValidator), "ValidateName", ErrorMessage = "Custom error message")]
         string Name { get; set; }
 #else
         [PropertyType("http://xmlns.com/foaf/0.1/name")]

@@ -19,7 +19,7 @@ namespace BrightstarDB.Rdf
         /// </summary>
         public bool HaveLineNumber { get; private set; }
 
-        internal RdfParserException(string msg) : base(msg){}
+        internal RdfParserException(string msg) : base(msg) { }
 
         internal RdfParserException(int lineNumber, string msg, Exception inner = null) : base(msg, inner)
         {
@@ -56,6 +56,6 @@ namespace BrightstarDB.Rdf
             }
         }
 
-        internal RdfParserException(string msg, Exception inner) : base(msg, inner){}
+        internal RdfParserException(string msg, Exception inner) : base(msg, inner) { }
     }
 }

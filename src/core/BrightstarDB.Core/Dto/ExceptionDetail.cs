@@ -18,7 +18,7 @@ namespace BrightstarDB.Dto
         [Obsolete("Provided only for serialization purposes")]
         public ExceptionDetailObject()
         {
-            
+
         }
         /// <summary>
         /// Creates a new instance of the <see cref="ExceptionDetailObject"/> class from the exception.
@@ -118,7 +118,7 @@ namespace BrightstarDB.Dto
             if (InnerException != null)
             {
                 sb.AppendLine(SectionSeparator);
-                InnerException.BuildString(sb, indentLevel+1);
+                InnerException.BuildString(sb, indentLevel + 1);
             }
         }
     }

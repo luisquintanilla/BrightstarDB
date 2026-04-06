@@ -132,7 +132,7 @@ namespace BrightstarDB.Caching
         {
             var fileName = KeyToFileName(key);
             var normalFile = new FileInfo(Path.Combine(_normalDir.FullName, fileName));
-            if(normalFile.Exists)return new DirectoryCacheEntry(normalFile, CachePriority.Normal);
+            if (normalFile.Exists) return new DirectoryCacheEntry(normalFile, CachePriority.Normal);
             var highFile = new FileInfo(Path.Combine(_highDir.FullName, fileName));
             if (highFile.Exists) return new DirectoryCacheEntry(highFile, CachePriority.High);
             return null;

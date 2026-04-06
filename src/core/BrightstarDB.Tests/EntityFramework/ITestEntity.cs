@@ -16,11 +16,11 @@ namespace BrightstarDB.Tests.EntityFramework
         string SomeString { get; set; }
 
         DateTime SomeDateTime { get; set; }
-        
+
         DateTime? SomeNullableDateTime { get; set; }
 
         bool SomeBool { get; set; }
-        
+
         bool? NullableBool { get; set; }
 
         Byte SomeByte { get; set; }
@@ -32,15 +32,15 @@ namespace BrightstarDB.Tests.EntityFramework
         char AnotherChar { get; set; }
         Char? NullableChar { get; set; }
         char? AnotherNullableChar { get; set; }
-        
+
         decimal SomeDecimal { get; set; }
-        
+
         double SomeDouble { get; set; }
 
         float SomeFloat { get; set; }
-        
+
         int SomeInt { get; set; }
-        
+
         int? SomeNullableInt { get; set; }
 
         long SomeLong { get; set; }
@@ -54,8 +54,8 @@ namespace BrightstarDB.Tests.EntityFramework
         UInt32 SomeUInt { get; set; }
         uint AnotherUInt { get; set; }
 
-       UInt64 SomeULong { get; set; }
-       ulong AnotherULong { get; set; }
+        UInt64 SomeULong { get; set; }
+        ulong AnotherULong { get; set; }
 
         UInt16 SomeUShort { get; set; }
         ushort AnotherUShort { get; set; }
@@ -88,7 +88,7 @@ namespace BrightstarDB.Tests.EntityFramework
     enum TestEnumeration
     {
         First,
-        Second, 
+        Second,
         Third
     }
 

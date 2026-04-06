@@ -23,7 +23,7 @@ namespace BrightstarDB.Storage
 
         public void Dispose()
         {
-            
+
         }
 
         public bool MoveNext()

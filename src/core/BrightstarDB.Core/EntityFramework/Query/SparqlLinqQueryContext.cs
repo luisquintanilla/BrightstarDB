@@ -27,7 +27,7 @@ namespace BrightstarDB.EntityFramework.Query
         /// </summary>
         /// <remarks>This property is valid iff <see cref="IsInstanceQuery"/> is true</remarks>
         public string TypeUri { get; private set; }
-       
+
         /// <summary>
         /// Gets the constructor to be invoked when binding SPARQL query results to LINQ query results
         /// </summary>
@@ -43,7 +43,7 @@ namespace BrightstarDB.EntityFramework.Query
 
         private readonly Expression _memberInitExpression;
 
-        internal SparqlLinqQueryContext(string instanceUri, string typeUri) :base()
+        internal SparqlLinqQueryContext(string instanceUri, string typeUri) : base()
         {
             IsInstanceQuery = true;
             InstanceUri = instanceUri;
@@ -60,11 +60,11 @@ namespace BrightstarDB.EntityFramework.Query
         ///<param name="memberMap">A list of tuples that bind the names of result object members to the SPARQL variables that provides the value for the member</param>
         ///<param name="memberInitExpression">A LINQ expression that is used to initialize the members of the results object from a SPARQL results row</param>
         /// <param name="orderingDirections">An enumeration of the orderings for each of the sort variables in the SPARQL query</param>
-        public SparqlLinqQueryContext(string sparqlQuery, IEnumerable<Tuple<string, string>> anonymousMembersMap, 
+        public SparqlLinqQueryContext(string sparqlQuery, IEnumerable<Tuple<string, string>> anonymousMembersMap,
             ConstructorInfo constructor, List<string> constructorArgs, List<Tuple<MemberInfo, string>> memberMap,
             Expression memberInitExpression,
-            IEnumerable<OrderingDirection> orderingDirections 
-            ) :base(sparqlQuery, anonymousMembersMap, orderingDirections, SparqlResultsFormat.Xml, RdfFormat.NTriples)
+            IEnumerable<OrderingDirection> orderingDirections
+            ) : base(sparqlQuery, anonymousMembersMap, orderingDirections, SparqlResultsFormat.Xml, RdfFormat.NTriples)
         {
             IsInstanceQuery = false;
             Constructor = constructor;
@@ -85,7 +85,7 @@ namespace BrightstarDB.EntityFramework.Query
         /// <param name="parameters">The SPARLQ result binding values</param>
         /// <param name="converter">A function that given a string value from the SPARQL binding and a target type is capable of returning a new instance of the target type bound to the string value</param>
         /// <returns>The generated member instance</returns>
-        public object ApplyMemberInitExpression<T>(Dictionary<string, object> parameters, Func<string, string, Type, object> converter )
+        public object ApplyMemberInitExpression<T>(Dictionary<string, object> parameters, Func<string, string, Type, object> converter)
         {
             var exprBuilder = new SparqlGeneratorSelectExpressionBuilder(parameters, converter);
             var expressionBody = exprBuilder.Visit(_memberInitExpression);
@@ -130,7 +130,7 @@ namespace BrightstarDB.EntityFramework.Query
                         }
 #else
                         Constructor.DeclaringType.InvokeMember(mapping.Item1.Name, BindingFlags.Public, null, ret,
-                                                               new object[] {values[mapping.Item2]});
+                                                               new object[] { values[mapping.Item2] });
 #endif
                     }
                 }

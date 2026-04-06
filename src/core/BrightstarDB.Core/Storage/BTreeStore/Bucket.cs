@@ -22,7 +22,7 @@ namespace BrightstarDB.Storage.BTreeStore
         {
             var count = dataStream.ReadInt32();
             Resources = new List<Resource>();
-            for (int i=0;i<count;i++)
+            for (int i = 0; i < count; i++)
             {
                 var obj = new Resource();
                 obj.Read(dataStream);

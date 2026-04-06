@@ -37,7 +37,7 @@ namespace BrightstarDB.Tests
             // Ensure a complete shutdown between tests to prevent reuse of the embedded client configuration
             BrightstarService.Shutdown();
         }
-        
+
         [Test]
         public void TestCreateStoreWithTransactionLoggingDisabled()
         {

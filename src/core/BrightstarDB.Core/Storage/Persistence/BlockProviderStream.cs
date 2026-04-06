@@ -31,7 +31,7 @@ namespace BrightstarDB.Storage.Persistence
             _path = path;
             _block = new byte[provider.BlockSize];
             _blockOffset = -1;
-            switch(fileMode)
+            switch (fileMode)
             {
                 case FileMode.Append:
                     _Seek(0, SeekOrigin.End);
@@ -168,7 +168,7 @@ namespace BrightstarDB.Storage.Persistence
                     var availableByteCount = _blockLength - startOffset;
                     if (availableByteCount < 0)
                     {
-                        Logging.LogError(BrightstarEventId.BlockProviderError, 
+                        Logging.LogError(BrightstarEventId.BlockProviderError,
                             "Read(buff, {0}, {1}) about to fail. Block provider reports block with offset {2} as active block and internal length is {3}. AvailableByteCount={4}",
                             offset, count, _blockOffset, _blockLength, availableByteCount);
                     }
@@ -192,7 +192,7 @@ namespace BrightstarDB.Storage.Persistence
 
         private void LoadBlock(bool createIfNotExists)
         {
-            long blockOffset = _pos - (_pos%_blockProvider.BlockSize);
+            long blockOffset = _pos - (_pos % _blockProvider.BlockSize);
             if (_blockOffset != blockOffset)
             {
                 _blockOffset = blockOffset;

@@ -20,7 +20,7 @@ namespace BrightstarDB.InternalTests
         {
             const string exp = "select ?t where { ?t a ?tt }";
             var parser = new SparqlQueryParser();
-            var query = parser.ParseFromString(exp);            
+            var query = parser.ParseFromString(exp);
             Assert.IsNotNull(query);
         }
 
@@ -31,11 +31,11 @@ namespace BrightstarDB.InternalTests
             using (var store = _storeManager.CreateStore(Configuration.StoreLocation + "\\" + sid))
             {
                 var t = new Triple
-                            {
-                                Subject = "http://www.networkedplanet.com/people/10",
-                                Predicate = "http://www.networkedplanet.com/model/isa",
-                                Object = "http://www.networkedplanet.com/types/person"
-                            };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "http://www.networkedplanet.com/types/person"
+                };
                 store.InsertTriple(t);
 
                 store.Commit(Guid.Empty);
@@ -60,11 +60,11 @@ namespace BrightstarDB.InternalTests
             {
 
                 var t = new Triple
-                            {
-                                Subject = "http://www.networkedplanet.com/people/10",
-                                Predicate = "http://www.networkedplanet.com/model/isa",
-                                Object = "http://www.networkedplanet.com/types/person"
-                            };
+                {
+                    Subject = "http://www.networkedplanet.com/people/10",
+                    Predicate = "http://www.networkedplanet.com/model/isa",
+                    Object = "http://www.networkedplanet.com/types/person"
+                };
                 store.InsertTriple(t);
 
                 store.Commit(Guid.Empty);
@@ -88,7 +88,7 @@ namespace BrightstarDB.InternalTests
         {
             var sid = Guid.NewGuid().ToString();
             var store = _storeManager.CreateStore(Configuration.StoreLocation + "\\" + sid);
-            store.InsertTriple("http://theforce.net/data/entry/1","http://theforce.net/schema/category", "http://theforce.net/data/category/1", false,null, null, Constants.DefaultGraphUri);
+            store.InsertTriple("http://theforce.net/data/entry/1", "http://theforce.net/schema/category", "http://theforce.net/data/category/1", false, null, null, Constants.DefaultGraphUri);
             store.InsertTriple("http://theforce.net/data/entry/1", "http://theforce.net/schema/fromPlanet", "http://theforce.net/data/planet/1", false, null, null, Constants.DefaultGraphUri);
             store.InsertTriple("http://theforce.net/data/planet/1", "http://theforce.net/schema/inSector", "http://theforce.net/data/sector/1", false, null, null, Constants.DefaultGraphUri);
 
@@ -194,10 +194,10 @@ SELECT ?entry ?sector WHERE {
             //insert the dummy data      
             client.ExecuteTransaction(storeName,
                                       new UpdateTransactionData
-                                          {
-                                              InsertData = nTriples,
-                                              DefaultGraphUri = Constants.DefaultGraphUri
-                                          });
+                                      {
+                                          InsertData = nTriples,
+                                          DefaultGraphUri = Constants.DefaultGraphUri
+                                      });
 
             //select number of employees with job role = administration
             var result = XDocument.Load(client.ExecuteQuery(storeName, "SELECT count(?employee) as ?ugh WHERE {?employeerecord <http://www.examplevocab.com/schema/departmentEmployeeRole> <http://www.example.com/jobRole/administration> . ?employeerecord <http://www.examplevocab.com/schema/departmentEmployee> ?employee  }  "));

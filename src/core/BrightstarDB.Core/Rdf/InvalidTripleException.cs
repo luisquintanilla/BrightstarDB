@@ -16,7 +16,7 @@ namespace BrightstarDB.Rdf
     {
         public InvalidTripleException(string message) : base(message)
         {
-            
+
         }
     }
 }

@@ -15,7 +15,7 @@ namespace BrightstarDB.EntityFramework
         /// </summary>
         /// <returns>The new entity instance</returns>
         T Create();
-        
+
         /// <summary>
         /// Adds a new item to the entity set
         /// </summary>
@@ -80,6 +80,6 @@ namespace BrightstarDB.EntityFramework
     /// </summary>
     public interface IEntitySet
     {
-        
+
     }
 }

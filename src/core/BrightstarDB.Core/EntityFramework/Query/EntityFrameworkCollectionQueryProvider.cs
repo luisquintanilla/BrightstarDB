@@ -35,7 +35,7 @@ namespace BrightstarDB.EntityFramework.Query
         /// <param name="expression">An expression tree that represents a LINQ query.</param><typeparam name="TElement">The type of the elements of the <see cref="T:System.Linq.IQueryable`1"/> that is returned.</typeparam>
         public override IQueryable<TElement> CreateQuery<TElement>(Expression expression)
         {
-            var queryProvider = new DefaultQueryProvider(typeof (EntityFrameworkQueryable<>), _queryParser, _queryExecutor);
+            var queryProvider = new DefaultQueryProvider(typeof(EntityFrameworkQueryable<>), _queryParser, _queryExecutor);
             return new EntityFrameworkQueryable<TElement>(queryProvider, expression);
         }
 

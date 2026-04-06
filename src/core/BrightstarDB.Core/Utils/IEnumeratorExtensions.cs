@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BrightstarDB.Utils
 {
-    
+
     internal static class IEnumeratorExtensions
     {
         /// <summary>
@@ -18,7 +18,7 @@ namespace BrightstarDB.Utils
         public static IEnumerable<T> Next<T>(this IEnumerator<T> enumerator, int max)
         {
             int count = 0;
-            while(count < max && enumerator.MoveNext())
+            while (count < max && enumerator.MoveNext())
             {
                 yield return enumerator.Current;
                 count++;

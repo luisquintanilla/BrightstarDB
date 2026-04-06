@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BrightstarDB.Storage.BTreeStore
 {
-    internal class Resource : IStorable   
+    internal class Resource : IStorable
     {
         public ulong Rid;
 
@@ -29,7 +29,7 @@ namespace BrightstarDB.Storage.BTreeStore
             {
                 var langCodeBytes = Encoding.UTF8.GetBytes(LanguageCode);
                 langCodeByteCount = langCodeBytes.Count();
-                count += SerializationUtils.WriteVarint(dataStream, (ulong) langCodeByteCount);
+                count += SerializationUtils.WriteVarint(dataStream, (ulong)langCodeByteCount);
                 dataStream.Write(langCodeBytes);
             }
 
@@ -56,7 +56,7 @@ namespace BrightstarDB.Storage.BTreeStore
             }
 
             var lexValueByteCount = (int)SerializationUtils.ReadVarint(dataStream);
-            LexicalValue = Encoding.UTF8.GetString(dataStream.ReadBytes(lexValueByteCount), 0, lexValueByteCount);                
+            LexicalValue = Encoding.UTF8.GetString(dataStream.ReadBytes(lexValueByteCount), 0, lexValueByteCount);
         }
 
     }

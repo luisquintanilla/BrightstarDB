@@ -16,14 +16,14 @@ namespace BrightstarDB.Storage.BTreeStore
 
         public string GetGraphUri(int graphId)
         {
-            return _graphs[graphId-1];
+            return _graphs[graphId - 1];
         }
 
         public ulong LookupGraphId(string graph)
         {
             for (int i = 0; i < _graphs.Count; i++)
             {
-                if (_graphs[i].Equals(graph)) return (ulong)(i+1);
+                if (_graphs[i].Equals(graph)) return (ulong)(i + 1);
             }
             return StoreConstants.NullUlong;
         }
@@ -32,17 +32,17 @@ namespace BrightstarDB.Storage.BTreeStore
         {
             for (int i = 0; i < _graphs.Count; i++)
             {
-                if (_graphs[i].Equals(graph)) return (ulong)(i + 1);    
+                if (_graphs[i].Equals(graph)) return (ulong)(i + 1);
             }
 
             // add to graph
             _graphs.Add(graph);
-            return (ulong) _graphs.Count;
-        } 
+            return (ulong)_graphs.Count;
+        }
 
         public int Save(BinaryWriter dataStream, ulong offset)
         {
-            var count = SerializationUtils.WriteVarint(dataStream, (ulong) _graphs.Count);
+            var count = SerializationUtils.WriteVarint(dataStream, (ulong)_graphs.Count);
             foreach (var graph in _graphs)
             {
                 var lexValueBytes = Encoding.UTF8.GetBytes(graph);
@@ -55,7 +55,7 @@ namespace BrightstarDB.Storage.BTreeStore
 
         public void Read(BinaryReader dataStream)
         {
-            var graphCount = (int) SerializationUtils.ReadVarint(dataStream);
+            var graphCount = (int)SerializationUtils.ReadVarint(dataStream);
             for (int i = 0; i < graphCount; i++)
             {
                 var byteCount = (int)SerializationUtils.ReadVarint(dataStream);

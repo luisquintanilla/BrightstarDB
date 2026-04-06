@@ -37,9 +37,9 @@ WHERE {
         public void TestOptimisationOfMultiHopPropertyFilter()
         {
             var q = from x in Context.Dinners
-                from r in x.Rsvps
-                where r.AttendeeEmail == "kal@networkedplanet.com"
-                select x;
+                    from r in x.Rsvps
+                    where r.AttendeeEmail == "kal@networkedplanet.com"
+                    select x;
             var results = q.ToList();
             var lastSparql = Context.LastSparqlQuery;
             Assert.AreEqual(
@@ -109,8 +109,8 @@ WHERE {
         public void TestOptimiseAndFilter()
         {
             var q = from x in Context.Dinners
-                where x.Host == "Foo" && x.Title == "Bar"
-                select x;
+                    where x.Host == "Foo" && x.Title == "Bar"
+                    select x;
             var results = q.ToList();
             var lastSparql = Context.LastSparqlQuery;
             Assert.AreEqual(
@@ -146,8 +146,8 @@ WHERE {
         public void TestBooleanAndOptimisation()
         {
             var q = from x in Context.Companies
-                where x.IsListed && x.IsBlueChip
-                select x;
+                    where x.IsListed && x.IsBlueChip
+                    select x;
             q.ToList();
             AssertQuerySparql(
                 @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
@@ -184,9 +184,9 @@ WHERE {
         public void TestResourceJoinOptimisationWithInverseArcs()
         {
             var q = from x in Context.Companies
-                from y in Context.Companies
-                where x.ListedOn == y.ListedOn
-                select x;
+                    from y in Context.Companies
+                    where x.ListedOn == y.ListedOn
+                    select x;
             q.ToList();
             AssertQuerySparql(
                 @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {

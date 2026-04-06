@@ -18,9 +18,9 @@ namespace BrightstarDB.Query
         /// as in some cases the Variables list repeats a variable that is only actually bound once 
         /// in the triple pattern. Perhaps this is a dotNetRdf bug that will get fixed ?
         /// </remarks>
-        public static int GetVariableCount(this TriplePattern  tp)
+        public static int GetVariableCount(this TriplePattern tp)
         {
-            return (new[] {tp.Subject, tp.Predicate, tp.Object}).Count(i => i.Variables.Any());
+            return (new[] { tp.Subject, tp.Predicate, tp.Object }).Count(i => i.Variables.Any());
         }
     }
 }

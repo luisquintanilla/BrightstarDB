@@ -10,7 +10,7 @@
 
         public CircularBuffer(int capacity)
         {
-            _buffer= new T[capacity];
+            _buffer = new T[capacity];
             _index = 0;
             Capacity = capacity;
         }
@@ -21,7 +21,7 @@
             {
                 int insertIndex = _index++;
                 _buffer[insertIndex] = item;
-                _index = _index%Capacity;
+                _index = _index % Capacity;
                 if (Count < Capacity) Count++;
                 return insertIndex;
             }
@@ -29,7 +29,7 @@
 
         public T this[int ix]
         {
-            get { lock(_lock) {return _buffer[ix];} }
+            get { lock (_lock) { return _buffer[ix]; } }
         }
 
         public T ItemAt(int ix)

@@ -34,7 +34,7 @@ namespace BrightstarDB.Query
         /// <returns>The URI of the graph or NULL if no graph with the specified internal ID was found</returns>
         public Uri GetGraphUri(int id)
         {
-            string graphUri =  _store.ResolveGraphUri(id);
+            string graphUri = _store.ResolveGraphUri(id);
             return graphUri == null ? null : new Uri(graphUri);
         }
 
@@ -131,7 +131,7 @@ namespace BrightstarDB.Query
                 throw new NotSupportedException("The BrightstarRdfProvider does not support creating new nodes.");
             }
             return ret;
-            
+
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace BrightstarDB.Query
         public ulong GetBlankNodeID(IBlankNode value, bool createIfNotExists)
         {
             var blankUri = Constants.GeneratedUriPrefix + value.InternalID;
-            ulong ret= _store.LookupResource(blankUri);
+            ulong ret = _store.LookupResource(blankUri);
             if (ret == StoreConstants.NullUlong && createIfNotExists)
             {
                 throw new NotSupportedException("The BrightstarRdfProvider does not support creating new nodes.");

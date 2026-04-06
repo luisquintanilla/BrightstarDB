@@ -20,14 +20,14 @@ namespace BrightstarDB.EntityFramework.Tests
         [Test]
         public void CheckContextTypeMappings()
         {
-            Assert.AreEqual("http://www.networkedplanet.com/schemas/test/Dinner", Context.MapTypeToUri(typeof (IDinner)));
+            Assert.AreEqual("http://www.networkedplanet.com/schemas/test/Dinner", Context.MapTypeToUri(typeof(IDinner)));
             Assert.AreEqual("http://www.networkedplanet.com/schemas/test/Rsvp", Context.MapTypeToUri(typeof(IRsvp)));
         }
 
         [Test]
         public void TestDinnerPropertyMappings()
         {
-            var dinnerType = typeof (IDinner);
+            var dinnerType = typeof(IDinner);
             var id = dinnerType.GetTypeInfo().GetProperty("Id");
             var hint = Context.GetPropertyHint(id);
             Assert.IsNotNull(hint);
@@ -79,7 +79,7 @@ namespace BrightstarDB.EntityFramework.Tests
         [Test]
         public void TestGetDinnersByIds()
         {
-            IEnumerable<string> ids = new[] {"1", "2", "3"};
+            IEnumerable<string> ids = new[] { "1", "2", "3" };
             var q = from x in Context.Dinners where ids.Contains(x.Id) select x;
             var results = q.ToList();
             var lastSparql = Context.LastSparqlQuery;
@@ -98,7 +98,8 @@ SELECT ?x WHERE {
         }
 
         [Test]
-        public void TestIdEscaping(){
+        public void TestIdEscaping()
+        {
             var q = Context.Dinners.FirstOrDefault(x => x.Id == "foo bar");
             AssertQuerySparql("ASK { <id:foo%20bar> a <http://www.networkedplanet.com/schemas/test/Dinner> . }");
         }
@@ -130,7 +131,7 @@ SELECT ?x WHERE {
                 NormalizeSparql(lastSparql));
         }
 
-        
+
 
 
         [Test]
@@ -247,7 +248,7 @@ SELECT ?x WHERE {
     ?r a <http://www.networkedplanet.com/schemas/test/Rsvp> .
     ?x <http://www.networkedplanet.com/schemas/test/attendees> ?r .
     { ?r <http://www.networkedplanet.com/schemas/test/email> 'kal@networkedplanet.com' . }
-    } } }"), 
+    } } }"),
                 NormalizeSparql(lastSparql));
         }
 
@@ -380,8 +381,8 @@ SELECT ?x WHERE {
     } } }");
 
             q = from x in Context.Companies
-                    where x.IsListed == false
-                    select x;
+                where x.IsListed == false
+                select x;
             q.ToList();
             AssertQuerySparql(
                 @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
@@ -409,8 +410,8 @@ SELECT ?x WHERE {
     } } }");
 
             q = from x in Context.Companies
-                    where !x.IsListed
-                    select x;
+                where !x.IsListed
+                select x;
             q.ToList();
             AssertQuerySparql(
                 @"CONSTRUCT {?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
@@ -476,7 +477,7 @@ SELECT ?x WHERE {
         [Test]
         public void TestLiteralInCollection()
         {
-            var tickers = new string[] {"AAA", "AAB", "AAC", "AAD"};
+            IEnumerable<string> tickers = new string[] { "AAA", "AAB", "AAC", "AAD" };
             var q = from x in Context.Companies
                     where tickers.Contains(x.TickerSymbol)
                     select x;
@@ -504,14 +505,14 @@ SELECT ?x WHERE {
         [Test]
         public void TestCreateAnonymous()
         {
-            var q = from x in Context.Companies select new {x.Name, x.TickerSymbol};
+            var q = from x in Context.Companies select new { x.Name, x.TickerSymbol };
             q.ToList();
             AssertQuerySparql(
                 @"SELECT ?v0 ?v1 WHERE {  ?x a <http://www.networkedplanet.com/schemas/test/Company> .
 OPTIONAL { ?x <http://purl.org/dc/terms/title> ?v0 . }
 OPTIONAL { ?x <http://www.networkedplanet.com/schemas/test/ticker> ?v1 . } }");
 
-            var p = from x in Context.Companies select new {x.Name, x.TickerSymbol, Market=x.ListedOn.Name};
+            var p = from x in Context.Companies select new { x.Name, x.TickerSymbol, Market = x.ListedOn.Name };
             p.ToList();
             AssertQuerySparql(
                 @"SELECT ?v0 ?v1 ?v3 WHERE {  ?x a <http://www.networkedplanet.com/schemas/test/Company> .
@@ -519,7 +520,7 @@ OPTIONAL { ?x <http://purl.org/dc/terms/title> ?v0 . }
 OPTIONAL { ?x <http://www.networkedplanet.com/schemas/test/ticker> ?v1 . }
 OPTIONAL { ?v2 <http://www.networkedplanet.com/schemas/test/listing> ?x .
            ?v2 <http://purl.org/dc/terms/title> ?v3 . } }");
-            Assert.AreEqual("v3", Context.LastSparqlLinqQueryContext.AnonymousMembersMap.Where(x=>x.Item1.Equals("Market")).Select(x=>x.Item2).FirstOrDefault());
+            Assert.AreEqual("v3", Context.LastSparqlLinqQueryContext.AnonymousMembersMap.Where(x => x.Item1.Equals("Market")).Select(x => x.Item2).FirstOrDefault());
 
             var r = from x in Context.Companies select new { x.Name, x.TickerSymbol, Market = x.ListedOn };
             r.ToList();
@@ -578,8 +579,8 @@ FILTER(?v0 > '100'^^<http://www.w3.org/2001/XMLSchema#integer>).
         [Test]
         public void TestSelectManyWithSubquery()
         {
-        var q2 =
-                Context.Dinners.SelectMany(d => d.Rsvps.Where(x => x.AttendeeEmail.Equals("kal@networkedplanet.com")));
+            var q2 =
+                    Context.Dinners.SelectMany(d => d.Rsvps.Where(x => x.AttendeeEmail.Equals("kal@networkedplanet.com")));
             q2.ToList();
             AssertQuerySparql(
                 @"CONSTRUCT { ?x003Cgeneratedx003Ex005Fx0030 ?x003Cgeneratedx003Ex005Fx0030_p ?x003Cgeneratedx003Ex005Fx0030_o.
@@ -658,7 +659,7 @@ FILTER(?v0 > '100'^^<http://www.w3.org/2001/XMLSchema#integer>).
                 p.ToList();
                 Assert.Fail("Expected EntityFrameworkException when attempting to cast to a non-EF type");
             }
-            catch(EntityFrameworkException)
+            catch (EntityFrameworkException)
             {
                 // Expected
             }

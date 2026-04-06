@@ -9,7 +9,7 @@ namespace BrightstarDB.Tests.EntityFramework
     [Entity]
     public interface ICompositeKeyEntity
     {
-        [Identifier(BaseAddress = "http://example.org/composite/", KeyProperties = new[]{"First", "Second"}, KeySeparator = ".")]
+        [Identifier(BaseAddress = "http://example.org/composite/", KeyProperties = new[] { "First", "Second" }, KeySeparator = ".")]
         string Id { get; }
 
         string First { get; set; }

@@ -25,19 +25,19 @@ namespace BrightstarDB
         private const string DefaultSparqlStoreName = "sparql";
 
         private readonly Dictionary<string, string> _values;
-        private readonly string _rawValue; 
+        private readonly string _rawValue;
 
         /// <summary>
         /// Parses the provided connection string
         /// </summary>
         /// <param name="connectionString">The connection string to be parsed</param>
         public ConnectionString(string connectionString)
-        {    
+        {
             if (connectionString == null)
             {
                 throw new ArgumentNullException("connectionString", Strings.BrightstarConnectionString_MustMotBeNull);
             }
-            if(String.Empty.Equals(connectionString))
+            if (String.Empty.Equals(connectionString))
             {
                 throw new ArgumentException(Strings.BrightstarConnectionString_MustNotBeEmpty, "connectionString");
             }
@@ -83,7 +83,7 @@ namespace BrightstarDB
             }
             else if (type.Equals("dotnetrdf"))
             {
-                Type=ConnectionType.DotNetRdf;
+                Type = ConnectionType.DotNetRdf;
                 RequiredProperty(ConfigurationName);
             }
             else if (type.Equals("sparql"))
@@ -110,7 +110,7 @@ namespace BrightstarDB
             }
         }
 
-        
+
 
         private void RequiredProperty(string requiredPropertyName)
         {
@@ -130,7 +130,7 @@ namespace BrightstarDB
         /// </summary>
         public string ServiceEndpoint { get { return GetValueOrDefault(EndpointPropertyName); } }
 
-        
+
         /// <summary>
         /// Returns the configured store name
         /// </summary>

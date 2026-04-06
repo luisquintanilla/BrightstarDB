@@ -53,7 +53,7 @@ namespace BrightstarDB.Tests
                 }
             }
 #else
-            
+
             var importFile = new FileInfo(Path.Combine(TestContext.CurrentContext.TestDirectory, Configuration.DataLocation, testDataFileName));
             var targetDir = new DirectoryInfo(Path.Combine(Configuration.StoreLocation, "import"));
             if (!targetDir.Exists)
@@ -102,7 +102,8 @@ namespace BrightstarDB.Tests
             {
                 bc.CreateStore(null);
                 Assert.Fail("Expected ArgumentNullException");
-            } catch(ArgumentNullException)
+            }
+            catch (ArgumentNullException)
             {
                 // Expected
             }
@@ -111,7 +112,8 @@ namespace BrightstarDB.Tests
             {
                 bc.CreateStore(String.Empty);
                 Assert.Fail("Expected ArgumentException (empty string)");
-            } catch(ArgumentException)
+            }
+            catch (ArgumentException)
             {
                 // Expected
             }
@@ -120,7 +122,8 @@ namespace BrightstarDB.Tests
             {
                 bc.CreateStore("This is\\an invalid\\store name");
                 Assert.Fail("Expected ArgumentException (backslash in name)");
-            }catch(ArgumentException)
+            }
+            catch (ArgumentException)
             {
                 //Expected
             }
@@ -129,7 +132,8 @@ namespace BrightstarDB.Tests
             {
                 bc.CreateStore("This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.This is an invalid store name because it is too long.");
                 Assert.Fail("Expected ArgumentException (name too long)");
-            } catch(ArgumentException)
+            }
+            catch (ArgumentException)
             {
                 // Expected
             }
@@ -197,7 +201,7 @@ namespace BrightstarDB.Tests
         public void TestQuery()
         {
             var client = GetClient();
-            var storeName  = "Client.TestQuery_" + DateTime.Now.Ticks;
+            var storeName = "Client.TestQuery_" + DateTime.Now.Ticks;
             client.CreateStore(storeName);
             client.ExecuteQuery(storeName, "SELECT ?s WHERE { ?s ?p ?o }");
         }
@@ -228,7 +232,7 @@ namespace BrightstarDB.Tests
 
         public void TestLargeQueryResult()
         {
-            
+
         }
 
 
@@ -256,7 +260,7 @@ namespace BrightstarDB.Tests
             bc.CreateStore(storeName);
             const string triplesToAdd = @"<http://example.org/resource13> <http://example.org/property> <http://example.org/resource2> .";
 
-            var jobInfo = bc.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData = triplesToAdd}, label:"Add Triples");
+            var jobInfo = bc.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = triplesToAdd }, label: "Add Triples");
 
             Assert.IsNotNull(jobInfo);
             Assert.That(jobInfo.Label, Is.EqualTo("Add Triples"));
@@ -275,14 +279,15 @@ namespace BrightstarDB.Tests
             //Assert.IsTrue(0 < memoryStream.Length);
         }
 
-        [Test] public void TestTransactiondDeleteStatements()
+        [Test]
+        public void TestTransactiondDeleteStatements()
         {
             var bc = GetClient();
             var storeName = Guid.NewGuid().ToString();
             bc.CreateStore(storeName);
             const string triplesToAdd = @"<http://example.org/resource13> <http://example.org/property> <http://example.org/resource2>.";
-            
-            var jobInfo = bc.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData= triplesToAdd});
+
+            var jobInfo = bc.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = triplesToAdd });
 
             Assert.IsNotNull(jobInfo);
 
@@ -299,7 +304,7 @@ namespace BrightstarDB.Tests
 
             const string deletePatterns = @"<http://example.org/resource13> <http://example.org/property> <http://example.org/resource2>.";
 
-            jobInfo = bc.ExecuteTransaction(storeName, new UpdateTransactionData {DeletePatterns = deletePatterns});
+            jobInfo = bc.ExecuteTransaction(storeName, new UpdateTransactionData { DeletePatterns = deletePatterns });
 
             while (!jobInfo.JobCompletedOk && !jobInfo.JobCompletedWithErrors)
             {
@@ -321,7 +326,7 @@ namespace BrightstarDB.Tests
             bc.CreateStore(storeName);
             const string triplesToAdd = @"<http://example.org/resource13> <http://example.org/property> <http://example.org/resource2>.";
 
-            var jobInfo = bc.ExecuteTransaction(storeName, new UpdateTransactionData {InsertData = triplesToAdd});
+            var jobInfo = bc.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = triplesToAdd });
 
             Assert.IsNotNull(jobInfo);
 
@@ -354,7 +359,7 @@ namespace BrightstarDB.Tests
                 @"<http://example.org/resource13> <http://example.org/property> <http://example.org/resource3> <http://example.org/graph1> .");
 
             var jobInfo = client.ExecuteTransaction(storeName,
-                                                    new UpdateTransactionData {InsertData = triplesToAdd.ToString()});
+                                                    new UpdateTransactionData { InsertData = triplesToAdd.ToString() });
             Assert.IsNotNull(jobInfo);
             Assert.IsTrue(jobInfo.JobCompletedOk);
 
@@ -396,17 +401,17 @@ namespace BrightstarDB.Tests
                 @"<http://example.org/resource13> <http://example.org/property> <http://example.org/resource4> <http://example.org/graph2> .");
 
             var jobInfo = client.ExecuteTransaction(storeName,
-                                                    new UpdateTransactionData {InsertData = triplesToAdd.ToString()});
+                                                    new UpdateTransactionData { InsertData = triplesToAdd.ToString() });
             Assert.IsNotNull(jobInfo);
             Assert.IsTrue(jobInfo.JobCompletedOk);
 
             // do query using graph1 and graph2 as the default
-            var resultStream = client.ExecuteQuery(storeName, "select ?p ?o where { <http://example.org/resource13> ?p ?o }", 
-                new[] {"http://example.org/graph1", "http://example.org/graph2"});
+            var resultStream = client.ExecuteQuery(storeName, "select ?p ?o where { <http://example.org/resource13> ?p ?o }",
+                new[] { "http://example.org/graph1", "http://example.org/graph2" });
             var result = XDocument.Load(resultStream);
             var rows = result.SparqlResultRows().ToList();
             Assert.AreEqual(2, rows.Count);
-            var expected = new[] {new Uri("http://example.org/resource3"), new Uri("http://example.org/resource4")};
+            var expected = new[] { new Uri("http://example.org/resource3"), new Uri("http://example.org/resource4") };
             Assert.IsTrue(expected.Contains(rows[0].GetColumnValue("o")));
             Assert.IsTrue(expected.Contains(rows[1].GetColumnValue("o")));
 
@@ -416,7 +421,7 @@ namespace BrightstarDB.Tests
             rows = result.SparqlResultRows().ToList();
             Assert.AreEqual(1, rows.Count);
             Assert.AreEqual(new Uri("http://example.org/resource2"), rows[0].GetColumnValue("o"));
-            
+
         }
         [Test]
         public void TestSparqlXDocumentExtensions()
@@ -427,12 +432,12 @@ namespace BrightstarDB.Tests
             const string triplesToAdd = @"<http://example.org/resource13> <http://example.org/property> <http://example.org/resource2> .
                       <http://example.org/resource14> <http://example.org/property1> ""30""^^<http://www.w3.org/2001/XMLSchema#integer> . ";
 
-            var jobInfo = bc.ExecuteTransaction(storeName, new UpdateTransactionData {InsertData = triplesToAdd});
+            var jobInfo = bc.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = triplesToAdd });
 
             Assert.IsNotNull(jobInfo);
             Assert.IsTrue(jobInfo.JobCompletedOk);
 
-           // var triples = bc.GetStoreData(storeName);
+            // var triples = bc.GetStoreData(storeName);
             //var memoryStream = new MemoryStream();
             //triples.CopyTo(memoryStream);
             //Assert.IsTrue(0 < memoryStream.Length);
@@ -489,11 +494,11 @@ namespace BrightstarDB.Tests
 
             var jobInfo = bc.ExecuteTransaction(storeName,
                                                 new UpdateTransactionData
-                                                    {
-                                                        ExistencePreconditions = "",
-                                                        DeletePatterns = null,
-                                                        InsertData = triplesToAdd
-                                                    });
+                                                {
+                                                    ExistencePreconditions = "",
+                                                    DeletePatterns = null,
+                                                    InsertData = triplesToAdd
+                                                });
 
             Assert.IsNotNull(jobInfo);
 
@@ -519,7 +524,7 @@ namespace BrightstarDB.Tests
 
             const string tripleData = "<http://www.networkedplanet.com/people/gra> <http://www.networkedplanet.com/type/worksfor> <http://www.networkedplanet.com/companies/networkedplanet> .";
             client.CreateStore(storeName);
-            client.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData =  tripleData});
+            client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = tripleData });
         }
 
 
@@ -543,7 +548,7 @@ namespace BrightstarDB.Tests
 
             const string tripleData = "<http://www.networkedplanet.com/people/gra> <http://www.networkedplanet.com/type/worksfor> <http://www.networkedplanet.com/companies/networkedplanet> .";
 
-            client.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData = tripleData});
+            client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = tripleData });
         }
 
 
@@ -555,9 +560,9 @@ namespace BrightstarDB.Tests
             var client = GetClient();
             client.CreateStore(storeName);
             var batch1 = MakeTriples(0, firstBatchSize);
-            var batch2 = MakeTriples(firstBatchSize, firstBatchSize+1000);
-            var batch3 = MakeTriples(firstBatchSize+1000, firstBatchSize+2000);
-            var batch4 = MakeTriples(firstBatchSize+2000, firstBatchSize+3000);
+            var batch2 = MakeTriples(firstBatchSize, firstBatchSize + 1000);
+            var batch3 = MakeTriples(firstBatchSize + 1000, firstBatchSize + 2000);
+            var batch4 = MakeTriples(firstBatchSize + 2000, firstBatchSize + 3000);
 
             // Verify batch size
             var p = new NTriplesParser();
@@ -565,13 +570,13 @@ namespace BrightstarDB.Tests
             p.Parse(new StringReader(batch1), counterSink, Constants.DefaultGraphUri);
             Assert.AreEqual(firstBatchSize, counterSink.Count);
 
-            var jobInfo = client.ExecuteTransaction(storeName, new UpdateTransactionData {InsertData = batch1});
+            var jobInfo = client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = batch1 });
             Assert.AreEqual(true, jobInfo.JobCompletedOk);
 
             // Second export with parallel store writes
-            var exportJobInfo = client.StartExport(storeName, storeName + "_export.nt", label:"Export Data");
+            var exportJobInfo = client.StartExport(storeName, storeName + "_export.nt", label: "Export Data");
             Assert.That(exportJobInfo.Label, Is.EqualTo("Export Data"));
-            jobInfo = client.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData = batch2});
+            jobInfo = client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = batch2 });
             Assert.AreEqual(true, jobInfo.JobCompletedOk);
             exportJobInfo = client.GetJobInfo(storeName, exportJobInfo.JobId);
             if (exportJobInfo.JobCompletedWithErrors)
@@ -583,9 +588,9 @@ namespace BrightstarDB.Tests
                 Assert.Inconclusive("Export job completed before end of first concurrent import job.");
             }
             Assert.That(exportJobInfo.Label, Is.EqualTo("Export Data"));
-            jobInfo = client.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData= batch3});
+            jobInfo = client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = batch3 });
             Assert.AreEqual(true, jobInfo.JobCompletedOk);
-            jobInfo = client.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData = batch4});
+            jobInfo = client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = batch4 });
             Assert.AreEqual(true, jobInfo.JobCompletedOk);
             while (!exportJobInfo.JobCompletedOk)
             {
@@ -638,9 +643,9 @@ namespace BrightstarDB.Tests
         private static string MakeTriples(int startId, int endId)
         {
             var triples = new StringBuilder();
-            for(var i = startId; i < endId; i++ )
+            for (var i = startId; i < endId; i++)
             {
-                triples.AppendFormat("<http://www.example.org/resource/{0}> <http://example.org/value> \"{0}\" .\n",i);
+                triples.AppendFormat("<http://www.example.org/resource/{0}> <http://example.org/value> \"{0}\" .\n", i);
             }
             return triples.ToString();
         }
@@ -668,7 +673,7 @@ namespace BrightstarDB.Tests
             var bc = BrightstarService.GetClient("type=http;endpoint=http://localhost:8090/brightstar");
             var storeName = Guid.NewGuid().ToString();
             bc.CreateStore(storeName);
-            var jobInfo = bc.StartImport(storeName, "persondata_en_subset.nt", null, label:"Import Persondata");
+            var jobInfo = bc.StartImport(storeName, "persondata_en_subset.nt", null, label: "Import Persondata");
             Assert.That(jobInfo.Label, Is.EqualTo("Import Persondata"));
             while (!(jobInfo.JobCompletedOk || jobInfo.JobCompletedWithErrors))
             {
@@ -730,11 +735,11 @@ namespace BrightstarDB.Tests
             const string addSet1 = "<http://example.org/people/alice> <http://www.w3.org/2000/01/rdf-schema#label> \"Alice\".";
             const string addSet2 = "<http://example.org/people/bob> <http://www.w3.org/2000/01/rdf-schema#label> \"Bob\".";
             const string addSet3 = "<http://example.org/people/carol> <http://www.w3.org/2000/01/rdf-schema#label> \"Carol\".";
-            var result = client.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData = addSet1});
+            var result = client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = addSet1 });
             Assert.IsTrue(result.JobCompletedOk);
-            result = client.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData = addSet2});
+            result = client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = addSet2 });
             Assert.IsTrue(result.JobCompletedOk);
-            result = client.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData = addSet3});
+            result = client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = addSet3 });
             Assert.IsTrue(result.JobCompletedOk);
 
             var job = client.ConsolidateStore(storeName, "Consolidate Store");
@@ -765,16 +770,16 @@ namespace BrightstarDB.Tests
             const string addSet1 = "<http://example.org/people/alice> <http://www.w3.org/2000/01/rdf-schema#label> \"Alice\".";
             const string addSet2 = "<http://example.org/people/bob> <http://www.w3.org/2000/01/rdf-schema#label> \"Bob\".";
             const string addSet3 = "<http://example.org/people/carol> <http://www.w3.org/2000/01/rdf-schema#label> \"Carol\".";
-            var result = client.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData = addSet1});
+            var result = client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = addSet1 });
             Assert.IsTrue(result.JobCompletedOk);
-            result = client.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData = addSet2});
+            result = client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = addSet2 });
             Assert.IsTrue(result.JobCompletedOk);
-            result = client.ExecuteTransaction(storeName, new UpdateTransactionData {InsertData = addSet3});
+            result = client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = addSet3 });
             Assert.IsTrue(result.JobCompletedOk);
 
             var resultsStream = client.ExecuteQuery(storeName, "SELECT * WHERE {?s ?p ?o}");
             resultsStream.Close();
-            
+
             var job = client.ConsolidateStore(storeName);
             var cycleCount = 0;
             while (!job.JobCompletedOk && !job.JobCompletedWithErrors && cycleCount < 100)
@@ -801,7 +806,7 @@ namespace BrightstarDB.Tests
             const string txn1Adds =
                 @"<http://example.org/people/alice> <http://xmlns.com/foaf/0.1/name> ""Alice"" <http://example.org/graphs/alice> .
 <http://example.org/people/bob> <http://xmlns.com/foaf/0.1/name> ""Bob"" .";
-            var result = client.ExecuteTransaction(storeName, new UpdateTransactionData {InsertData = txn1Adds});
+            var result = client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = txn1Adds });
             Assert.IsTrue(result.JobCompletedOk);
 
             AssertTriplePatternInDefaultGraph(client, storeName, @"<http://example.org/people/bob> <http://xmlns.com/foaf/0.1/name> ""Bob""");
@@ -821,10 +826,10 @@ namespace BrightstarDB.Tests
 <http://example.org/people/bob> <http://xmlns.com/foaf/0.1/name> ""Bob"" .";
             var result = client.ExecuteTransaction(storeName,
                                                    new UpdateTransactionData
-                                                       {
-                                                           InsertData = txn1Adds,
-                                                           DefaultGraphUri = "http://example.org/graphs/bob"
-                                                       });
+                                                   {
+                                                       InsertData = txn1Adds,
+                                                       DefaultGraphUri = "http://example.org/graphs/bob"
+                                                   });
             Assert.IsTrue(result.JobCompletedOk);
 
             AssertTriplePatternInGraph(client, storeName, @"<http://example.org/people/alice> <http://xmlns.com/foaf/0.1/name> ""Alice""",
@@ -845,7 +850,7 @@ namespace BrightstarDB.Tests
                 @"<http://example.org/people/alice> <http://xmlns.com/foaf/0.1/name> ""Alice"" <http://example.org/graphs/alice> .");
             txn1Adds.AppendLine(@"<http://example.org/people/bob> <http://xmlns.com/foaf/0.1/name> ""Bob"" .");
             var result = client.ExecuteTransaction(storeName,
-                                                   new UpdateTransactionData {InsertData = txn1Adds.ToString()});
+                                                   new UpdateTransactionData { InsertData = txn1Adds.ToString() });
             Assert.IsTrue(result.JobCompletedOk);
 
             AssertTriplePatternInDefaultGraph(client, storeName, @"<http://example.org/people/bob> <http://xmlns.com/foaf/0.1/name> ""Bob""");
@@ -857,11 +862,11 @@ namespace BrightstarDB.Tests
             txn2Adds.AppendLine(@"<http://example.org/people/bob> <http://xmlns.com/foaf/0.1/name> ""Bob Bobbins"" .");
 
             result = client.ExecuteTransaction(storeName, new UpdateTransactionData
-                {
-                    ExistencePreconditions = txn1Adds.ToString(),
-                    DeletePatterns = txn1Adds.ToString(),
-                    InsertData = txn2Adds.ToString()
-                });
+            {
+                ExistencePreconditions = txn1Adds.ToString(),
+                DeletePatterns = txn1Adds.ToString(),
+                InsertData = txn2Adds.ToString()
+            });
             Assert.IsTrue(result.JobCompletedOk);
 
             AssertTriplePatternInGraph(client, storeName,
@@ -883,10 +888,10 @@ namespace BrightstarDB.Tests
 <http://example.org/people/bob> <http://xmlns.com/foaf/0.1/name> ""Bob"" .";
             var result = client.ExecuteTransaction(storeName,
                                                    new UpdateTransactionData
-                                                       {
-                                                           InsertData = txn1Adds,
-                                                           DefaultGraphUri = "http://example.org/graphs/bob"
-                                                       });
+                                                   {
+                                                       InsertData = txn1Adds,
+                                                       DefaultGraphUri = "http://example.org/graphs/bob"
+                                                   });
             Assert.IsTrue(result.JobCompletedOk);
 
             AssertTriplePatternInGraph(client, storeName,
@@ -901,12 +906,12 @@ namespace BrightstarDB.Tests
 <http://example.org/people/bob> <http://xmlns.com/foaf/0.1/name> ""Bob Bobbins"" .";
 
             result = client.ExecuteTransaction(storeName, new UpdateTransactionData
-                {
-                    ExistencePreconditions = txn1Adds,
-                    DeletePatterns = txn1Adds,
-                    InsertData = txn2Adds,
-                    DefaultGraphUri = "http://example.org/graphs/bob"
-                });
+            {
+                ExistencePreconditions = txn1Adds,
+                DeletePatterns = txn1Adds,
+                InsertData = txn2Adds,
+                DefaultGraphUri = "http://example.org/graphs/bob"
+            });
             Assert.IsTrue(result.JobCompletedOk);
 
             AssertTriplePatternInGraph(client, storeName,
@@ -934,7 +939,7 @@ namespace BrightstarDB.Tests
             txn1Adds.AppendLine(@"<http://example.org/bob> <http://xmlns.com/foaf/0.1/mbox> ""bob@example.org"" .");
 
             var result = client.ExecuteTransaction(storeName,
-                                                   new UpdateTransactionData {InsertData = txn1Adds.ToString()});
+                                                   new UpdateTransactionData { InsertData = txn1Adds.ToString() });
             Assert.IsTrue(result.JobCompletedOk);
 
             AssertTriplePatternInGraph(client, storeName,
@@ -945,14 +950,14 @@ namespace BrightstarDB.Tests
 
             var txn2Deletes = new StringBuilder();
             txn2Deletes.AppendFormat(@"<{0}> <http://xmlns.com/foaf/0.1/name> <{0}> <{0}> .", Constants.WildcardUri);
-            client.ExecuteTransaction(storeName, new UpdateTransactionData{DeletePatterns = txn2Deletes.ToString()});
+            client.ExecuteTransaction(storeName, new UpdateTransactionData { DeletePatterns = txn2Deletes.ToString() });
 
             AssertTriplePatternNotInGraph(client, storeName,
                                        @"<http://example.org/alice> <http://xmlns.com/foaf/0.1/name> ""Alice""",
                                        "http://example.org/graphs/alice");
             AssertTriplePatternNotInDefaultGraph(client, storeName,
                                        @"<http://example.org/bob> <http://xmlns.com/foaf/0.1/name> ""Bob""");
-            
+
         }
 
         [Test]
@@ -970,7 +975,7 @@ namespace BrightstarDB.Tests
             txn1Adds.AppendLine(@"<http://example.org/bob> <http://xmlns.com/foaf/0.1/mbox> ""bob@example.org"" .");
 
             Thread.Sleep(1000);
-            client.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData=txn1Adds.ToString()});
+            client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = txn1Adds.ToString() });
             var commitId = client.GetCommitPoints(storeName, 0, 1).Select(s => s.Id).First();
 
             var stats = client.GetStatistics(storeName);
@@ -986,7 +991,7 @@ namespace BrightstarDB.Tests
             Assert.IsNotNull(stats);
             Assert.AreEqual(4, stats.TotalTripleCount);
             Assert.AreEqual(2, stats.PredicateTripleCounts.Count);
-            
+
             Assert.AreEqual(commitId, stats.CommitId);
         }
 
@@ -1047,9 +1052,9 @@ namespace BrightstarDB.Tests
             const string addSet1 = "<http://example.org/people/alice> <http://www.w3.org/2000/01/rdf-schema#label> \"Alice\".";
             const string addSet2 = "<http://example.org/people/bob> <http://www.w3.org/2000/01/rdf-schema#label> \"Bob\".";
             const string addSet3 = "<http://example.org/people/carol> <http://www.w3.org/2000/01/rdf-schema#label> \"Carol\".";
-            var result = client.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData=addSet1}, waitForCompletion:true);
+            var result = client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = addSet1 }, waitForCompletion: true);
             Assert.IsTrue(result.JobCompletedOk);
-            result = client.ExecuteTransaction(storeName, new UpdateTransactionData{InsertData=addSet2}, waitForCompletion:true);
+            result = client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = addSet2 }, waitForCompletion: true);
             Assert.IsTrue(result.JobCompletedOk);
             result = client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = addSet3 }, waitForCompletion: true);
             Assert.IsTrue(result.JobCompletedOk);
@@ -1062,7 +1067,7 @@ namespace BrightstarDB.Tests
 
             // Append Only targets
             // Create from default (latest) commit
-            var job = client.CreateSnapshot(storeName, storeName + "_snapshot1", PersistenceType.AppendOnly, label:"Snapshot Store");
+            var job = client.CreateSnapshot(storeName, storeName + "_snapshot1", PersistenceType.AppendOnly, label: "Snapshot Store");
             Assert.That(job, Is.Not.Null);
             Assert.That(job.Label, Is.EqualTo("Snapshot Store"));
             job = WaitForJob(job, client, storeName);
@@ -1117,10 +1122,10 @@ namespace BrightstarDB.Tests
 
             var job2 = client.ExecuteTransaction(storeName,
                                                  new UpdateTransactionData
-                                                     {
-                                                         InsertData =
+                                                 {
+                                                     InsertData =
                                                              "<http://example.org/s> <http://example.org/p> <http://example.org/o> ."
-                                                     });
+                                                 });
             job2 = WaitForJob(job2, client, storeName);
             Assert.That(job.JobCompletedOk);
 
@@ -1208,7 +1213,8 @@ namespace BrightstarDB.Tests
             {
                 client.GetJobInfo("Invalid" + storeName, 0, 10);
                 Assert.Fail("Expected BrightstarClientException when store does not exist");
-            } catch(BrightstarClientException){}
+            }
+            catch (BrightstarClientException) { }
 
         }
 
@@ -1219,7 +1225,7 @@ namespace BrightstarDB.Tests
             var storeName = "TestRdfImportFormatOverride_" + DateTime.Now.Ticks;
             var client = GetClient();
             client.CreateStore(storeName);
-            var importJob = client.StartImport(storeName, "simple.rdf", importFormat:RdfFormat.NTriples);
+            var importJob = client.StartImport(storeName, "simple.rdf", importFormat: RdfFormat.NTriples);
             importJob = WaitForJob(importJob, client, storeName);
             Assert.That(importJob.JobCompletedOk, "Import failed: {0} - {1}", importJob.StatusMessage, importJob.ExceptionInfo);
         }
@@ -1256,7 +1262,7 @@ namespace BrightstarDB.Tests
         public void TestCreateEntityWithNoContext()
         {
             MyEntityContext.InitializeEntityMappingStore();
-            var entity = new BaseEntity {Id = "foo"};
+            var entity = new BaseEntity { Id = "foo" };
         }
     }
 }

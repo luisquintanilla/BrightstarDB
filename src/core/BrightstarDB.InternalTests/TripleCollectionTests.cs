@@ -15,7 +15,7 @@ namespace BrightstarDB.InternalTests
             Subject = "http://example.org/s",
             Predicate = "http://example.org/p",
             Object = "http://example.org/o",
-            IsLiteral = false, 
+            IsLiteral = false,
             Graph = Constants.DefaultGraphUri
         };
 
@@ -70,14 +70,14 @@ namespace BrightstarDB.InternalTests
             var c = new TripleCollection();
             c.Add(T1);
             Assert.AreEqual(1, c.Count());
-            Assert.IsTrue(c.Items.Any(x=>x.Equals(T1)));
+            Assert.IsTrue(c.Items.Any(x => x.Equals(T1)));
         }
 
         [Test]
         public void TestAddRaisesArgumentNullException()
         {
             var c = new TripleCollection();
-            Assert.Throws<ArgumentNullException>(()=>c.Add(null));
+            Assert.Throws<ArgumentNullException>(() => c.Add(null));
         }
 
         [Test]
@@ -87,16 +87,16 @@ namespace BrightstarDB.InternalTests
             c.Add(T1);
             c.Add(T1);
             Assert.AreEqual(1, c.Count());
-            Assert.IsTrue(c.Items.Any(x=>x.Equals(T1)));
+            Assert.IsTrue(c.Items.Any(x => x.Equals(T1)));
         }
 
         [Test]
         public void TestAddRangeUpdatesCollection()
         {
             var c = new TripleCollection();
-            c.AddRange(new []{T1, T2, T3});
+            c.AddRange(new[] { T1, T2, T3 });
             Assert.AreEqual(3, c.Count());
-            Assert.IsTrue(c.Items.Any(x=>x.Equals(T1)));
+            Assert.IsTrue(c.Items.Any(x => x.Equals(T1)));
             Assert.IsTrue(c.Items.Any(x => x.Equals(T2)));
             Assert.IsTrue(c.Items.Any(x => x.Equals(T3)));
         }
@@ -105,32 +105,32 @@ namespace BrightstarDB.InternalTests
         public void TestRemoveBySubjectRemovesAllMatches()
         {
             var c = new TripleCollection();
-            c.AddRange(new []{T1, T2, T3, T4});
+            c.AddRange(new[] { T1, T2, T3, T4 });
             Assert.AreEqual(4, c.Count());
             c.RemoveBySubject("http://example.org/s");
             Assert.AreEqual(1, c.Count());
-            Assert.IsTrue(c.Items.Any(x=>x.Equals(T4)));
+            Assert.IsTrue(c.Items.Any(x => x.Equals(T4)));
         }
 
         [Test]
         public void TestRemoveBySubjectPredicateRemoveAllMatches()
         {
             var c = new TripleCollection();
-            c.AddRange(new []{T1, T5});
+            c.AddRange(new[] { T1, T5 });
             Assert.AreEqual(2, c.Count());
             c.RemoveBySubjectPredicate("http://example.org/s", "http://example.org/p1");
             Assert.AreEqual(1, c.Count());
-            Assert.IsTrue(c.Items.Any(x=>x.Equals(T1)));
+            Assert.IsTrue(c.Items.Any(x => x.Equals(T1)));
         }
 
         [Test]
         public void TestRemoveBySubjectPredicateObjectDoesNotRemoveLiteralMatches()
         {
             var c = new TripleCollection();
-            c.AddRange(new []{T2, T3});
+            c.AddRange(new[] { T2, T3 });
             c.RemoveBySubjectPredicateObject("http://example.org/s", "http://example.org/p", "http://example.org/o");
             Assert.AreEqual(1, c.Count());
-            Assert.IsTrue(c.Items.Any(x=>x.Equals(T3)));
+            Assert.IsTrue(c.Items.Any(x => x.Equals(T3)));
         }
 
         [Test]
@@ -167,10 +167,10 @@ namespace BrightstarDB.InternalTests
         public void TestGetMatchesWithDifferentTriplePatterns()
         {
             var c = new TripleCollection();
-            c.AddRange(new []{T1, T2, T3, T4, T5, T6});
-            Assert.AreEqual(1, c.GetMatches(new Triple{Subject = "http://example.org/s", Predicate = "http://example.org/p", Object = "http://example.org/o", Graph = Constants.DefaultGraphUri}).Count(),
+            c.AddRange(new[] { T1, T2, T3, T4, T5, T6 });
+            Assert.AreEqual(1, c.GetMatches(new Triple { Subject = "http://example.org/s", Predicate = "http://example.org/p", Object = "http://example.org/o", Graph = Constants.DefaultGraphUri }).Count(),
                 "Expected 1 match with fully-specified pattern");
-            Assert.AreEqual(2, c.GetMatches(new Triple{Subject = "http://example.org/s", Predicate = "http://example.org/p", Object = "http://example.org/o", Graph = null}).Count(),
+            Assert.AreEqual(2, c.GetMatches(new Triple { Subject = "http://example.org/s", Predicate = "http://example.org/p", Object = "http://example.org/o", Graph = null }).Count(),
                 "Expected two matches with graph wildcard.");
             // With Triple.Match an object wildcard matches literals and non-literals alike
             Assert.AreEqual(3, c.GetMatches(new Triple { Subject = "http://example.org/s", Predicate = "http://example.org/p", Object = null, Graph = Constants.DefaultGraphUri }).Count(),
@@ -241,7 +241,7 @@ namespace BrightstarDB.InternalTests
         public void TestClearRemovesAllTriples()
         {
             var c = new TripleCollection();
-            c.AddRange(new[] {T1, T2, T3, T4, T5, T6});
+            c.AddRange(new[] { T1, T2, T3, T4, T5, T6 });
             var triples = c.Items.ToList();
             Assert.AreEqual(6, triples.Count);
             c.Clear();

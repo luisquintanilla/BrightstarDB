@@ -62,12 +62,12 @@ namespace BrightstarDB.Tests.EntityFramework
                 entity1.Name = "B";
                 context.SaveChanges();
             }
-            
+
             using (var context = GetContext())
             {
                 var entity2 = context.StringKeyEntities.Create();
                 entity2.Name = "B";
-                Assert.Throws<UniqueConstraintViolationException>(()=>context.SaveChanges());
+                Assert.Throws<UniqueConstraintViolationException>(() => context.SaveChanges());
             }
         }
     }

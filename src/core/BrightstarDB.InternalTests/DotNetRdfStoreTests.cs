@@ -12,7 +12,7 @@ using VDS.RDF.Update;
 
 namespace BrightstarDB.InternalTests
 {
-    
+
 
     [TestFixture]
     public class DotNetRdfStoreTests
@@ -22,7 +22,7 @@ namespace BrightstarDB.InternalTests
         [OneTimeSetUp]
         public void SetUp()
         {
-            _config = ConfigurationLoader.LoadConfiguration(Path.Combine(TestContext.CurrentContext.TestDirectory, TestConfiguration.DataLocation , "dataObjectStoreConfig.ttl"));
+            _config = ConfigurationLoader.LoadConfiguration(Path.Combine(TestContext.CurrentContext.TestDirectory, TestConfiguration.DataLocation, "dataObjectStoreConfig.ttl"));
             ConfigurationLoader.PathResolver = new LocalPathResolver();
         }
 
@@ -81,10 +81,10 @@ namespace BrightstarDB.InternalTests
             const string updateGraph = "http://example.org/people";
             //var dataset = new[] {updateGraph};
             string[] dataset = null;
-            IDataObjectStore doStore = new SparqlDataObjectStore(query, update, namespaceMappings, false, 
+            IDataObjectStore doStore = new SparqlDataObjectStore(query, update, namespaceMappings, false,
                 updateGraph, dataset, null);
             var bob = doStore.GetDataObject("ex:bob");
-            
+
             // Execute
             bob.SetProperty("foaf:age", 40);
             doStore.SaveChanges();
@@ -122,7 +122,7 @@ namespace BrightstarDB.InternalTests
                 };
             const string updateGraph = "http://example.org/addGraph";
             const string baseGraph = "http://example.org/people";
-            var dataset = new[] {baseGraph};
+            var dataset = new[] { baseGraph };
 
             IDataObjectStore doStore = new SparqlDataObjectStore(query, update, namespaceMappings, false,
                                                                  updateGraph, dataset, null);

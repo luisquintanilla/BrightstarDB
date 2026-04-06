@@ -26,7 +26,7 @@ namespace BrightstarDB.Tests.EntityFramework
         {
             using (var context = GetContext())
             {
-                var newEntity = new NoId {Name = "TestCreate"};
+                var newEntity = new NoId { Name = "TestCreate" };
                 context.NoIds.Add(newEntity);
                 context.SaveChanges();
             }
@@ -42,8 +42,8 @@ namespace BrightstarDB.Tests.EntityFramework
         {
             using (var context = GetContext())
             {
-                var fred = new Person{Name = "Fred"};
-                var newEntity = new NoId {Name = "TestPopulateEntityProperty", Owner = fred};
+                var fred = new Person { Name = "Fred" };
+                var newEntity = new NoId { Name = "TestPopulateEntityProperty", Owner = fred };
                 context.NoIds.Add(newEntity);
                 context.Persons.Add(fred);
                 context.SaveChanges();

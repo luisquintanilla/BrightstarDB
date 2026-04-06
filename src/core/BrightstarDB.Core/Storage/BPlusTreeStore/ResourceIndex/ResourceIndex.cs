@@ -21,7 +21,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
         /// <param name="txnId"></param>
         /// <param name="pageStore"></param>
         /// <param name="resourceTable"></param>
-        public ResourceIndex(ulong txnId, IPageStore pageStore, IResourceTable resourceTable)  : base(txnId, pageStore)
+        public ResourceIndex(ulong txnId, IPageStore pageStore, IResourceTable resourceTable) : base(txnId, pageStore)
         {
             //_resourceCache = new ConcurrentResourceCache();
             //_resourceIdCache = new ConcurrentResourceIdCache();
@@ -44,7 +44,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
         {
             //_resourceCache = new ConcurrentResourceCache();
             //_resourceIdCache = new ConcurrentResourceIdCache();
-            _resourceCache= new LruResourceCache();
+            _resourceCache = new LruResourceCache();
             _resourceIdCache = new LruResourceIdCache();
             _resourceStore = new ResourceStore(resourceTable);
 #if DEBUG_BTREE
@@ -79,7 +79,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
                 // Retrieve the resource ID for the datatype URI (if any)
                 var dataTypeId = String.IsNullOrEmpty(dataType)
                                      ? StoreConstants.NullUlong
-                                     : AssertResourceInIndex(txnId, dataType, profiler:profiler);
+                                     : AssertResourceInIndex(txnId, dataType, profiler: profiler);
 
                 var hashString = isLiteral ? MakeHashString(resourceValue, dataType, langCode) : resourceValue;
 
@@ -92,7 +92,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
                 // Get a ulong resource ID for the language code string
                 var langCodeId = String.IsNullOrEmpty(langCode)
                                      ? StoreConstants.NullUlong
-                                     : AssertResourceInIndex(txnId, langCode, true, profiler:profiler);
+                                     : AssertResourceInIndex(txnId, langCode, true, profiler: profiler);
 
                 resourceId = AssertResourceInBTree(txnId, resourceValue, isLiteral, dataTypeId, langCodeId,
                                                    StringExtensions.GetBrightstarHashCode(hashString), profiler);
@@ -200,7 +200,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
             return base.Save(transactionId, profiler);
         }
 
-        public ulong Write(IPageStore pageStore, ulong  transactionId, BrightstarProfiler profiler)
+        public ulong Write(IPageStore pageStore, ulong transactionId, BrightstarProfiler profiler)
         {
             var targetConfiguration = new BPlusTreeConfiguration(pageStore, Configuration.KeySize,
                                                                  Configuration.ValueSize, Configuration.PageSize);
@@ -271,7 +271,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
         private ulong FindResourceInBTree(string resourceValue, bool isLiteral, ulong dataTypeId, ulong langCodeId, uint hashCode)
         {
             ulong rangeMin = MakeId(hashCode, 0), rangeMax = MakeId(hashCode, UInt32.MaxValue);
-            foreach(var indexEntry in Scan(rangeMin, rangeMax, null))
+            foreach (var indexEntry in Scan(rangeMin, rangeMax, null))
             {
                 var resource = _resourceStore.FromBTreeValue(indexEntry.Value);
                 if (resource.Matches(resourceValue, isLiteral, dataTypeId, langCodeId))

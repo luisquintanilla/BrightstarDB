@@ -79,7 +79,7 @@ namespace BrightstarDB.Update
             {
                 //If Source and Destination are equal this is a no-op
                 if (EqualityHelper.AreUrisEqual(cmd.SourceUri, cmd.DestinationUri)) return;
-                if (cmd.SourceUri != null && !_manager.ListGraphs().Any(g=>EqualityHelper.AreUrisEqual(cmd.SourceUri, g)))
+                if (cmd.SourceUri != null && !_manager.ListGraphs().Any(g => EqualityHelper.AreUrisEqual(cmd.SourceUri, g)))
                 {
                     throw new SparqlUpdateException(string.Format("Could not find source graph <{0}>", cmd.SourceUri));
                 }
@@ -100,10 +100,10 @@ namespace BrightstarDB.Update
                     _manager.DeleteGraph(cmd.TargetUri);
                     break;
                 case ClearMode.Named:
-                    _manager.DeleteGraphs(_manager.ListGraphs().Select(u=>u.ToString()));
+                    _manager.DeleteGraphs(_manager.ListGraphs().Select(u => u.ToString()));
                     break;
                 case ClearMode.All:
-                    _manager.DeleteGraphs(_manager.ListGraphs().Select(u=>u.ToString()).Union(new string[]{Constants.DefaultGraphUri}));
+                    _manager.DeleteGraphs(_manager.ListGraphs().Select(u => u.ToString()).Union(new string[] { Constants.DefaultGraphUri }));
                     break;
             }
         }

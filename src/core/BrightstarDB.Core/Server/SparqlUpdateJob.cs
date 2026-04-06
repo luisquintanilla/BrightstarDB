@@ -15,7 +15,7 @@ namespace BrightstarDB.Server
 
         public SparqlUpdateJob(Guid jobId, string label, StoreWorker storeWorker, string updateExpression) : base(jobId, label, storeWorker)
         {
-            _updateExpression = updateExpression;               
+            _updateExpression = updateExpression;
         }
 
         public string Expression
@@ -63,7 +63,7 @@ namespace BrightstarDB.Server
 
         public override void LogTransactionDataToStream(Stream logStream)
         {
-            using(var writer = new BinaryWriter(logStream))
+            using (var writer = new BinaryWriter(logStream))
             {
                 writer.Write(_updateExpression);
             }
@@ -71,7 +71,7 @@ namespace BrightstarDB.Server
 
         public override void ReadTransactionDataFromStream(Stream logStream)
         {
-            using(var reader = new BinaryReader(logStream))
+            using (var reader = new BinaryReader(logStream))
             {
                 _updateExpression = reader.ReadString();
             }

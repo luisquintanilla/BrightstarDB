@@ -61,7 +61,7 @@ namespace BrightstarDB.Query
                 case BrightstarSparqlResultsType.VariableBindings:
                 case BrightstarSparqlResultsType.Boolean:
                     var stringWriter = new System.IO.StringWriter();
-                    var sparqlXmlWriter = GetSparqlWriter(format); 
+                    var sparqlXmlWriter = GetSparqlWriter(format);
                     sparqlXmlWriter.Save(_resultSet, stringWriter);
                     return stringWriter.GetStringBuilder().ToString();
                 case BrightstarSparqlResultsType.Graph:
@@ -74,7 +74,7 @@ namespace BrightstarDB.Query
                         graphWriter = new RdfXmlWriter();
 #endif
                     }
-                    return StringWriter.Write(_graph, graphWriter);
+                    return VDS.RDF.Writing.StringWriter.Write(_graph, graphWriter);
                 default:
                     throw new BrightstarInternalException(
                         String.Format("Unrecognized result type when serializing results string: {0}",
@@ -86,11 +86,11 @@ namespace BrightstarDB.Query
         {
             var ext = format.DefaultExtension;
             if (ext.Equals(SparqlResultsFormat.Xml.DefaultExtension))
-                    return new SparqlXmlWriter();
+                return new SparqlXmlWriter();
             if (ext.Equals(SparqlResultsFormat.Json.DefaultExtension))
-                    return new SparqlJsonWriter();
+                return new SparqlJsonWriter();
             if (ext.Equals(SparqlResultsFormat.Tsv.DefaultExtension))
-                    return new SparqlTsvWriter();
+                return new SparqlTsvWriter();
             if (ext.Equals(SparqlResultsFormat.Csv.DefaultExtension))
                 return new SparqlCsvWriter();
             throw new BrightstarInternalException("Unsupported SPARQL results format");

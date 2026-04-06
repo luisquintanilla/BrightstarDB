@@ -68,7 +68,7 @@ namespace BrightstarDB.Client
         public IDataObjectStore OpenStore(string storeName, Dictionary<string, string> namespaceMappings = null, bool? optimisticLockingEnabled = null,
             string updateGraph = null, IEnumerable<string> defaultDataSet = null, string versionTrackingGraph = null)
         {
-            if(!DoesStoreExist(storeName)) throw new BrightstarClientException("Store does not exist");
+            if (!DoesStoreExist(storeName)) throw new BrightstarClientException("Store does not exist");
 
             if (namespaceMappings == null)
             {
@@ -107,11 +107,11 @@ namespace BrightstarDB.Client
         /// <param name="versionTrackingGraph">OPTIONAL: The URI identifier of the graph that contains version number statements for data objects. 
         /// If not defined, the <paramref name="updateGraph"/> will be used.</param>
         /// <returns>A new store instance.</returns>
-        public IDataObjectStore CreateStore(string storeName, 
-            Dictionary<string, string> namespaceMappings = null, 
-            bool? optimisticLockingEnabled = null, 
+        public IDataObjectStore CreateStore(string storeName,
+            Dictionary<string, string> namespaceMappings = null,
+            bool? optimisticLockingEnabled = null,
             PersistenceType? persistenceType = null,
-            string updateGraph = null, 
+            string updateGraph = null,
             string versionTrackingGraph = null)
         {
             if (namespaceMappings == null)
@@ -126,9 +126,9 @@ namespace BrightstarDB.Client
 
             if (String.IsNullOrEmpty(updateGraph)) updateGraph = Constants.DefaultGraphUri;
 
-            return new EmbeddedDataObjectStore(_serverCore, storeName, namespaceMappings, 
+            return new EmbeddedDataObjectStore(_serverCore, storeName, namespaceMappings,
                 optimisticLockingEnabled.HasValue ? optimisticLockingEnabled.Value : _optimisticLockingEnabled,
-                updateGraph, new []{updateGraph}, versionTrackingGraph);
+                updateGraph, new[] { updateGraph }, versionTrackingGraph);
         }
 
         /// <summary>

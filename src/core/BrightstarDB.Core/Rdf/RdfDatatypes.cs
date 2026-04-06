@@ -169,39 +169,39 @@ namespace BrightstarDB.Rdf
         public const string Guid = MicrosoftWdslTypesNamespace + "guid";
 
         #region Rdf Datatype Definitions
-        private static readonly RdfDatatype RdfString = new RdfDatatype(String, (o => o as string), ((s,l)=>s));
+        private static readonly RdfDatatype RdfString = new RdfDatatype(String, (o => o as string), ((s, l) => s));
         private static readonly RdfDatatype RdfNormalizedString = new RdfDatatype(NormalizedString, (o => o as string), ((s, l) => s));
         private static readonly RdfDatatype RdfToken = new RdfDatatype(Token, (o => o as string), ((s, l) => s));
         private static readonly RdfDatatype RdfLanguage = new RdfDatatype(Language, (o => o as string), ((s, l) => s));
 
         private static readonly RdfDatatype RdfPlainLiteral = new RdfDatatype(
             PlainLiteral,
-            o => ((BrightstarDB.Rdf.PlainLiteral) o).Value,
+            o => ((BrightstarDB.Rdf.PlainLiteral)o).Value,
             (s, l) => new BrightstarDB.Rdf.PlainLiteral(s, l));
 
         private static readonly RdfDatatype RdfBoolean = new RdfDatatype(
             Boolean,
-            (o => ((bool) o) ? "true" : "false"),
+            (o => ((bool)o) ? "true" : "false"),
             (s, l) => Convert.ToBoolean(s));
 
         private static readonly RdfDatatype RdfDateTime = new RdfDatatype(
             DateTime,
-            (o => ((DateTime) o).ToString("O", CultureInfo.InvariantCulture)),
+            (o => ((DateTime)o).ToString("O", CultureInfo.InvariantCulture)),
             (s, l) => s.EndsWith("Z") ? Convert.ToDateTime(s, CultureInfo.InvariantCulture).ToUniversalTime() : Convert.ToDateTime(s, CultureInfo.InvariantCulture));
 
         private static readonly RdfDatatype RdfDate = new RdfDatatype(
-            Date, 
-            (o => ((DateTime)o).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)), 
-            (s,l) => Convert.ToDateTime(s, CultureInfo.InvariantCulture));
+            Date,
+            (o => ((DateTime)o).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+            (s, l) => Convert.ToDateTime(s, CultureInfo.InvariantCulture));
 
         private static readonly RdfDatatype RdfDouble = new RdfDatatype(
-            Double, 
-            (o => ((double) o).ToString("R", CultureInfo.InvariantCulture)),
+            Double,
+            (o => ((double)o).ToString("R", CultureInfo.InvariantCulture)),
             (s, l) => Convert.ToDouble(s, CultureInfo.InvariantCulture));
 
         private static readonly RdfDatatype RdfInteger = new RdfDatatype(
             Integer,
-            (o => ((int) o).ToString(CultureInfo.InvariantCulture)),
+            (o => ((int)o).ToString(CultureInfo.InvariantCulture)),
             (s, l) => Convert.ToInt32(s, CultureInfo.InvariantCulture));
 
         private static readonly RdfDatatype RdfNonNegativeInteger = new RdfDatatype(
@@ -230,28 +230,28 @@ namespace BrightstarDB.Rdf
             (s, l) => Convert.ToInt32(s, CultureInfo.InvariantCulture));
 
         private static readonly RdfDatatype RdfFloat = new RdfDatatype(
-            Float, 
-            (o => ((float)o).ToString("R", CultureInfo.InvariantCulture)), 
+            Float,
+            (o => ((float)o).ToString("R", CultureInfo.InvariantCulture)),
             (s, l) => Convert.ToSingle(s, CultureInfo.InvariantCulture));
 
         private static readonly RdfDatatype RdfLong = new RdfDatatype(
             Long,
-            (o => ((long) o).ToString(CultureInfo.InvariantCulture)),
+            (o => ((long)o).ToString(CultureInfo.InvariantCulture)),
             (s, l) => Convert.ToInt64(s, CultureInfo.InvariantCulture));
 
         private static readonly RdfDatatype RdfByte = new RdfDatatype(
-            Byte, 
-            (o => ((sbyte)o).ToString(CultureInfo.InvariantCulture)), 
+            Byte,
+            (o => ((sbyte)o).ToString(CultureInfo.InvariantCulture)),
             (s, l) => Convert.ToSByte(s, CultureInfo.InvariantCulture));
 
         private static readonly RdfDatatype RdfDecimal = new RdfDatatype(
-            Decimal, 
-            (o => ((decimal)o).ToString(CultureInfo.InvariantCulture)), 
+            Decimal,
+            (o => ((decimal)o).ToString(CultureInfo.InvariantCulture)),
             (s, l) => Convert.ToDecimal(s, CultureInfo.InvariantCulture));
 
         private static readonly RdfDatatype RdfShort = new RdfDatatype(
-            Short, 
-            (o => ((short)o).ToString(CultureInfo.InvariantCulture)), 
+            Short,
+            (o => ((short)o).ToString(CultureInfo.InvariantCulture)),
             (s, l) => Convert.ToInt16(s, CultureInfo.InvariantCulture));
 
         private static readonly RdfDatatype RdfUnsignedLong = new RdfDatatype(
@@ -260,18 +260,18 @@ namespace BrightstarDB.Rdf
             (s, l) => Convert.ToUInt64(s, CultureInfo.InvariantCulture));
 
         private static readonly RdfDatatype RdfUnsignedInt = new RdfDatatype(
-            UnsignedInteger, 
-            (o => ((uint)o).ToString(CultureInfo.InvariantCulture)), 
+            UnsignedInteger,
+            (o => ((uint)o).ToString(CultureInfo.InvariantCulture)),
             (s, l) => Convert.ToUInt32(s, CultureInfo.InvariantCulture));
 
         private static readonly RdfDatatype RdfUnsignedShort = new RdfDatatype(
-            UnsignedShort, 
+            UnsignedShort,
             (o => ((ushort)o).ToString(CultureInfo.InvariantCulture)),
             (s, l) => Convert.ToUInt16(s, CultureInfo.InvariantCulture));
 
         private static readonly RdfDatatype RdfUnsignedByte = new RdfDatatype(
-            UnsignedByte, 
-            (o => ((byte)o).ToString(CultureInfo.InvariantCulture)), 
+            UnsignedByte,
+            (o => ((byte)o).ToString(CultureInfo.InvariantCulture)),
             (s, l) => Convert.ToByte(s, CultureInfo.InvariantCulture));
 
         /// <summary>
@@ -297,13 +297,13 @@ namespace BrightstarDB.Rdf
 
 #else
         private static readonly RdfDatatype RdfChar = new RdfDatatype(
-            Char, 
-            o => ((char)o).ToString(CultureInfo.InvariantCulture), 
-            (s,l) => s.FirstOrDefault());
+            Char,
+            o => ((char)o).ToString(CultureInfo.InvariantCulture),
+            (s, l) => s.FirstOrDefault());
 
         private static readonly RdfDatatype RdfByteArray = new RdfDatatype(
             Base64Binary,
-            o => Convert.ToBase64String((byte[]) o, Base64FormattingOptions.None),
+            o => Convert.ToBase64String((byte[])o, Base64FormattingOptions.None),
             (s, l) => Convert.FromBase64String(s));
 
 #endif

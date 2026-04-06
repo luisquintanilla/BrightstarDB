@@ -5,7 +5,7 @@ namespace BrightstarDB.Storage
     [Serializable]
     internal abstract class StoreException : BrightstarException
     {
-        protected StoreException(string message) : base(message){}
+        protected StoreException(string message) : base(message) { }
         protected StoreException(string message, Exception innerException) : base(message, innerException)
         {
         }
@@ -29,7 +29,7 @@ namespace BrightstarDB.Storage
     [Serializable]
     internal sealed class StoreReadException : StoreException
     {
-        public StoreReadException(string message, Exception innerException) : base(message, innerException){}
+        public StoreReadException(string message, Exception innerException) : base(message, innerException) { }
     }
-     
+
 }

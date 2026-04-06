@@ -59,7 +59,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
         /// <param name="splitKey">Receives the key that was used for the split</param>
         /// <returns>The new node created by the split</returns>
         /// <remarks>The split operation always creates a new node for the upper (right-hand) half of the keys and keeps the lower (left-hand) half in this leaf node.</remarks>
-        ILeafNode Split(ulong txnId, IPage newNodePage , out byte[] splitKey);
+        ILeafNode Split(ulong txnId, IPage newNodePage, out byte[] splitKey);
 
         /// <summary>
         /// Retrieves the value associated with the specified key in this leaf node
@@ -92,6 +92,6 @@ namespace BrightstarDB.Storage.BPlusTreeStore
         /// <returns>True if the node achieves its minimum size by the redistribution process, false otherwise</returns>
         bool RedistributeFromRight(ulong txnId, ILeafNode rightNode);
 
-        IEnumerable<KeyValuePair<byte[], byte []>> Scan();
+        IEnumerable<KeyValuePair<byte[], byte[]>> Scan();
     }
 }

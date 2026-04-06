@@ -7,7 +7,7 @@ namespace BrightstarDB.Client
     ///<summary>
     /// DataObjectContext that connects to BrightstarDB over a REST HTTP connection
     ///</summary>
-    public class RestDataObjectContext:IDataObjectContext
+    public class RestDataObjectContext : IDataObjectContext
     {
         private readonly ConnectionString _connectionString;
         private readonly bool _optimisticLockingEnabled;
@@ -96,8 +96,8 @@ namespace BrightstarDB.Client
         /// <param name="versionTrackingGraph">OPTIONAL: The URI identifier of the graph that contains version number statements for data objects. 
         /// If not defined, the <paramref name="updateGraph"/> will be used.</param>
         /// <returns>The newly created data object store</returns>
-        public IDataObjectStore CreateStore(string storeName, Dictionary<string, string> namespaceMappings, 
-            bool? optimisticLockingEnabled = null, 
+        public IDataObjectStore CreateStore(string storeName, Dictionary<string, string> namespaceMappings,
+            bool? optimisticLockingEnabled = null,
             PersistenceType? persistenceType = null,
             string updateGraph = null, string versionTrackingGraph = null)
         {
@@ -108,7 +108,7 @@ namespace BrightstarDB.Client
             return new RestDataObjectStore(
                 _connectionString, storeName, namespaceMappings,
                 optimisticLockingEnabled.HasValue ? optimisticLockingEnabled.Value : _optimisticLockingEnabled,
-                updateGraph, new string[] {updateGraph}, versionTrackingGraph);
+                updateGraph, new string[] { updateGraph }, versionTrackingGraph);
         }
 
         /// <summary>

@@ -23,7 +23,7 @@ namespace BrightstarDB.Tests.EntityFramework
         public PropertyChangeNotificationTests()
         {
             _storeName = "PropertyChangeNotificationTests_" + DateTime.UtcNow.Ticks;
-            _context = new MyEntityContext("type=embedded;storesDirectory=c:\\brightstar;storeName="+_storeName);
+            _context = new MyEntityContext("type=embedded;storesDirectory=c:\\brightstar;storeName=" + _storeName);
             _ftse = _context.Markets.Create();
             _nyse = _context.Markets.Create();
             _company = _context.Companies.Create();
@@ -35,7 +35,7 @@ namespace BrightstarDB.Tests.EntityFramework
             _context.SaveChanges();
         }
 
-       
+
         private void HandleCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             _lastCollectionChangeEvent = e;
@@ -46,7 +46,7 @@ namespace BrightstarDB.Tests.EntityFramework
             _lastPropertyChanged = e.PropertyName;
         }
 
-        
+
 
         [TearDown]
         public void TestCleanUp()
@@ -64,15 +64,15 @@ namespace BrightstarDB.Tests.EntityFramework
             _lastPropertyChanged = null;
             _company.TickerSymbol = "GLXO";
             Assert.AreEqual("TickerSymbol", _lastPropertyChanged);
-            
+
             _lastPropertyChanged = null;
             _company.TickerSymbol = "GLXO"; // No event fired when setting property to the same value
             Assert.IsNull(_lastPropertyChanged);
-            
+
             _lastPropertyChanged = null;
             _company.TickerSymbol = null;
             Assert.AreEqual("TickerSymbol", _lastPropertyChanged);
-            
+
             _lastPropertyChanged = null;
             _company.TickerSymbol = null;
             Assert.IsNull(_lastPropertyChanged);

@@ -36,7 +36,8 @@ namespace BrightstarDB.Rdf
 
         private void AppendResource(StringBuilder line, string identifier, bool isBNode)
         {
-            if (isBNode){
+            if (isBNode)
+            {
                 line.Append("_:");
                 line.Append(identifier);
             }
@@ -52,7 +53,7 @@ namespace BrightstarDB.Rdf
         {
             line.Append("\"");
 #if !(SILVERLIGHT||PORTABLE)
-            var  highSurrogate = '\ud800';
+            var highSurrogate = '\ud800';
 #endif
 
             foreach (var c in unescapedLiteral)
@@ -62,23 +63,23 @@ namespace BrightstarDB.Rdf
                     line.Append(c);
                 }
                 else switch (c)
-                {
-                    case (char) 0x09:
-                        line.Append("\\t");
-                        break;
-                    case (char) 0x0A:
-                        line.Append("\\n");
-                        break;
-                    case (char) 0x0D:
-                        line.Append("\\r");
-                        break;
-                    case (char) 0x22:
-                        line.Append("\\\"");
-                        break;
-                    case (char) 0x5C:
-                        line.Append("\\\\");
-                        break;
-                    default:
+                    {
+                        case (char)0x09:
+                            line.Append("\\t");
+                            break;
+                        case (char)0x0A:
+                            line.Append("\\n");
+                            break;
+                        case (char)0x0D:
+                            line.Append("\\r");
+                            break;
+                        case (char)0x22:
+                            line.Append("\\\"");
+                            break;
+                        case (char)0x5C:
+                            line.Append("\\\\");
+                            break;
+                        default:
 #if SILVERLIGHT || PORTABLE
                         if (c <= 0x8 || c == 0xB || c == 0xC || (c >= 0x0E && c <= 0x1F) ||
                                  (c > 0x7F && c <= 0xFFFF))
@@ -91,24 +92,24 @@ namespace BrightstarDB.Rdf
                             throw new FormatException("Silverlight does not support UTF-32 characters.");
                         }
 #else
-                        if (char.IsHighSurrogate(c))
-                        {
-                            highSurrogate = c;
-                        }
-                        else if (char.IsLowSurrogate(c))
-                        {
-                            line.Append("\\U");
-                            line.Append(Char.ConvertToUtf32(highSurrogate, c).ToString("X8"));
-                        }
-                        else if (c <= 0x8 || c == 0xB || c == 0xC || (c >= 0x0E && c <= 0x1F) ||
-                                 (c > 0x7F && c <= 0xFFFF))
-                        {
-                            line.Append("\\u");
-                            line.Append(((int) c).ToString("X4"));
-                        }
+                            if (char.IsHighSurrogate(c))
+                            {
+                                highSurrogate = c;
+                            }
+                            else if (char.IsLowSurrogate(c))
+                            {
+                                line.Append("\\U");
+                                line.Append(Char.ConvertToUtf32(highSurrogate, c).ToString("X8"));
+                            }
+                            else if (c <= 0x8 || c == 0xB || c == 0xC || (c >= 0x0E && c <= 0x1F) ||
+                                     (c > 0x7F && c <= 0xFFFF))
+                            {
+                                line.Append("\\u");
+                                line.Append(((int)c).ToString("X4"));
+                            }
 #endif
-                        break;
-                }
+                            break;
+                    }
             }
             line.Append("\"");
             if (!String.IsNullOrEmpty(languageCode))

@@ -21,14 +21,14 @@ namespace BrightstarDB.Client
             if (!_tripleIndex.TryGetValue(triple.Subject, out subjIndex))
             {
                 _tripleIndex.Add(triple.Subject,
-                    new Dictionary<string, HashSet<ITriple>> {{triple.Predicate, new HashSet<ITriple> {triple}}});
+                    new Dictionary<string, HashSet<ITriple>> { { triple.Predicate, new HashSet<ITriple> { triple } } });
             }
             else
             {
                 HashSet<ITriple> predTriples;
                 if (!subjIndex.TryGetValue(triple.Predicate, out predTriples))
                 {
-                    subjIndex.Add(triple.Predicate, new HashSet<ITriple> {triple});
+                    subjIndex.Add(triple.Predicate, new HashSet<ITriple> { triple });
                 }
                 else
                 {

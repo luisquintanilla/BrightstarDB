@@ -67,7 +67,7 @@ BIND(STRAFTER(STR(?c), 'http://www.brightstardb.com/.well-known/genid/') AS ?v1)
         [Test]
         public void TestEndsWith()
         {
-            var q = Context.Companies.Where(c => c.Name.EndsWith("net")).Select(c=>c.Id);
+            var q = Context.Companies.Where(c => c.Name.EndsWith("net")).Select(c => c.Id);
             var results = q.ToList();
             AssertQuerySparql(
                 @"SELECT ?v1 WHERE {
@@ -145,7 +145,7 @@ BIND(STRAFTER(STR(?c), 'http://www.brightstardb.com/.well-known/genid/') AS ?v1)
         [Test]
         public void TestContains()
         {
-            var q = Context.Companies.Where(c => c.Name.Contains("work")).Select(c=>c.Id);
+            var q = Context.Companies.Where(c => c.Name.Contains("work")).Select(c => c.Id);
             var results = q.ToList();
             AssertQuerySparql(
                 @"SELECT ?v1 WHERE {
@@ -170,7 +170,7 @@ BIND(STRAFTER(STR(?c), 'http://www.brightstardb.com/.well-known/genid/') AS ?v1)
         [Test]
         public void TestSubstring()
         {
-            var q = Context.Companies.Where(c => c.Name.Substring(5).Equals("rkedPlanet")).Select(c=>c.Id);
+            var q = Context.Companies.Where(c => c.Name.Substring(5).Equals("rkedPlanet")).Select(c => c.Id);
             var results = q.ToList();
             AssertQuerySparql(@"SELECT ?v1 WHERE {
 ?c a <http://www.networkedplanet.com/schemas/test/Company> .
@@ -178,7 +178,7 @@ BIND(STRAFTER(STR(?c), 'http://www.brightstardb.com/.well-known/genid/') AS ?v1)
 FILTER ((SUBSTR(?v0, '6'^^<http://www.w3.org/2001/XMLSchema#integer>)) = 'rkedPlanet').
 BIND(STRAFTER(STR(?c), 'http://www.brightstardb.com/.well-known/genid/') AS ?v1)}"); // 6 in SPARQL becuase their string indexing is 1-based
 
-            q = Context.Companies.Where(c => c.Name.Substring(5, 3).Equals("rke")).Select(c=>c.Id);
+            q = Context.Companies.Where(c => c.Name.Substring(5, 3).Equals("rke")).Select(c => c.Id);
             results = q.ToList();
             AssertQuerySparql(@"SELECT ?v1 WHERE {
 ?c a <http://www.networkedplanet.com/schemas/test/Company> .

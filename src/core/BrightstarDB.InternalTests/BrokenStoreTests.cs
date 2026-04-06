@@ -16,7 +16,7 @@ namespace BrightstarDB.InternalTests
      * I've left it in the source tree as an outline of how to do this with the current APIs
      * Note that it relies heavily on internals.
      */
-    
+
     [TestFixture]
     [Ignore("This was a test to introspect backwards through a broken store. ")]
     public class BrokenStoreTests
@@ -27,7 +27,7 @@ namespace BrightstarDB.InternalTests
         [Test]
         public void FindWorkingTransaction()
         {
-           Store store = new Store("c:\\brightstar\\twitteringtest\\", false);
+            Store store = new Store("c:\\brightstar\\twitteringtest\\", false);
             FileStoreManager fsm = new FileStoreManager(StoreConfiguration.DefaultStoreConfiguration);
             int txnCount = 0;
             foreach (var cp in store.GetCommitPoints())
@@ -47,7 +47,7 @@ namespace BrightstarDB.InternalTests
             }
             var txnLog = fsm.GetTransactionLog("c:\\brightstar\\twitteringtest");
             var txnList = txnLog.GetTransactionList();
-            for(int i = 0 ; i<= txnCount;i++)
+            for (int i = 0; i <= txnCount; i++)
             {
                 txnList.MoveNext();
                 var txnInfo = txnList.Current;
@@ -55,18 +55,18 @@ namespace BrightstarDB.InternalTests
             }
 
             // Going back to last known good
-            store.RevertToCommitPoint(new CommitPoint(242472899 , 0, DateTime.UtcNow, Guid.Empty));
+            store.RevertToCommitPoint(new CommitPoint(242472899, 0, DateTime.UtcNow, Guid.Empty));
 
             var toReplay = new List<ITransactionInfo>();
             txnList = txnLog.GetTransactionList();
-            for(int i = 0; i < 10 ; i++)
+            for (int i = 0; i < 10; i++)
             {
                 txnList.MoveNext();
                 toReplay.Add(txnList.Current);
             }
 
-            var storeWorker = new StoreWorker("c:\\brightstar","twitteringtest");
-            for(int i = 9; i >= 0; i--)
+            var storeWorker = new StoreWorker("c:\\brightstar", "twitteringtest");
+            for (int i = 9; i >= 0; i--)
             {
                 Console.WriteLine("Applying transaction : {0}", toReplay[i].JobId);
                 txnLog.GetTransactionData(toReplay[i].DataStartPosition);
@@ -85,11 +85,11 @@ namespace BrightstarDB.InternalTests
                     using (var resultStream = new MemoryStream())
                     {
                         storeWorker.Query(query, SparqlResultsFormat.Xml, resultStream,
-                                          new[] {Constants.DefaultGraphUri});
+                                          new[] { Constants.DefaultGraphUri });
                     }
                     Console.WriteLine("Query succeeded");
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine("Query failed: " + ex.Message);
                     Assert.Fail();

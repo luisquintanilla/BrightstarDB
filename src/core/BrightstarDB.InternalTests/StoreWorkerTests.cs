@@ -20,7 +20,7 @@ namespace BrightstarDB.InternalTests
         private readonly IStoreManager _storeManager = StoreManagerFactory.GetStoreManager();
         private string CreateStore(string storeId = null, bool withTransactionLog = true)
         {
-            var sid = storeId ?? "StoreWorkerTests_" +  Guid.NewGuid();
+            var sid = storeId ?? "StoreWorkerTests_" + Guid.NewGuid();
             using (_storeManager.CreateStore(Configuration.StoreLocation + Path.DirectorySeparatorChar + sid, false, withTransactionLog))
             {
                 return sid;
@@ -46,7 +46,7 @@ namespace BrightstarDB.InternalTests
             {
                 Thread.Sleep(1000);
                 status = storeWorker.GetJobStatus(jobId.ToString());
-            }            
+            }
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace BrightstarDB.InternalTests
                 store.Commit(Guid.NewGuid());
             }
 
-            var storeWorker = new StoreWorker(Configuration.StoreLocation , sid);
+            var storeWorker = new StoreWorker(Configuration.StoreLocation, sid);
             storeWorker.Start();
             var jobId = storeWorker.Export(sid + "_export.nt", null, RdfFormat.NQuads);
             JobExecutionStatus status = storeWorker.GetJobStatus(jobId.ToString());
@@ -168,7 +168,7 @@ namespace BrightstarDB.InternalTests
             data =
                 @"<http://www.networkedplanet.com/people/gra> <http://www.networkedplanet.com/types/worksfor> <http://www.networkedplanet.com/companies/np>";
 
-            jobId = storeWorker.ProcessTransaction(preconds,"", "", data, Constants.DefaultGraphUri, "nt");
+            jobId = storeWorker.ProcessTransaction(preconds, "", "", data, Constants.DefaultGraphUri, "nt");
             jobStatus = storeWorker.GetJobStatus(jobId.ToString());
             while (jobStatus.JobStatus != JobStatus.CompletedOk && jobStatus.JobStatus != JobStatus.TransactionError)
             {
@@ -224,7 +224,7 @@ namespace BrightstarDB.InternalTests
             jobId = storeWorker.ProcessTransaction("", notExistsPrecondition, "", insertData, Constants.DefaultGraphUri,
                                                    "nt", "UpdateTransaction2");
             var jobStatus = AssertJobCompleted(storeWorker, jobId, JobStatus.TransactionError);
-            
+
             Assert.IsTrue(jobStatus.ExceptionDetail.Message.Contains("Transaction preconditions failed"),
                 "Unexpected job exception message: {0}", jobStatus.ExceptionDetail.Message);
         }
@@ -255,14 +255,14 @@ namespace BrightstarDB.InternalTests
             var data =
                 @"<http://www.networkedplanet.com/people/gra> <http://www.networkedplanet.com/types/worksfor> <http://www.networkedplanet.com/companies/np>";
 
-            var jobId = storeWorker.ProcessTransaction("","", "", data, Constants.DefaultGraphUri, "nt");
+            var jobId = storeWorker.ProcessTransaction("", "", "", data, Constants.DefaultGraphUri, "nt");
 
             JobExecutionStatus jobStatus = storeWorker.GetJobStatus(jobId.ToString());
             while (jobStatus.JobStatus != JobStatus.CompletedOk)
             {
                 Thread.Sleep(1000);
                 jobStatus = storeWorker.GetJobStatus(jobId.ToString());
-            }            
+            }
 
             var transactionLog = storeWorker.TransactionLog;
             var transactionList = transactionLog.GetTransactionList();
@@ -283,7 +283,7 @@ namespace BrightstarDB.InternalTests
             {
                 Thread.Sleep(1000);
                 jobStatus = storeWorker.GetJobStatus(jobId.ToString());
-            }            
+            }
 
             transactionList.Reset();
 
@@ -345,7 +345,7 @@ namespace BrightstarDB.InternalTests
             }
             Assert.IsNotNull(job);
             Assert.AreEqual(data, job.InsertData);
-            
+
         }
 
 
@@ -457,8 +457,8 @@ namespace BrightstarDB.InternalTests
                 jobStatus = storeWorker.GetJobStatus(jobId.ToString());
             }
 
-            storeWorker.Query("select * where { ?s ?p ?o }", SparqlResultsFormat.Xml, new[]{Constants.DefaultGraphUri});
-            storeWorker.Shutdown(true, () => _storeManager.DeleteStore(Configuration.StoreLocation + "\\"+ sid));            
+            storeWorker.Query("select * where { ?s ?p ?o }", SparqlResultsFormat.Xml, new[] { Constants.DefaultGraphUri });
+            storeWorker.Shutdown(true, () => _storeManager.DeleteStore(Configuration.StoreLocation + "\\" + sid));
         }
 
         [Test]
@@ -483,8 +483,8 @@ namespace BrightstarDB.InternalTests
             }
 
             // var queryResult = storeWorker.Query("select * where { ?s ?p ?o }");
-            storeWorker.Shutdown(true, () => _storeManager.DeleteStore(Configuration.StoreLocation +"\\" + sid));
-            
+            storeWorker.Shutdown(true, () => _storeManager.DeleteStore(Configuration.StoreLocation + "\\" + sid));
+
         }
 
         [Test]
@@ -502,7 +502,7 @@ namespace BrightstarDB.InternalTests
             var data =
                 @"<http://www.networkedplanet.com/people/gra> <http://www.networkedplanet.com/types/worksfor> <http://www.networkedplanet.com/companies/np>";
 
-            var jobId = storeWorker.ProcessTransaction("","", "", data, Constants.DefaultGraphUri, "nt");
+            var jobId = storeWorker.ProcessTransaction("", "", "", data, Constants.DefaultGraphUri, "nt");
             JobExecutionStatus jobStatus = storeWorker.GetJobStatus(jobId.ToString());
             while (jobStatus.JobStatus != JobStatus.CompletedOk)
             {
@@ -661,7 +661,7 @@ namespace BrightstarDB.InternalTests
         public void TestNoTransactionLogWhenLoggingDisabled()
         {
             // create a store
-            var sid = CreateStore(withTransactionLog:false);
+            var sid = CreateStore(withTransactionLog: false);
 
             // initialise and start the store worker
             var storeWorker = new StoreWorker(Configuration.StoreLocation, sid);

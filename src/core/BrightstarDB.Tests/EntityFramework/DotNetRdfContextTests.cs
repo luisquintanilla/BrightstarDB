@@ -18,7 +18,7 @@ namespace BrightstarDB.Tests.EntityFramework
             var connectionString = "type=dotNetRdf;configuration=" + configFilePath + ";storeName=http://www.brightstardb.com/tests#people";
             const string baseGraph = "http://example.org/people";
 
-            var context = new MyEntityContext(connectionString, updateGraphUri:baseGraph, datasetGraphUris:new string[]{baseGraph});
+            var context = new MyEntityContext(connectionString, updateGraphUri: baseGraph, datasetGraphUris: new string[] { baseGraph });
             // Can find by property
             var alice = context.FoafPersons.FirstOrDefault(p => p.Name.Equals("Alice"));
             Assert.That(alice, Is.Not.Null);

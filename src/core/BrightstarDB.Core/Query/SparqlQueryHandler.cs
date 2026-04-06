@@ -77,7 +77,7 @@ namespace BrightstarDB.Query
                 var vsd = dataset as VirtualizingSparqlDataset;
                 if (vsd != null)
                 {
-                    query.AlgebraOptimisers = new [] {vsd.AlgebraOptimiser};
+                    query.AlgebraOptimisers = new[] { vsd.AlgebraOptimiser };
                     Options.AlgebraOptimisation = true;
                 }
 
@@ -85,16 +85,16 @@ namespace BrightstarDB.Query
                 var queryResult = queryProcessor.ProcessQuery(query);
                 if (queryResult is SparqlResultSet)
                 {
-                    var sparqlResultSet = (SparqlResultSet) queryResult;
+                    var sparqlResultSet = (SparqlResultSet)queryResult;
                     ISparqlResultsWriter sparqlResultsWriter = null;
                     if (_sparqlResultsFormat != null)
                     {
                         sparqlResultsWriter =
-                            MimeTypesHelper.GetSparqlWriter(new string[] {_sparqlResultsFormat.ToString()});
+                            MimeTypesHelper.GetSparqlWriter(new string[] { _sparqlResultsFormat.ToString() });
                     }
                     if (sparqlResultsWriter == null)
                     {
-                        throw new NoAcceptableFormatException(typeof (SparqlResultsFormat),
+                        throw new NoAcceptableFormatException(typeof(SparqlResultsFormat),
                                                               "No acceptable format provided for writing a SPARQL result set.");
                     }
                     sparqlResultsWriter.Save(sparqlResultSet, resultsWriter);
@@ -110,13 +110,13 @@ namespace BrightstarDB.Query
                 }
                 if (queryResult is IGraph)
                 {
-                    var g = (IGraph) queryResult;
+                    var g = (IGraph)queryResult;
                     var rdfWriter = _rdfFormat == null
                                         ? null
-                                        : MimeTypesHelper.GetWriter(new string[] {_rdfFormat.ToString()});
+                                        : MimeTypesHelper.GetWriter(new string[] { _rdfFormat.ToString() });
                     if (rdfWriter == null)
                     {
-                        throw new NoAcceptableFormatException(typeof (RdfFormat),
+                        throw new NoAcceptableFormatException(typeof(RdfFormat),
                                                               "No acceptable format provided for writing an RDF graph result.");
                     }
                     rdfWriter.Save(g, resultsWriter);
@@ -149,17 +149,17 @@ namespace BrightstarDB.Query
                 query.QueryType == SparqlQueryType.Describe ||
                 query.QueryType == SparqlQueryType.DescribeAll)
             {
-                if (_rdfFormat == null) throw new NoAcceptableFormatException(typeof (RdfFormat),
+                if (_rdfFormat == null) throw new NoAcceptableFormatException(typeof(RdfFormat),
                     "CONSTRUCT and DESCRIBE queries require an RdfFormat specifier for the RDF graph serialization.");
             }
             else if (_sparqlResultsFormat == null)
             {
-                throw new NoAcceptableFormatException(typeof (SparqlResultsFormat),
+                throw new NoAcceptableFormatException(typeof(SparqlResultsFormat),
                     "Query requires a SparqlResultsFormat specifier for the results serialization.");
             }
         }
 
-        
+
         /// <summary>
         /// Provides the required SPARQL query interface for the <see cref="BrightstarIOManager"/> used for SPARQL update support
         /// </summary>
@@ -205,7 +205,7 @@ namespace BrightstarDB.Query
             catch (Exception ex)
             {
                 Logging.LogError(BrightstarEventId.SparqlExecutionError,
-                    "Error Executing Sparql {0}. Cause: {1}", 
+                    "Error Executing Sparql {0}. Cause: {1}",
                     query, ex);
                 throw;
             }
