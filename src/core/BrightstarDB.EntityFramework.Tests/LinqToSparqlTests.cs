@@ -53,7 +53,9 @@ namespace BrightstarDB.EntityFramework.Tests
             var lastSparql = Context.LastSparqlQuery;
             Assert.IsNotNull(lastSparql);
             Assert.AreEqual(
-                NormalizeSparql(@"CONSTRUCT { ?p ?p_p ?p_o. ?p <http://www.brightstardb.com/.well-known/model/selectVariable> ""p"" .} WHERE { ?p ?p_p ?p_o . {SELECT ?p WHERE {?p a <http://www.networkedplanet.com/schemas/test/Dinner> .} } }"),
+                NormalizeSparql("""
+CONSTRUCT { ?p ?p_p ?p_o. ?p <http://www.brightstardb.com/.well-known/model/selectVariable> "p" .} WHERE { ?p ?p_p ?p_o . {SELECT ?p WHERE {?p a <http://www.networkedplanet.com/schemas/test/Dinner> .} } }
+"""),
                 NormalizeSparql(lastSparql));
         }
 
@@ -84,7 +86,8 @@ namespace BrightstarDB.EntityFramework.Tests
             var results = q.ToList();
             var lastSparql = Context.LastSparqlQuery;
             Assert.AreEqual(
-                NormalizeSparql(@"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" .} WHERE {
+                NormalizeSparql("""
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" .} WHERE {
 ?x ?x_p ?x_o . {
 SELECT ?x WHERE {
   ?x a <http://www.networkedplanet.com/schemas/test/Dinner> . 
@@ -93,7 +96,8 @@ SELECT ?x WHERE {
   { BIND(<id:2> AS ?x) } 
   UNION
   { BIND(<id:3> AS ?x) } 
-} } }"),
+} } }
+"""),
             NormalizeSparql(lastSparql));
         }
 
@@ -111,11 +115,13 @@ SELECT ?x WHERE {
             var results = q.ToList();
             var lastSparql = Context.LastSparqlQuery;
             Assert.IsNotNull(lastSparql);
-            AssertQuerySparql(@"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" .} WHERE {
+            AssertQuerySparql("""
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" .} WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE { 
     ?x a <http://www.networkedplanet.com/schemas/test/Rsvp> .
-    <id:1> <http://www.networkedplanet.com/schemas/test/attendees> ?x.} } }");
+    <id:1> <http://www.networkedplanet.com/schemas/test/attendees> ?x.} } }
+""");
         }
 
         [Test]
@@ -182,7 +188,8 @@ SELECT ?x WHERE {
             Assert.IsNotNull(lastSparql);
             Assert.AreEqual(
                 NormalizeSparql(
-                    @"CONSTRUCT { ?y ?y_p ?y_o. ?y <http://www.brightstardb.com/.well-known/model/selectVariable> ""y"" .} WHERE {
+                    """
+CONSTRUCT { ?y ?y_p ?y_o. ?y <http://www.brightstardb.com/.well-known/model/selectVariable> "y" .} WHERE {
 ?y ?y_p ?y_o . {
     SELECT ?y WHERE {
     <id:address> a <http://www.networkedplanet.com/schemas/test/Dinner> .
@@ -190,7 +197,8 @@ SELECT ?x WHERE {
     ?y <http://www.networkedplanet.com/schemas/test/date> ?v0 .
     <id:address> <http://www.networkedplanet.com/schemas/test/date> ?v1 .
     FILTER ((?v0=?v1) && (!sameTerm(<id:address>, ?y)))
-    .} } }"),
+    .} } }
+"""),
                 NormalizeSparql(lastSparql));
         }
 
@@ -221,11 +229,13 @@ SELECT ?x WHERE {
             var lastSparql = Context.LastSparqlQuery;
             Assert.IsNotNull(lastSparql);
             Assert.AreEqual(NormalizeSparql(
-                @"CONSTRUCT { ?p ?p_p ?p_o. ?p <http://www.brightstardb.com/.well-known/model/selectVariable> ""p"" .} WHERE {
+                """
+CONSTRUCT { ?p ?p_p ?p_o. ?p <http://www.brightstardb.com/.well-known/model/selectVariable> "p" .} WHERE {
 ?p ?p_p ?p_o . {
     SELECT ?p WHERE { 
     ?p a <http://www.networkedplanet.com/schemas/test/Person> .
-    ?p <http://www.networkedplanet.com/schemas/test/father> <id:address> .} } }"), NormalizeSparql(lastSparql));
+    ?p <http://www.networkedplanet.com/schemas/test/father> <id:address> .} } }
+"""), NormalizeSparql(lastSparql));
         }
 
 
@@ -241,14 +251,16 @@ SELECT ?x WHERE {
             Assert.IsNotNull(lastSparql);
             Assert.AreEqual(
                 NormalizeSparql(
-                @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+                """
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Dinner> .
     ?r a <http://www.networkedplanet.com/schemas/test/Rsvp> .
     ?x <http://www.networkedplanet.com/schemas/test/attendees> ?r .
     { ?r <http://www.networkedplanet.com/schemas/test/email> 'kal@networkedplanet.com' . }
-    } } }"),
+    } } }
+"""),
                 NormalizeSparql(lastSparql));
         }
 
@@ -260,14 +272,16 @@ SELECT ?x WHERE {
                     select r;
             var results = q.ToList();
             AssertQuerySparql(
-                              @"CONSTRUCT { ?r ?r_p ?r_o. ?r <http://www.brightstardb.com/.well-known/model/selectVariable> ""r"" .} WHERE {
+                              """
+CONSTRUCT { ?r ?r_p ?r_o. ?r <http://www.brightstardb.com/.well-known/model/selectVariable> "r" .} WHERE {
 ?r ?r_p ?r_o . {
     SELECT ?r WHERE { 
     ?x a <http://www.networkedplanet.com/schemas/test/Dinner> .
     ?r a <http://www.networkedplanet.com/schemas/test/Rsvp> .
     ?r <http://www.networkedplanet.com/schemas/test/email> ?v0 .
     ?x <http://www.networkedplanet.com/schemas/test/host> ?v1 .
-    FILTER (?v0=?v1) . } } }");
+    FILTER (?v0=?v1) . } } }
+""");
         }
 
         [Test]
@@ -278,57 +292,67 @@ SELECT ?x WHERE {
                     select x;
             q.ToList();
             AssertQuerySparql(
-                @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+                """
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x <http://www.networkedplanet.com/schemas/test/price> ?v0 .
-    FILTER (?v0 < '1.00'^^<http://www.w3.org/2001/XMLSchema#decimal>) . } } }");
+    FILTER (?v0 < '1.00'^^<http://www.w3.org/2001/XMLSchema#decimal>) . } } }
+""");
 
             q = from x in Context.Companies
                 where x.CurrentSharePrice <= 1.1m
                 select x;
             q.ToList();
-            AssertQuerySparql(@"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+            AssertQuerySparql("""
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x <http://www.networkedplanet.com/schemas/test/price> ?v0 .
-    FILTER (?v0 <= '1.10'^^<http://www.w3.org/2001/XMLSchema#decimal>) . } } }");
+    FILTER (?v0 <= '1.10'^^<http://www.w3.org/2001/XMLSchema#decimal>) . } } }
+""");
 
             q = from x in Context.Companies
                 where x.CurrentSharePrice > 1.2m
                 select x;
             q.ToList();
-            AssertQuerySparql(@"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+            AssertQuerySparql("""
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x <http://www.networkedplanet.com/schemas/test/price> ?v0 .
-    FILTER (?v0 > '1.20'^^<http://www.w3.org/2001/XMLSchema#decimal>) . } } }");
+    FILTER (?v0 > '1.20'^^<http://www.w3.org/2001/XMLSchema#decimal>) . } } }
+""");
 
             q = from x in Context.Companies
                 where x.CurrentSharePrice >= 1.3m
                 select x;
             q.ToList();
-            AssertQuerySparql(@"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+            AssertQuerySparql("""
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x <http://www.networkedplanet.com/schemas/test/price> ?v0 .
-    FILTER (?v0 >= '1.30'^^<http://www.w3.org/2001/XMLSchema#decimal>) . } } }");
+    FILTER (?v0 >= '1.30'^^<http://www.w3.org/2001/XMLSchema#decimal>) . } } }
+""");
 
 
             q = from x in Context.Companies
                 where x.CurrentSharePrice >= 1.0m && x.CurrentSharePrice <= 2.0m
                 select x;
             q.ToList();
-            AssertQuerySparql(@"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+            AssertQuerySparql("""
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x <http://www.networkedplanet.com/schemas/test/price> ?v0 .
-    FILTER ((?v0 >= '1.00'^^<http://www.w3.org/2001/XMLSchema#decimal>) && (?v0 <= '2.00'^^<http://www.w3.org/2001/XMLSchema#decimal>)) . } } }");
+    FILTER ((?v0 >= '1.00'^^<http://www.w3.org/2001/XMLSchema#decimal>) && (?v0 <= '2.00'^^<http://www.w3.org/2001/XMLSchema#decimal>)) . } } }
+""");
 
         }
 
@@ -340,12 +364,14 @@ SELECT ?x WHERE {
                     select x;
             q.ToList();
             AssertQuerySparql(
-                @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+                """
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x <http://www.networkedplanet.com/schemas/test/marketCap> ?v0 .
-    FILTER (?v0 < '1.000000E+006'^^<http://www.w3.org/2001/XMLSchema#double>) . } } }");
+    FILTER (?v0 < '1.000000E+006'^^<http://www.w3.org/2001/XMLSchema#double>) . } } }
+""");
 
         }
 
@@ -357,12 +383,14 @@ SELECT ?x WHERE {
                     select x;
             q.ToList();
             AssertQuerySparql(
-                @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" .} WHERE {
+                """
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" .} WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x <http://www.networkedplanet.com/schemas/test/headCount> ?v0 .
-    FILTER (?v0 < '100'^^<http://www.w3.org/2001/XMLSchema#integer>) . } } }");
+    FILTER (?v0 < '100'^^<http://www.w3.org/2001/XMLSchema#integer>) . } } }
+""");
         }
 
         [Test]
@@ -373,24 +401,28 @@ SELECT ?x WHERE {
                     select x;
             q.ToList();
             AssertQuerySparql(
-                @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+                """
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     { ?x <http://www.networkedplanet.com/schemas/test/isListed> true . }
-    } } }");
+    } } }
+""");
 
             q = from x in Context.Companies
                 where x.IsListed == false
                 select x;
             q.ToList();
             AssertQuerySparql(
-                @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+                """
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     OPTIONAL { ?x <http://www.networkedplanet.com/schemas/test/isListed> ?v0 . }
-    FILTER (!bound(?v0) || (?v0 = false)) . } } }");
+    FILTER (!bound(?v0) || (?v0 = false)) . } } }
+""");
         }
 
         [Test]
@@ -402,76 +434,88 @@ SELECT ?x WHERE {
                     select x;
             q.ToList();
             AssertQuerySparql(
-                @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+                """
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o .  {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x <http://www.networkedplanet.com/schemas/test/isListed> true .
-    } } }");
+    } } }
+""");
 
             q = from x in Context.Companies
                 where !x.IsListed
                 select x;
             q.ToList();
             AssertQuerySparql(
-                @"CONSTRUCT {?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+                """
+CONSTRUCT {?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x <http://www.networkedplanet.com/schemas/test/isListed> ?v0 .
-    FILTER (!(?v0)) . } } }");
+    FILTER (!(?v0)) . } } }
+""");
 
             q = from x in Context.Companies
                 where x.IsListed && x.IsBlueChip
                 select x;
             q.ToList();
             AssertQuerySparql(
-                @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+                """
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x <http://www.networkedplanet.com/schemas/test/isListed> true .
     ?x <http://www.networkedplanet.com/schemas/test/isBlueChip> true .
-    } } }");
+    } } }
+""");
 
             q = from x in Context.Companies
                 where x.IsListed && !x.IsBlueChip
                 select x;
             q.ToList();
             AssertQuerySparql(
-                @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+                """
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x <http://www.networkedplanet.com/schemas/test/isListed> ?v0 .
     ?x <http://www.networkedplanet.com/schemas/test/isBlueChip> ?v1 .
-    FILTER (?v0 && (!(?v1))) . } } }");
+    FILTER (?v0 && (!(?v1))) . } } }
+""");
 
             q = from x in Context.Companies
                 where !x.IsListed && x.IsBlueChip
                 select x;
             q.ToList();
             AssertQuerySparql(
-                @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+                """
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x <http://www.networkedplanet.com/schemas/test/isListed> ?v0 .
     ?x <http://www.networkedplanet.com/schemas/test/isBlueChip> ?v1 .
-    FILTER ((!(?v0)) && ?v1) . } } }");
+    FILTER ((!(?v0)) && ?v1) . } } }
+""");
 
             q = from x in Context.Companies
                 where !x.IsListed && !x.IsBlueChip
                 select x;
             q.ToList();
             AssertQuerySparql(
-                @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" . } WHERE {
+                """
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" . } WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x <http://www.networkedplanet.com/schemas/test/isListed> ?v0 .
     ?x <http://www.networkedplanet.com/schemas/test/isBlueChip> ?v1 .
-    FILTER ((!(?v0)) && (!(?v1))) . } } }");
+    FILTER ((!(?v0)) && (!(?v1))) . } } }
+""");
         }
 
         [Test]
@@ -483,12 +527,14 @@ SELECT ?x WHERE {
                     select x;
             q.ToList();
             AssertQuerySparql(
-                @"CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"" .} WHERE {
+                """
+CONSTRUCT { ?x ?x_p ?x_o. ?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x" .} WHERE {
 ?x ?x_p ?x_o . {
     SELECT ?x WHERE {
     ?x a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x <http://www.networkedplanet.com/schemas/test/ticker> ?v0 .
-    FILTER (?v0 IN ('AAA', 'AAB', 'AAC', 'AAD')) . } } }");
+    FILTER (?v0 IN ('AAA', 'AAB', 'AAC', 'AAD')) . } } }
+""");
         }
 
         [Test]
@@ -567,13 +613,15 @@ FILTER(?v0 > '100'^^<http://www.w3.org/2001/XMLSchema#integer>).
             var q = Context.Dinners.SelectMany(d => d.Rsvps);
             q.ToList();
             AssertQuerySparql(
-                              @"CONSTRUCT { ?x003Cgeneratedx003Ex005Fx0030 ?x003Cgeneratedx003Ex005Fx0030_p ?x003Cgeneratedx003Ex005Fx0030_o. 
-?x003Cgeneratedx003Ex005Fx0030 <http://www.brightstardb.com/.well-known/model/selectVariable> ""x003Cgeneratedx003Ex005Fx0030"" .} WHERE {
+                              """
+CONSTRUCT { ?x003Cgeneratedx003Ex005Fx0030 ?x003Cgeneratedx003Ex005Fx0030_p ?x003Cgeneratedx003Ex005Fx0030_o. 
+?x003Cgeneratedx003Ex005Fx0030 <http://www.brightstardb.com/.well-known/model/selectVariable> "x003Cgeneratedx003Ex005Fx0030" .} WHERE {
 ?x003Cgeneratedx003Ex005Fx0030 ?x003Cgeneratedx003Ex005Fx0030_p ?x003Cgeneratedx003Ex005Fx0030_o . {
     SELECT ?x003Cgeneratedx003Ex005Fx0030 WHERE { 
     ?d a <http://www.networkedplanet.com/schemas/test/Dinner> . 
     ?x003Cgeneratedx003Ex005Fx0030 a <http://www.networkedplanet.com/schemas/test/Rsvp> . 
-    ?d <http://www.networkedplanet.com/schemas/test/attendees> ?x003Cgeneratedx003Ex005Fx0030 . } } }");
+    ?d <http://www.networkedplanet.com/schemas/test/attendees> ?x003Cgeneratedx003Ex005Fx0030 . } } }
+""");
         }
 
         [Test]
@@ -583,15 +631,17 @@ FILTER(?v0 > '100'^^<http://www.w3.org/2001/XMLSchema#integer>).
                     Context.Dinners.SelectMany(d => d.Rsvps.Where(x => x.AttendeeEmail.Equals("kal@networkedplanet.com")));
             q2.ToList();
             AssertQuerySparql(
-                @"CONSTRUCT { ?x003Cgeneratedx003Ex005Fx0030 ?x003Cgeneratedx003Ex005Fx0030_p ?x003Cgeneratedx003Ex005Fx0030_o.
-?x003Cgeneratedx003Ex005Fx0030 <http://www.brightstardb.com/.well-known/model/selectVariable> ""x003Cgeneratedx003Ex005Fx0030"" .} WHERE {
+                """
+CONSTRUCT { ?x003Cgeneratedx003Ex005Fx0030 ?x003Cgeneratedx003Ex005Fx0030_p ?x003Cgeneratedx003Ex005Fx0030_o.
+?x003Cgeneratedx003Ex005Fx0030 <http://www.brightstardb.com/.well-known/model/selectVariable> "x003Cgeneratedx003Ex005Fx0030" .} WHERE {
 ?x003Cgeneratedx003Ex005Fx0030 ?x003Cgeneratedx003Ex005Fx0030_p ?x003Cgeneratedx003Ex005Fx0030_o . {
     SELECT ?x003Cgeneratedx003Ex005Fx0030 WHERE { 
     ?d a <http://www.networkedplanet.com/schemas/test/Dinner> . 
     ?x003Cgeneratedx003Ex005Fx0030 a <http://www.networkedplanet.com/schemas/test/Rsvp> . 
     ?d <http://www.networkedplanet.com/schemas/test/attendees> ?x003Cgeneratedx003Ex005Fx0030 . 
     ?x003Cgeneratedx003Ex005Fx0030 <http://www.networkedplanet.com/schemas/test/email> ?v1 .
-    FILTER (?v1 = 'kal@networkedplanet.com') .} } }");
+    FILTER (?v1 = 'kal@networkedplanet.com') .} } }
+""");
         }
 
         [Test]
@@ -599,13 +649,15 @@ FILTER(?v0 > '100'^^<http://www.w3.org/2001/XMLSchema#integer>).
         {
             var q = Context.Companies.OfType<ContextObjects.IPerson>().ToList();
             AssertQuerySparql(
-                @"CONSTRUCT { ?x003Cgeneratedx003Ex005Fx0031 ?x003Cgeneratedx003Ex005Fx0031_p ?x003Cgeneratedx003Ex005Fx0031_o.
-?x003Cgeneratedx003Ex005Fx0031 <http://www.brightstardb.com/.well-known/model/selectVariable> ""x003Cgeneratedx003Ex005Fx0031"" .} WHERE {
+                """
+CONSTRUCT { ?x003Cgeneratedx003Ex005Fx0031 ?x003Cgeneratedx003Ex005Fx0031_p ?x003Cgeneratedx003Ex005Fx0031_o.
+?x003Cgeneratedx003Ex005Fx0031 <http://www.brightstardb.com/.well-known/model/selectVariable> "x003Cgeneratedx003Ex005Fx0031" .} WHERE {
 ?x003Cgeneratedx003Ex005Fx0031 ?x003Cgeneratedx003Ex005Fx0031_p ?x003Cgeneratedx003Ex005Fx0031_o . {
     SELECT ?x003Cgeneratedx003Ex005Fx0031 WHERE {
     ?x003Cgeneratedx003Ex005Fx0031 a <http://www.networkedplanet.com/schemas/test/Company> .
     ?x003Cgeneratedx003Ex005Fx0031 a <http://www.networkedplanet.com/schemas/test/Person> .
-    } } }");
+    } } }
+""");
         }
 
         [Test]
@@ -646,12 +698,14 @@ FILTER(?v0 > '100'^^<http://www.w3.org/2001/XMLSchema#integer>).
         {
             var q = Context.Companies.Cast<IDinner>();
             q.ToList();
-            AssertQuerySparql(@"CONSTRUCT { ?x003Cgeneratedx003Ex005Fx0031 ?x003Cgeneratedx003Ex005Fx0031_p ?x003Cgeneratedx003Ex005Fx0031_o. 
-?x003Cgeneratedx003Ex005Fx0031 <http://www.brightstardb.com/.well-known/model/selectVariable> ""x003Cgeneratedx003Ex005Fx0031"" . 
+            AssertQuerySparql("""
+CONSTRUCT { ?x003Cgeneratedx003Ex005Fx0031 ?x003Cgeneratedx003Ex005Fx0031_p ?x003Cgeneratedx003Ex005Fx0031_o. 
+?x003Cgeneratedx003Ex005Fx0031 <http://www.brightstardb.com/.well-known/model/selectVariable> "x003Cgeneratedx003Ex005Fx0031" . 
 } WHERE {
 ?x003Cgeneratedx003Ex005Fx0031 ?x003Cgeneratedx003Ex005Fx0031_p ?x003Cgeneratedx003Ex005Fx0031_o . {
     SELECT ?x003Cgeneratedx003Ex005Fx0031 WHERE {
-    ?x003Cgeneratedx003Ex005Fx0031 a <http://www.networkedplanet.com/schemas/test/Company> . } } }");
+    ?x003Cgeneratedx003Ex005Fx0031 a <http://www.networkedplanet.com/schemas/test/Company> . } } }
+""");
 
             try
             {
@@ -720,9 +774,10 @@ FILTER(sameTerm(?m,?v0)) .
         {
             var q = Context.Dinners.OrderBy(x => x.EventDate);
             var result = q.ToList();
-            AssertQuerySparql(@"CONSTRUCT { ?x ?x_p ?x_o. 
+            AssertQuerySparql("""
+CONSTRUCT { ?x ?x_p ?x_o. 
 ?x <http://www.brightstardb.com/.well-known/model/sortValue0> ?x_sort0 . 
-?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"".
+?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x".
 } WHERE {
     ?x ?x_p ?x_o .
     {
@@ -732,7 +787,8 @@ FILTER(sameTerm(?m,?v0)) .
             BIND (?v0 AS ?x_sort0).
         } ORDER BY ASC(?v0)
     } 
-}");
+}
+""");
         }
 
         [Test]
@@ -740,8 +796,9 @@ FILTER(sameTerm(?m,?v0)) .
         {
             var q = Context.Dinners.Distinct();
             var result = q.ToList();
-            AssertQuerySparql(@"CONSTRUCT { ?x003Cgeneratedx003Ex005Fx0031 ?x003Cgeneratedx003Ex005Fx0031_p ?x003Cgeneratedx003Ex005Fx0031_o.
-?x003Cgeneratedx003Ex005Fx0031 <http://www.brightstardb.com/.well-known/model/selectVariable> ""x003Cgeneratedx003Ex005Fx0031"".
+            AssertQuerySparql("""
+CONSTRUCT { ?x003Cgeneratedx003Ex005Fx0031 ?x003Cgeneratedx003Ex005Fx0031_p ?x003Cgeneratedx003Ex005Fx0031_o.
+?x003Cgeneratedx003Ex005Fx0031 <http://www.brightstardb.com/.well-known/model/selectVariable> "x003Cgeneratedx003Ex005Fx0031".
 } WHERE {
   ?x003Cgeneratedx003Ex005Fx0031 ?x003Cgeneratedx003Ex005Fx0031_p ?x003Cgeneratedx003Ex005Fx0031_o .
   {
@@ -749,7 +806,8 @@ FILTER(sameTerm(?m,?v0)) .
       ?x003Cgeneratedx003Ex005Fx0031 a <http://www.networkedplanet.com/schemas/test/Dinner> .
     }
   }
-}");
+}
+""");
         }
 
         [Test]
@@ -757,9 +815,10 @@ FILTER(sameTerm(?m,?v0)) .
         {
             var q = Context.Dinners.OrderBy(x => x.EventDate).Distinct();
             var result = q.ToList();
-            AssertQuerySparql(@"CONSTRUCT { ?x ?x_p ?x_o.
+            AssertQuerySparql("""
+CONSTRUCT { ?x ?x_p ?x_o.
 ?x <http://www.brightstardb.com/.well-known/model/sortValue0> ?x_dsort0.
-?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"".
+?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x".
 } WHERE {
   ?x ?x_p ?x_o .
   {
@@ -771,7 +830,8 @@ FILTER(sameTerm(?m,?v0)) .
     GROUP BY ?x 
     ORDER BY ASC(MAX(?x_sort0))
   }
-}");
+}
+""");
         }
 
         [Test]
@@ -779,9 +839,10 @@ FILTER(sameTerm(?m,?v0)) .
         {
             var q = Context.Dinners.OrderBy(x => x.EventDate).Skip(10).Take(5);
             var result = q.ToList();
-            AssertQuerySparql(@"CONSTRUCT { ?x ?x_p ?x_o. 
+            AssertQuerySparql("""
+CONSTRUCT { ?x ?x_p ?x_o. 
 ?x <http://www.brightstardb.com/.well-known/model/sortValue0> ?x_sort0 . 
-?x <http://www.brightstardb.com/.well-known/model/selectVariable> ""x"".
+?x <http://www.brightstardb.com/.well-known/model/selectVariable> "x".
 } WHERE {
     ?x ?x_p ?x_o .
     {
@@ -791,7 +852,8 @@ FILTER(sameTerm(?m,?v0)) .
             BIND (?v0 AS ?x_sort0).
         } ORDER BY ASC(?v0) LIMIT 5 OFFSET 10
     } 
-}");
+}
+""");
         }
 
 

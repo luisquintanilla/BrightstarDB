@@ -213,11 +213,7 @@ namespace BrightstarDB.Storage.Persistence
 
         public bool IsWriteable(IPage page)
         {
-            if (page is BinaryFilePage)
-            {
-                return (page as BinaryFilePage).IsWriteable;
-            }
-            return false;
+            return page is BinaryFilePage bfp && bfp.IsWriteable;
         }
 
         public IPage GetWriteablePage(ulong commitId, IPage page)

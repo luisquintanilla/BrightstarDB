@@ -284,9 +284,9 @@ namespace BrightstarDB.Query
             if (subj == null) subjNodeId = StoreConstants.NullUlong;
             if (pred == null) predNodeId = StoreConstants.NullUlong;
             if (obj == null) objNodeId = StoreConstants.NullUlong;
-            if (subj is BrightstarVirtualNode) subjNodeId = (subj as BrightstarVirtualNode).VirtualID;
-            if (pred is BrightstarVirtualNode) predNodeId = (pred as BrightstarVirtualNode).VirtualID;
-            if (obj is BrightstarVirtualNode) objNodeId = (obj as BrightstarVirtualNode).VirtualID;
+            if (subj is BrightstarVirtualNode subjVirtual) subjNodeId = subjVirtual.VirtualID;
+            if (pred is BrightstarVirtualNode predVirtual) predNodeId = predVirtual.VirtualID;
+            if (obj is BrightstarVirtualNode objVirtual) objNodeId = objVirtual.VirtualID;
 
             string subjValue = null, predValue = null, objValue = null, dataType = RdfDatatypes.String, languageCode = null;
             bool objIsLiteral = false;

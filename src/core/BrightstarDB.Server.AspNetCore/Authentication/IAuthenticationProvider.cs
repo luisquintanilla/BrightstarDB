@@ -2,10 +2,9 @@
 using BrightstarDB.Server.AspNetCore.Configuration;
 using Microsoft.AspNetCore.Authentication;
 
-namespace BrightstarDB.Server.AspNetCore.Authentication
+namespace BrightstarDB.Server.AspNetCore.Authentication;
+
+public interface IAuthenticationProvider
 {
-    public interface IAuthenticationProvider
-    {
-        void Configure(AuthenticationBuilder authenticationBuilder, AuthenticationConfiguration configuration);
-    }
+    void Configure(AuthenticationBuilder authenticationBuilder, AuthenticationConfiguration configuration);
 }

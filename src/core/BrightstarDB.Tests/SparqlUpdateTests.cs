@@ -27,12 +27,14 @@ namespace BrightstarDB.Tests
         public void TestInsert()
         {
             var storeName = CreateStore("TestInsert");
-            ExecuteUpdate(storeName, @"PREFIX dc: <http://purl.org/dc/elements/1.1/>
+            ExecuteUpdate(storeName, """
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
 INSERT DATA
 { 
-  <http://example/book1> dc:title ""A new book"" ;
-                         dc:creator ""A.N.Other"" .
-}");
+  <http://example/book1> dc:title "A new book" ;
+                         dc:creator "A.N.Other" .
+}
+""");
 
             var results = _client.ExecuteQuery(storeName,
     "PREFIX dc: <http://purl.org/dc/elements/1.1/> SELECT ?o WHERE { <http://example/book1> dc:title ?o }");
@@ -42,9 +44,11 @@ INSERT DATA
             Assert.AreEqual("A new book", resultRow.GetColumnValue("o").ToString());
 
             ExecuteUpdate(storeName,
-                     @"PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                     """
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
 INSERT { ?a a <http://example.org/book> }
-WHERE { ?a dc:title ""A new book"" }");
+WHERE { ?a dc:title "A new book" }
+""");
             results = _client.ExecuteQuery(storeName, "SELECT ?b WHERE {?b a <http://example.org/book>}");
             resultsDoc = XDocument.Load(results);
             resultRow = resultsDoc.SparqlResultRows().FirstOrDefault();
@@ -58,22 +62,26 @@ WHERE { ?a dc:title ""A new book"" }");
         {
             var storeName = CreateStore("TestDelete");
             ExecuteUpdate(storeName,
-                          @"PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                          """
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX ns: <http://example.org/ns#> 
 INSERT DATA {
 <http://example/book2> ns:price 42 .
-<http://example/book2> dc:title ""David Copperfield"" .
-<http://example/book2> dc:creator ""Edmund Wells"" .
-}");
+<http://example/book2> dc:title "David Copperfield" .
+<http://example/book2> dc:creator "Edmund Wells" .
+}
+""");
 
             ExecuteUpdate(storeName,
-                @"PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                """
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
 
 DELETE DATA
 {
-  <http://example/book2> dc:title ""David Copperfield"" ;
-                         dc:creator ""Edmund Wells"" .
-}");
+  <http://example/book2> dc:title "David Copperfield" ;
+                         dc:creator "Edmund Wells" .
+}
+""");
             var results = _client.ExecuteQuery(storeName, "SELECT ?o WHERE { <http://example/book2> ?p ?o . }");
             var resultsDoc = XDocument.Load(results);
             Assert.AreEqual(1, resultsDoc.SparqlResultRows().Count());
@@ -86,15 +94,17 @@ DELETE DATA
         {
             var storeName = CreateStore("TestDeleteInsert");
             ExecuteUpdate(storeName,
-                @"PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+                """
+PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
 INSERT DATA {
-<http://example/president25> foaf:givenName ""Bill"" .
-<http://example/president25> foaf:familyName ""McKinley"" .
-<http://example/president27> foaf:givenName ""Bill"" .
-<http://example/president27> foaf:familyName ""Taft"" .
-<http://example/president42> foaf:givenName ""Bill"" .
-<http://example/president42> foaf:familyName ""Clinton"" .
-}");
+<http://example/president25> foaf:givenName "Bill" .
+<http://example/president25> foaf:familyName "McKinley" .
+<http://example/president27> foaf:givenName "Bill" .
+<http://example/president27> foaf:familyName "Taft" .
+<http://example/president42> foaf:givenName "Bill" .
+<http://example/president42> foaf:familyName "Clinton" .
+}
+""");
             ExecuteUpdate(storeName, @"PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
 DELETE { ?person foaf:givenName 'Bill' }
 INSERT { ?person foaf:givenName 'William' }
@@ -113,30 +123,34 @@ WHERE
         {
             var storeName = CreateStore("TestDelete");
             ExecuteUpdate(storeName,
-                @"PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                """
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX ns: <http://example.org/ns#>
 INSERT DATA {
-<http://example/book1> dc:title ""Principles of Compiler Design"" .
-<http://example/book1> dc:date ""1977-01-01T00:00:00-02:00""^^xsd:dateTime .
+<http://example/book1> dc:title "Principles of Compiler Design" .
+<http://example/book1> dc:date "1977-01-01T00:00:00-02:00"^^xsd:dateTime .
 
 <http://example/book2> ns:price 42 .
-<http://example/book2> dc:title ""David Copperfield"" .
-<http://example/book2> dc:creator ""Edmund Wells"" .
-<http://example/book2> dc:date ""1948-01-01T00:00:00-02:00""^^xsd:dateTime .
+<http://example/book2> dc:title "David Copperfield" .
+<http://example/book2> dc:creator "Edmund Wells" .
+<http://example/book2> dc:date "1948-01-01T00:00:00-02:00"^^xsd:dateTime .
 
-<http://example/book3> dc:title ""SPARQL 1.1 Tutorial"" .}");
+<http://example/book3> dc:title "SPARQL 1.1 Tutorial" .}
+""");
 
-            ExecuteUpdate(storeName, @"PREFIX dc:  <http://purl.org/dc/elements/1.1/>
+            ExecuteUpdate(storeName, """
+PREFIX dc:  <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 DELETE
  { ?book ?p ?v }
 WHERE
  { ?book dc:date ?date .
-   FILTER ( ?date > ""1970-01-01T00:00:00-02:00""^^xsd:dateTime )
+   FILTER ( ?date > "1970-01-01T00:00:00-02:00"^^xsd:dateTime )
    ?book ?p ?v
- }");
+ }
+""");
             var results = _client.ExecuteQuery(storeName,
                                                "PREFIX dc: <http://purl.org/dc/elements/1.1/> SELECT ?b ?t WHERE { ?b dc:title ?t}");
             var resultsDoc = XDocument.Load(results);
@@ -151,24 +165,28 @@ WHERE
         {
             var storeName = CreateStore("TestWildcardSubjectDelete");
             ExecuteUpdate(storeName,
-                @"PREFIX dc: <http://purl.org/dc/elements/1.1/>
+                """
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX ns: <http://example.org/ns#>
 INSERT DATA {
-<http://example/book1> dc:title ""Principles of Compiler Design"" .
-<http://example/book1> dc:date ""1977-01-01T00:00:00-02:00""^^xsd:dateTime .
+<http://example/book1> dc:title "Principles of Compiler Design" .
+<http://example/book1> dc:date "1977-01-01T00:00:00-02:00"^^xsd:dateTime .
 
 <http://example/book2> ns:price 42 .
-<http://example/book2> dc:title ""David Copperfield"" .
-<http://example/book2> dc:creator ""Edmund Wells"" .
-<http://example/book2> dc:date ""1948-01-01T00:00:00-02:00""^^xsd:dateTime .
+<http://example/book2> dc:title "David Copperfield" .
+<http://example/book2> dc:creator "Edmund Wells" .
+<http://example/book2> dc:date "1948-01-01T00:00:00-02:00"^^xsd:dateTime .
 
-<http://example/book3> dc:title ""SPARQL 1.1 Tutorial"" .}");
+<http://example/book3> dc:title "SPARQL 1.1 Tutorial" .}
+""");
 
-            ExecuteUpdate(storeName, @"PREFIX dc:  <http://purl.org/dc/elements/1.1/>
+            ExecuteUpdate(storeName, """
+PREFIX dc:  <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 DELETE DATA
- { <http://www.brightstardb.com/.well-known/model/wildcard> dc:title ""David Copperfield"" }");
+ { <http://www.brightstardb.com/.well-known/model/wildcard> dc:title "David Copperfield" }
+""");
             var results = _client.ExecuteQuery(storeName,
                                                "PREFIX dc: <http://purl.org/dc/elements/1.1/> SELECT ?b ?t WHERE { ?b dc:title ?t}");
             var resultsDoc = XDocument.Load(results);
@@ -180,19 +198,21 @@ DELETE DATA
         private void LoadBooks(string storeName)
         {
             ExecuteUpdate(storeName,
-    @"PREFIX dc: <http://purl.org/dc/elements/1.1/>
+    """
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX ns: <http://example.org/ns#>
 INSERT DATA {
-<http://example/book1> dc:title ""Principles of Compiler Design"" .
-<http://example/book1> dc:date ""1977-01-01T00:00:00-02:00""^^xsd:dateTime .
+<http://example/book1> dc:title "Principles of Compiler Design" .
+<http://example/book1> dc:date "1977-01-01T00:00:00-02:00"^^xsd:dateTime .
 
 <http://example/book2> ns:price 42 .
-<http://example/book2> dc:title ""David Copperfield"" .
-<http://example/book2> dc:creator ""Edmund Wells"" .
-<http://example/book2> dc:date ""1948-01-01T00:00:00-02:00""^^xsd:dateTime .
+<http://example/book2> dc:title "David Copperfield" .
+<http://example/book2> dc:creator "Edmund Wells" .
+<http://example/book2> dc:date "1948-01-01T00:00:00-02:00"^^xsd:dateTime .
 
-<http://example/book3> dc:title ""SPARQL 1.1 Tutorial"" .}");
+<http://example/book3> dc:title "SPARQL 1.1 Tutorial" .}
+""");
         }
 
         [Test]
@@ -201,10 +221,12 @@ INSERT DATA {
             var storeName = CreateStore("TestWildcardSubjectDelete");
             LoadBooks(storeName);
 
-            ExecuteUpdate(storeName, @"PREFIX dc:  <http://purl.org/dc/elements/1.1/>
+            ExecuteUpdate(storeName, """
+PREFIX dc:  <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 DELETE DATA
- { <http://example/book2> <http://www.brightstardb.com/.well-known/model/wildcard> ""David Copperfield"" }");
+ { <http://example/book2> <http://www.brightstardb.com/.well-known/model/wildcard> "David Copperfield" }
+""");
             var results = _client.ExecuteQuery(storeName,
                                                "PREFIX dc: <http://purl.org/dc/elements/1.1/> SELECT ?b ?t WHERE { ?b dc:title ?t}");
             var resultsDoc = XDocument.Load(results);
@@ -236,18 +258,20 @@ DELETE DATA
         {
             var storeName = CreateStore("TestDeleteFromGraph");
             ExecuteUpdate(storeName,
-                                  @"PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+                                  """
+PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
 INSERT DATA {
   GRAPH <http://example/addresses> {
     <http://example/william> a foaf:Person .
-    <http://example/william> foaf:givenName ""William"" .
+    <http://example/william> foaf:givenName "William" .
     <http://example/william> foaf:mbox <mailto:bill@example> .
 
     <http://example/fred> a foaf:Person .
-    <http://example/fred> foaf:givenName ""Fred"" .
+    <http://example/fred> foaf:givenName "Fred" .
     <http://example/fred> foaf:mbox  <mailto:fred@example> .
   }
-}");
+}
+""");
             var results = _client.ExecuteQuery(storeName, "PREFIX foaf:  <http://xmlns.com/foaf/0.1/> SELECT ?p FROM <http://example/addresses> WHERE { ?p a foaf:Person }");
             var resultsDoc = XDocument.Load(results);
             Assert.AreEqual(2, resultsDoc.SparqlResultRows().Count());
@@ -275,30 +299,34 @@ WHERE { ?person ?property ?value ; foaf:givenName 'Fred' } ");
         {
             var storeName = CreateStore("TestGraphCopy");
             ExecuteUpdate(storeName,
-                          @"
+                          """
+
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX ns: <http://example.org/ns#>
 INSERT DATA {
   GRAPH <http://example/bookStore> {
-    <http://example/book1> dc:title ""Fundamentals of Compiler Design"" .
-    <http://example/book1> dc:date ""1977-01-01T00:00:00-02:00""^^xsd:dateTime .
+    <http://example/book1> dc:title "Fundamentals of Compiler Design" .
+    <http://example/book1> dc:date "1977-01-01T00:00:00-02:00"^^xsd:dateTime .
 
     <http://example/book2> ns:price 42 .
-    <http://example/book2> dc:title ""David Copperfield"" .
-    <http://example/book2> dc:creator ""Edmund Wells"" .
-    <http://example/book2> dc:date ""1948-01-01T00:00:00-02:00""^^xsd:dateTime .
+    <http://example/book2> dc:title "David Copperfield" .
+    <http://example/book2> dc:creator "Edmund Wells" .
+    <http://example/book2> dc:date "1948-01-01T00:00:00-02:00"^^xsd:dateTime .
 
-    <http://example/book3> dc:title ""SPARQL 1.1 Tutorial"" .
+    <http://example/book3> dc:title "SPARQL 1.1 Tutorial" .
   }
-}");
-            ExecuteUpdate(storeName, @"
+}
+""");
+            ExecuteUpdate(storeName, """
+
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 INSERT DATA {
   GRAPH <http://example/bookStore2> {
-    <http://example/book4> dc:title ""SPARQL 1.0 Tutorial"" .
+    <http://example/book4> dc:title "SPARQL 1.0 Tutorial" .
   }
-}");
+}
+""");
 
             var results = _client.ExecuteQuery(storeName,
                                  @"PREFIX dc: <http://purl.org/dc/elements/1.1/> SELECT ?t FROM <http://example/bookStore2> WHERE { ?b dc:title ?t }");
@@ -306,7 +334,8 @@ INSERT DATA {
             Assert.AreEqual(1, resultsDoc.SparqlResultRows().Count());
 
             ExecuteUpdate(storeName,
-                                  @"PREFIX dc:  <http://purl.org/dc/elements/1.1/>
+                                  """
+PREFIX dc:  <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
 INSERT 
@@ -314,9 +343,10 @@ INSERT
 WHERE
   { GRAPH  <http://example/bookStore>
        { ?book dc:date ?date .
-         FILTER ( ?date > ""1970-01-01T00:00:00-02:00""^^xsd:dateTime )
+         FILTER ( ?date > "1970-01-01T00:00:00-02:00"^^xsd:dateTime )
          ?book ?p ?v
-  } }	");
+  } }	
+""");
 
             results = _client.ExecuteQuery(storeName,
                 @"PREFIX dc: <http://purl.org/dc/elements/1.1/> SELECT ?t FROM <http://example/bookStore2> WHERE { ?b dc:title ?t }");
@@ -335,12 +365,14 @@ WHERE
         {
             var sid = CreateStore("GraphManagement");
 
-            ExecuteUpdate(sid, @"PREFIX dc: <http://purl.org/dc/elements/1.1/>
+            ExecuteUpdate(sid, """
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
 INSERT DATA
 { 
-  <http://example/book1> dc:title ""A new book"" ;
-                         dc:creator ""A.N.Other"" .
-}");
+  <http://example/book1> dc:title "A new book" ;
+                         dc:creator "A.N.Other" .
+}
+""");
 
             ExecuteUpdate(sid, "CREATE GRAPH <http://np.com/g1>");
 
@@ -388,23 +420,25 @@ INSERT DATA
         {
             var storeName = CreateStore("TestGraphCopy");
             ExecuteUpdate(storeName,
-                          @"
+                          """
+
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX ns: <http://example.org/ns#>
 INSERT DATA {
   GRAPH <http://example/bookStore> {
-    <http://example/book1> dc:title ""Fundamentals of Compiler Design"" .
-    <http://example/book1> dc:date ""1977-01-01T00:00:00-02:00""^^xsd:dateTime .
+    <http://example/book1> dc:title "Fundamentals of Compiler Design" .
+    <http://example/book1> dc:date "1977-01-01T00:00:00-02:00"^^xsd:dateTime .
 
     <http://example/book2> ns:price 42 .
-    <http://example/book2> dc:title ""David Copperfield"" .
-    <http://example/book2> dc:creator ""Edmund Wells"" .
-    <http://example/book2> dc:date ""1948-01-01T00:00:00-02:00""^^xsd:dateTime .
+    <http://example/book2> dc:title "David Copperfield" .
+    <http://example/book2> dc:creator "Edmund Wells" .
+    <http://example/book2> dc:date "1948-01-01T00:00:00-02:00"^^xsd:dateTime .
 
-    <http://example/book3> dc:title ""SPARQL 1.1 Tutorial"" .
+    <http://example/book3> dc:title "SPARQL 1.1 Tutorial" .
   }
-}");
+}
+""");
 
             var results = _client.ExecuteQuery(storeName,
                                    "SELECT ?s ?p ?o FROM <http://example/bookStore> WHERE { ?s ?p ?o }");
@@ -424,22 +458,26 @@ INSERT DATA {
         public void TestGraphCopyCmd()
         {
             var storeName = CreateStore("TestGraphCopyCmd");
-            ExecuteUpdate(storeName, @"
+            ExecuteUpdate(storeName, """
+
 PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
 INSERT DATA {
   <http://example/william> a foaf:Person .
-  <http://example/william> foaf:givenName ""William"" .
+  <http://example/william> foaf:givenName "William" .
   <http://example/william> foaf:mbox  <mailto:bill@example> .
-}");
-            ExecuteUpdate(storeName, @"
+}
+""");
+            ExecuteUpdate(storeName, """
+
 PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
 INSERT DATA {
   GRAPH <http://example.org/named> {
     <http://example/fred> a foaf:Person .
-    <http://example/fred> foaf:givenName ""Fred"" .
+    <http://example/fred> foaf:givenName "Fred" .
   }
 }
-");
+
+""");
             ExecuteUpdate(storeName, "COPY DEFAULT TO <http://example.org/named>");
 
             var results = _client.ExecuteQuery(storeName,
@@ -453,22 +491,26 @@ INSERT DATA {
         public void TestGraphMove()
         {
             var storeName = CreateStore("TestGraphCopyCmd");
-            ExecuteUpdate(storeName, @"
+            ExecuteUpdate(storeName, """
+
 PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
 INSERT DATA {
   <http://example/william> a foaf:Person .
-  <http://example/william> foaf:givenName ""William"" .
+  <http://example/william> foaf:givenName "William" .
   <http://example/william> foaf:mbox  <mailto:bill@example> .
-}");
-            ExecuteUpdate(storeName, @"
+}
+""");
+            ExecuteUpdate(storeName, """
+
 PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
 INSERT DATA {
   GRAPH <http://example.org/named> {
     <http://example/fred> a foaf:Person .
-    <http://example/fred> foaf:givenName ""Fred"" .
+    <http://example/fred> foaf:givenName "Fred" .
   }
 }
-");
+
+""");
             ExecuteUpdate(storeName, "MOVE DEFAULT TO <http://example.org/named>");
 
             var results = _client.ExecuteQuery(storeName,
@@ -484,22 +526,26 @@ INSERT DATA {
         public void TestGraphAdd()
         {
             var storeName = CreateStore("TestGraphCopyCmd");
-            ExecuteUpdate(storeName, @"
+            ExecuteUpdate(storeName, """
+
 PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
 INSERT DATA {
   <http://example/william> a foaf:Person .
-  <http://example/william> foaf:givenName ""William"" .
+  <http://example/william> foaf:givenName "William" .
   <http://example/william> foaf:mbox  <mailto:bill@example> .
-}");
-            ExecuteUpdate(storeName, @"
+}
+""");
+            ExecuteUpdate(storeName, """
+
 PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
 INSERT DATA {
   GRAPH <http://example.org/named> {
     <http://example/fred> a foaf:Person .
-    <http://example/fred> foaf:givenName ""Fred"" .
+    <http://example/fred> foaf:givenName "Fred" .
   }
 }
-");
+
+""");
             ExecuteUpdate(storeName, "ADD DEFAULT TO <http://example.org/named>");
 
             var results = _client.ExecuteQuery(storeName,

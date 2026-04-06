@@ -1,9 +1,8 @@
 #nullable enable
 using System;
 
-namespace BrightstarDB.Server.AspNetCore.Models
+namespace BrightstarDB.Server.AspNetCore.Models;
+
+public class InvalidCommitPointException : Exception
 {
-    public class InvalidCommitPointException : Exception
-    {
-    }
 }
