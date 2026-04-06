@@ -6,6 +6,7 @@ using BrightstarDB.Server.AspNetCore.Authorization;
 using BrightstarDB.Server.AspNetCore.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 
 namespace BrightstarDB.Server.AspNetCore.Endpoints;
@@ -16,17 +17,23 @@ public static class StoresEndpoints
     {
         var group = routes.MapGroup(string.Empty);
         group.MapGet("/", HandleGet)
+            .WithName("ListStores")
+            .WithTags("Stores")
+            .WithSummary("List all stores")
             .AddSystemPermissionFilter(SystemPermissions.ListStores);
         group.MapPost("/", HandlePost)
+            .WithName("CreateStore")
+            .WithTags("Stores")
+            .WithSummary("Create a new store")
             .AddSystemPermissionFilter(SystemPermissions.CreateStore);
         return group;
     }
 
-    private static IResult HandleGet(IBrightstarService brightstarService)
+    private static Results<Ok<StoresResponseModel>, ProblemHttpResult> HandleGet(IBrightstarService brightstarService)
     {
         try
         {
-            return Results.Ok(StoresResponseModel.FromStoreNames(brightstarService.ListStores()));
+            return TypedResults.Ok(StoresResponseModel.FromStoreNames(brightstarService.ListStores()));
         }
         catch (BrightstarClientException ex)
         {
@@ -34,16 +41,17 @@ public static class StoresEndpoints
         }
     }
 
-    private static IResult HandlePost(CreateStoreRequestObject? request, IBrightstarService brightstarService)
+    private static Results<Created<StoreResponseModel>, BadRequest, Conflict, ProblemHttpResult> HandlePost(
+        CreateStoreRequestObject? request, IBrightstarService brightstarService)
     {
         if (request == null || string.IsNullOrWhiteSpace(request.StoreName))
         {
-            return Results.BadRequest();
+            return TypedResults.BadRequest();
         }
 
         if (brightstarService.DoesStoreExist(request.StoreName))
         {
-            return Results.Conflict();
+            return TypedResults.Conflict();
         }
 
         try
@@ -59,11 +67,11 @@ public static class StoresEndpoints
             }
 
             var responseModel = StoreResponseModel.FromStore(request.StoreName);
-            return Results.Created($"/{request.StoreName}", responseModel);
+            return TypedResults.Created($"/{request.StoreName}", responseModel);
         }
         catch (ArgumentException)
         {
-            return Results.BadRequest();
+            return TypedResults.BadRequest();
         }
         catch (BrightstarClientException ex)
         {
@@ -71,8 +79,8 @@ public static class StoresEndpoints
         }
     }
 
-    private static IResult ServerError(BrightstarClientException ex)
+    private static ProblemHttpResult ServerError(BrightstarClientException ex)
     {
-        return Results.Json(new { error = ex.Message }, statusCode: StatusCodes.Status500InternalServerError);
+        return TypedResults.Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
     }
 }

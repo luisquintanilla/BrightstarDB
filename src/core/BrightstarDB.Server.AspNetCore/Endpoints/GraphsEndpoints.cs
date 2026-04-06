@@ -32,10 +32,22 @@ public static class GraphsEndpoints
 
     public static IEndpointRouteBuilder MapGraphsEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapGet("/{storeName}/graphs", HandleGetGraphs);
-        endpoints.MapPut("/{storeName}/graphs", HandlePutGraph);
-        endpoints.MapPost("/{storeName}/graphs", HandlePostGraph);
-        endpoints.MapDelete("/{storeName}/graphs", HandleDeleteGraph);
+        endpoints.MapGet("/{storeName}/graphs", HandleGetGraphs)
+            .WithName("GetGraphs")
+            .WithTags("Graphs")
+            .WithSummary("List or retrieve graphs");
+        endpoints.MapPut("/{storeName}/graphs", HandlePutGraph)
+            .WithName("PutGraph")
+            .WithTags("Graphs")
+            .WithSummary("Replace a graph");
+        endpoints.MapPost("/{storeName}/graphs", HandlePostGraph)
+            .WithName("PostGraph")
+            .WithTags("Graphs")
+            .WithSummary("Merge data into a graph");
+        endpoints.MapDelete("/{storeName}/graphs", HandleDeleteGraph)
+            .WithName("DeleteGraph")
+            .WithTags("Graphs")
+            .WithSummary("Delete a graph");
         return endpoints;
     }
 
@@ -47,13 +59,13 @@ public static class GraphsEndpoints
     {
         if (!permissionsProvider.HasStorePermission(httpContext.User, storeName, StorePermissions.Read))
         {
-            return Results.Unauthorized();
+            return TypedResults.Unauthorized();
         }
 
-        if (!brightstarService.DoesStoreExist(storeName)) return Results.NotFound();
+        if (!brightstarService.DoesStoreExist(storeName)) return TypedResults.NotFound();
 
         var graphRequest = TryGetGraphUri(httpContext.Request, out var graphUri);
-        if (graphRequest == GraphRequestState.Invalid) return Results.BadRequest();
+        if (graphRequest == GraphRequestState.Invalid) return TypedResults.BadRequest();
 
         if (graphRequest == GraphRequestState.None)
         {
@@ -64,7 +76,7 @@ public static class GraphsEndpoints
                 return new GraphListResult(graphs, selection.ResultsFormat);
             }
 
-            return Results.Json(graphs);
+            return TypedResults.Json(graphs);
         }
 
         var sparqlQuery = graphUri == Constants.DefaultGraphUri
@@ -76,7 +88,7 @@ public static class GraphsEndpoints
             storeName,
             null,
             sparqlQuery,
-            new[] { Constants.DefaultGraphUri },
+            [Constants.DefaultGraphUri],
             selectionForGraph.ResultsFormat,
             selectionForGraph.GraphFormat);
     }
@@ -99,7 +111,7 @@ public static class GraphsEndpoints
         return await WriteGraphAsync(storeName, httpContext, brightstarService, permissionsProvider, replaceGraph: false);
     }
 
-    private static async Task<IResult> HandleDeleteGraph(
+    private static IResult HandleDeleteGraph(
         string storeName,
         HttpContext httpContext,
         IBrightstarService brightstarService,
@@ -107,12 +119,12 @@ public static class GraphsEndpoints
     {
         if (!permissionsProvider.HasStorePermission(httpContext.User, storeName, StorePermissions.TransactionUpdate))
         {
-            return Results.Unauthorized();
+            return TypedResults.Unauthorized();
         }
 
-        if (!brightstarService.DoesStoreExist(storeName)) return Results.NotFound();
+        if (!brightstarService.DoesStoreExist(storeName)) return TypedResults.NotFound();
         var graphRequest = TryGetGraphUri(httpContext.Request, out var graphUri);
-        if (graphRequest != GraphRequestState.Targeted || graphUri == null) return Results.BadRequest();
+        if (graphRequest != GraphRequestState.Targeted || graphUri == null) return TypedResults.BadRequest();
 
         string sparqlUpdate;
         string jobName;
@@ -124,7 +136,7 @@ public static class GraphsEndpoints
         else
         {
             var namedGraphs = brightstarService.ListNamedGraphs(storeName).ToArray();
-            if (!namedGraphs.Contains(graphUri, StringComparer.Ordinal)) return Results.NotFound();
+            if (!namedGraphs.Contains(graphUri, StringComparer.Ordinal)) return TypedResults.NotFound();
             sparqlUpdate = string.Format(DropNamedGraph, graphUri);
             jobName = "Drop Graph " + graphUri;
         }
@@ -132,15 +144,15 @@ public static class GraphsEndpoints
         try
         {
             var job = brightstarService.ExecuteUpdate(storeName, sparqlUpdate, true, jobName);
-            return job.JobCompletedOk ? Results.NoContent() : Results.StatusCode(StatusCodes.Status500InternalServerError);
+            return job.JobCompletedOk ? TypedResults.NoContent() : TypedResults.Problem(statusCode: StatusCodes.Status500InternalServerError);
         }
         catch (NoSuchStoreException)
         {
-            return Results.NotFound();
+            return TypedResults.NotFound();
         }
         catch (BrightstarClientException ex)
         {
-            return Results.BadRequest(new { error = ex.Message });
+            return TypedResults.BadRequest(new { error = ex.Message });
         }
     }
 
@@ -153,12 +165,12 @@ public static class GraphsEndpoints
     {
         if (!permissionsProvider.HasStorePermission(httpContext.User, storeName, StorePermissions.TransactionUpdate))
         {
-            return Results.Unauthorized();
+            return TypedResults.Unauthorized();
         }
 
-        if (!brightstarService.DoesStoreExist(storeName)) return Results.NotFound();
+        if (!brightstarService.DoesStoreExist(storeName)) return TypedResults.NotFound();
         var graphRequest = TryGetGraphUri(httpContext.Request, out var graphUri);
-        if (graphRequest != GraphRequestState.Targeted || graphUri == null) return Results.BadRequest();
+        if (graphRequest != GraphRequestState.Targeted || graphUri == null) return TypedResults.BadRequest();
 
         var namedGraphs = graphUri == Constants.DefaultGraphUri ? Array.Empty<string>() : brightstarService.ListNamedGraphs(storeName).ToArray();
         var isNewGraph = graphUri != Constants.DefaultGraphUri && !namedGraphs.Contains(graphUri, StringComparer.Ordinal);
@@ -166,7 +178,7 @@ public static class GraphsEndpoints
         try
         {
             var rdfFormat = GetRequestBodyFormat(httpContext.Request);
-            if (rdfFormat == null) return Results.StatusCode(StatusCodes.Status406NotAcceptable);
+            if (rdfFormat == null) return TypedResults.StatusCode(StatusCodes.Status406NotAcceptable);
 
             var rdfPayload = await ParseBodyAsync(httpContext.Request, rdfFormat);
             var sparqlUpdate = graphUri == Constants.DefaultGraphUri
@@ -174,20 +186,20 @@ public static class GraphsEndpoints
                 : string.Format(replaceGraph ? UpdateNamedGraph : MergeNamedGraph, graphUri, rdfPayload);
 
             var job = brightstarService.ExecuteUpdate(storeName, sparqlUpdate, true, "Update Graph " + graphUri);
-            if (!job.JobCompletedOk) return Results.StatusCode(StatusCodes.Status500InternalServerError);
-            return isNewGraph ? Results.StatusCode(StatusCodes.Status201Created) : Results.NoContent();
+            if (!job.JobCompletedOk) return TypedResults.Problem(statusCode: StatusCodes.Status500InternalServerError);
+            return isNewGraph ? TypedResults.StatusCode(StatusCodes.Status201Created) : TypedResults.NoContent();
         }
         catch (RdfException ex)
         {
-            return Results.BadRequest(new { error = ex.Message });
+            return TypedResults.BadRequest(new { error = ex.Message });
         }
         catch (NoSuchStoreException)
         {
-            return Results.NotFound();
+            return TypedResults.NotFound();
         }
         catch (BrightstarClientException ex)
         {
-            return Results.BadRequest(new { error = ex.Message });
+            return TypedResults.BadRequest(new { error = ex.Message });
         }
     }
 

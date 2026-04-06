@@ -8,6 +8,7 @@ using BrightstarDB.Server.AspNetCore.Authorization;
 using BrightstarDB.Server.AspNetCore.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 
 namespace BrightstarDB.Server.AspNetCore.Endpoints;
@@ -18,19 +19,26 @@ public static class CommitPointsEndpoints
     {
         var group = routes.MapGroup("/{storeName}/commits");
         group.MapGet("/", HandleGet)
+            .WithName("ListCommitPoints")
+            .WithTags("CommitPoints")
+            .WithSummary("List commit points for a store")
             .AddStorePermissionFilter(StorePermissions.Read);
         group.MapPost("/", HandlePost)
+            .WithName("RevertToCommitPoint")
+            .WithTags("CommitPoints")
+            .WithSummary("Revert store to a specific commit point")
             .AddStorePermissionFilter(StorePermissions.Admin);
         return group;
     }
 
-    private static IResult HandleGet([AsParameters] CommitPointsRequestModel request, HttpContext httpContext, IBrightstarService brightstarService)
+    private static Results<Ok<CommitPointResponseModel>, Ok<IReadOnlyList<CommitPointResponseModel>>, NotFound, ProblemHttpResult> HandleGet(
+        [AsParameters] CommitPointsRequestModel request, HttpContext httpContext, IBrightstarService brightstarService)
     {
         try
         {
             if (!brightstarService.DoesStoreExist(request.StoreName))
             {
-                return Results.NotFound();
+                return TypedResults.NotFound();
             }
 
             var skip = PagingHelpers.NormalizeSkip(request.Skip);
@@ -39,8 +47,8 @@ public static class CommitPointsEndpoints
             {
                 var commitPoint = brightstarService.GetCommitPoint(request.StoreName, request.Timestamp.Value);
                 return commitPoint == null
-                    ? Results.NotFound()
-                    : Results.Ok(CommitPointResponseModel.From(commitPoint));
+                    ? TypedResults.NotFound()
+                    : TypedResults.Ok(CommitPointResponseModel.From(commitPoint));
             }
 
             var resourcePath = httpContext.Request.Path.Value ?? $"/{request.StoreName}/commits";
@@ -58,7 +66,7 @@ public static class CommitPointsEndpoints
 
                 var page = PagingHelpers.ToPage(commits, take, out var hasNextPage);
                 PagingHelpers.AddLinkHeader(httpContext.Response, resourceUri, skip, take, hasNextPage);
-                return Results.Ok(page);
+                return TypedResults.Ok(page);
             }
 
             var commitPoints = brightstarService
@@ -67,7 +75,7 @@ public static class CommitPointsEndpoints
 
             var pagedCommitPoints = PagingHelpers.ToPage(commitPoints, take, out var hasNext);
             PagingHelpers.AddLinkHeader(httpContext.Response, resourcePath, skip, take, hasNext);
-            return Results.Ok(pagedCommitPoints);
+            return TypedResults.Ok(pagedCommitPoints);
         }
         catch (BrightstarClientException ex)
         {
@@ -75,29 +83,30 @@ public static class CommitPointsEndpoints
         }
     }
 
-    private static IResult HandlePost(string storeName, CommitPointResponseModel? commitPoint, IBrightstarService brightstarService)
+    private static Results<Ok, NotFound, BadRequest, ProblemHttpResult> HandlePost(
+        string storeName, CommitPointResponseModel? commitPoint, IBrightstarService brightstarService)
     {
         if (commitPoint == null || string.IsNullOrWhiteSpace(commitPoint.StoreName) ||
             !string.Equals(commitPoint.StoreName, storeName, StringComparison.Ordinal))
         {
-            return Results.BadRequest();
+            return TypedResults.BadRequest();
         }
 
         try
         {
             if (!brightstarService.DoesStoreExist(storeName))
             {
-                return Results.NotFound();
+                return TypedResults.NotFound();
             }
 
             var commitPointInfo = brightstarService.GetCommitPoint(storeName, commitPoint.Id);
             if (commitPointInfo == null)
             {
-                return Results.BadRequest();
+                return TypedResults.BadRequest();
             }
 
             brightstarService.RevertToCommitPoint(storeName, commitPointInfo);
-            return Results.Ok();
+            return TypedResults.Ok();
         }
         catch (BrightstarClientException ex)
         {
@@ -105,8 +114,8 @@ public static class CommitPointsEndpoints
         }
     }
 
-    private static IResult ServerError(BrightstarClientException ex)
+    private static ProblemHttpResult ServerError(BrightstarClientException ex)
     {
-        return Results.Json(new { error = ex.Message }, statusCode: StatusCodes.Status500InternalServerError);
+        return TypedResults.Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
     }
 }

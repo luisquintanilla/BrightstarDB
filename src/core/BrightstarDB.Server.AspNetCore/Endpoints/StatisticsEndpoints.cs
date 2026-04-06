@@ -8,6 +8,7 @@ using BrightstarDB.Server.AspNetCore.Authorization;
 using BrightstarDB.Server.AspNetCore.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 
 namespace BrightstarDB.Server.AspNetCore.Endpoints;
@@ -18,19 +19,26 @@ public static class StatisticsEndpoints
     {
         var group = routes.MapGroup("/{storeName}/statistics");
         group.MapGet("/", HandleGet)
+            .WithName("ListStatistics")
+            .WithTags("Statistics")
+            .WithSummary("List store statistics")
             .AddStorePermissionFilter(StorePermissions.Read);
         group.MapGet("/latest", HandleGetLatest)
+            .WithName("GetLatestStatistics")
+            .WithTags("Statistics")
+            .WithSummary("Get latest store statistics")
             .AddStorePermissionFilter(StorePermissions.Read);
         return group;
     }
 
-    private static IResult HandleGet([AsParameters] StatisticsRequestObject request, HttpContext httpContext, IBrightstarService brightstarService)
+    private static Results<Ok<IReadOnlyList<StatisticsResponseModel>>, NotFound, ProblemHttpResult> HandleGet(
+        [AsParameters] StatisticsRequestObject request, HttpContext httpContext, IBrightstarService brightstarService)
     {
         try
         {
             if (!brightstarService.DoesStoreExist(request.StoreName))
             {
-                return Results.NotFound();
+                return TypedResults.NotFound();
             }
 
             var skip = PagingHelpers.NormalizeSkip(request.Skip);
@@ -49,7 +57,7 @@ public static class StatisticsEndpoints
 
             var page = PagingHelpers.ToPage(statistics, take, out var hasNextPage);
             PagingHelpers.AddLinkHeader(httpContext.Response, resourceUri, skip, take, hasNextPage);
-            return Results.Ok(page);
+            return TypedResults.Ok(page);
         }
         catch (BrightstarClientException ex)
         {
@@ -57,19 +65,20 @@ public static class StatisticsEndpoints
         }
     }
 
-    private static IResult HandleGetLatest(string storeName, IBrightstarService brightstarService)
+    private static Results<Ok<StatisticsResponseModel>, NotFound, ProblemHttpResult> HandleGetLatest(
+        string storeName, IBrightstarService brightstarService)
     {
         try
         {
             if (!brightstarService.DoesStoreExist(storeName))
             {
-                return Results.NotFound();
+                return TypedResults.NotFound();
             }
 
             var latest = brightstarService.GetStatistics(storeName);
             return latest == null
-                ? Results.NotFound()
-                : Results.Ok(StatisticsResponseModel.From(latest));
+                ? TypedResults.NotFound()
+                : TypedResults.Ok(StatisticsResponseModel.From(latest));
         }
         catch (BrightstarClientException ex)
         {
@@ -77,8 +86,8 @@ public static class StatisticsEndpoints
         }
     }
 
-    private static IResult ServerError(BrightstarClientException ex)
+    private static ProblemHttpResult ServerError(BrightstarClientException ex)
     {
-        return Results.Json(new { error = ex.Message }, statusCode: StatusCodes.Status500InternalServerError);
+        return TypedResults.Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
     }
 }

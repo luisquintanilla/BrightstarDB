@@ -12,6 +12,7 @@ using BrightstarDB.Server.AspNetCore.Formatters;
 using BrightstarDB.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 using VDS.RDF.Parsing;
 
@@ -23,10 +24,22 @@ public static class SparqlEndpoints
 
     public static IEndpointRouteBuilder MapSparqlEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapGet("/{storeName}/sparql", HandleStoreQuery);
-        endpoints.MapPost("/{storeName}/sparql", HandleStoreQuery);
-        endpoints.MapGet("/{storeName}/commits/{commitId}/sparql", HandleCommitQuery);
-        endpoints.MapPost("/{storeName}/commits/{commitId}/sparql", HandleCommitQuery);
+        endpoints.MapGet("/{storeName}/sparql", HandleStoreQuery)
+            .WithName("SparqlQueryGet")
+            .WithTags("SPARQL")
+            .WithSummary("Execute a SPARQL query via GET");
+        endpoints.MapPost("/{storeName}/sparql", HandleStoreQuery)
+            .WithName("SparqlQueryPost")
+            .WithTags("SPARQL")
+            .WithSummary("Execute a SPARQL query via POST");
+        endpoints.MapGet("/{storeName}/commits/{commitId}/sparql", HandleCommitQuery)
+            .WithName("SparqlCommitQueryGet")
+            .WithTags("SPARQL")
+            .WithSummary("Execute a SPARQL query against a specific commit via GET");
+        endpoints.MapPost("/{storeName}/commits/{commitId}/sparql", HandleCommitQuery)
+            .WithName("SparqlCommitQueryPost")
+            .WithTags("SPARQL")
+            .WithSummary("Execute a SPARQL query against a specific commit via POST");
         return endpoints;
     }
 
@@ -38,11 +51,11 @@ public static class SparqlEndpoints
     {
         if (!permissionsProvider.HasStorePermission(httpContext.User, storeName, StorePermissions.Read))
         {
-            return Results.Unauthorized();
+            return TypedResults.Unauthorized();
         }
 
         var request = await BindSparqlRequestAsync(httpContext.Request);
-        if (string.IsNullOrWhiteSpace(request.Query)) return Results.BadRequest();
+        if (string.IsNullOrWhiteSpace(request.Query)) return TypedResults.BadRequest();
 
         SerializableModel resultModel;
         try
@@ -51,11 +64,11 @@ public static class SparqlEndpoints
         }
         catch (ArgumentException ex)
         {
-            return Results.BadRequest(new { error = ex.Message });
+            return TypedResults.BadRequest(new { error = ex.Message });
         }
         catch (RdfParseException ex)
         {
-            return Results.BadRequest(new { error = ex.Message });
+            return TypedResults.BadRequest(new { error = ex.Message });
         }
 
         var selection = SparqlResultFormatHelper.Resolve(httpContext.Request, resultModel, request.FormatOverrides);
@@ -78,13 +91,13 @@ public static class SparqlEndpoints
     {
         if (!permissionsProvider.HasStorePermission(httpContext.User, storeName, StorePermissions.Read))
         {
-            return Results.Unauthorized();
+            return TypedResults.Unauthorized();
         }
 
-        if (!ulong.TryParse(commitId, out var parsedCommitId)) return Results.BadRequest();
+        if (!ulong.TryParse(commitId, out var parsedCommitId)) return TypedResults.BadRequest();
 
         var request = await BindSparqlRequestAsync(httpContext.Request);
-        if (string.IsNullOrWhiteSpace(request.Query)) return Results.BadRequest();
+        if (string.IsNullOrWhiteSpace(request.Query)) return TypedResults.BadRequest();
 
         SerializableModel resultModel;
         try
@@ -93,11 +106,11 @@ public static class SparqlEndpoints
         }
         catch (ArgumentException ex)
         {
-            return Results.BadRequest(new { error = ex.Message });
+            return TypedResults.BadRequest(new { error = ex.Message });
         }
         catch (RdfParseException ex)
         {
-            return Results.BadRequest(new { error = ex.Message });
+            return TypedResults.BadRequest(new { error = ex.Message });
         }
 
         var selection = SparqlResultFormatHelper.Resolve(httpContext.Request, resultModel, request.FormatOverrides);

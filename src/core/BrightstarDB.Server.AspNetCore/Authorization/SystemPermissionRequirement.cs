@@ -20,13 +20,13 @@ public sealed class SystemPermissionFilter(SystemPermissions requiredPermission)
         var httpContext = context.HttpContext;
         if (httpContext.User.Identity?.IsAuthenticated != true)
         {
-            return Results.Challenge(authenticationSchemes: new[] { BasicAuthenticationHandler.AuthenticationScheme });
+            return TypedResults.Challenge(authenticationSchemes: [BasicAuthenticationHandler.AuthenticationScheme]);
         }
 
         var permissionsProvider = httpContext.RequestServices.GetRequiredService<AbstractSystemPermissionsProvider>();
         if (!permissionsProvider.HasPermissions(httpContext.User, RequiredPermission))
         {
-            return Results.Forbid();
+            return TypedResults.Forbid();
         }
 
         return await next(context);

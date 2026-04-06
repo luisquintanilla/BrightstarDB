@@ -12,6 +12,7 @@ using BrightstarDB.Server.AspNetCore.Models;
 using BrightstarDB.Storage;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 
 namespace BrightstarDB.Server.AspNetCore.Endpoints;
@@ -23,13 +24,22 @@ public static class JobsEndpoints
 
     public static IEndpointRouteBuilder MapJobsEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapGet("/{storeName}/jobs", HandleListJobs);
-        endpoints.MapGet("/{storeName}/jobs/{jobId}", HandleGetJob);
-        endpoints.MapPost("/{storeName}/jobs", HandleCreateJob);
+        endpoints.MapGet("/{storeName}/jobs", HandleListJobs)
+            .WithName("ListJobs")
+            .WithTags("Jobs")
+            .WithSummary("List jobs for a store");
+        endpoints.MapGet("/{storeName}/jobs/{jobId}", HandleGetJob)
+            .WithName("GetJob")
+            .WithTags("Jobs")
+            .WithSummary("Get job status by ID");
+        endpoints.MapPost("/{storeName}/jobs", HandleCreateJob)
+            .WithName("CreateJob")
+            .WithTags("Jobs")
+            .WithSummary("Create a new job");
         return endpoints;
     }
 
-    private static IResult HandleListJobs(
+    private static Results<Ok<List<JobResponseModel>>, NotFound, UnauthorizedHttpResult> HandleListJobs(
         string storeName,
         HttpContext httpContext,
         IBrightstarService brightstarService,
@@ -37,10 +47,10 @@ public static class JobsEndpoints
     {
         if (!permissionsProvider.HasStorePermission(httpContext.User, storeName, StorePermissions.Read))
         {
-            return Results.Unauthorized();
+            return TypedResults.Unauthorized();
         }
 
-        if (!brightstarService.DoesStoreExist(storeName)) return Results.NotFound();
+        if (!brightstarService.DoesStoreExist(storeName)) return TypedResults.NotFound();
 
         var skip = ReadNonNegativeInt(httpContext.Request.Query["skip"], 0);
         var take = ReadNonNegativeInt(httpContext.Request.Query["take"], DefaultPageSize);
@@ -51,10 +61,10 @@ public static class JobsEndpoints
             .ToList();
 
         AddPagingLinks(httpContext.Response, httpContext.Request.Path.Value ?? $"/{storeName}/jobs", skip, take, DefaultPageSize, jobs.Count > take);
-        return Results.Ok(jobs.Take(take));
+        return TypedResults.Ok(jobs.Take(take).ToList());
     }
 
-    private static IResult HandleGetJob(
+    private static Results<Ok<JobResponseModel>, NotFound, UnauthorizedHttpResult> HandleGetJob(
         string storeName,
         string jobId,
         HttpContext httpContext,
@@ -63,22 +73,22 @@ public static class JobsEndpoints
     {
         if (!permissionsProvider.HasStorePermission(httpContext.User, storeName, StorePermissions.Read))
         {
-            return Results.Unauthorized();
+            return TypedResults.Unauthorized();
         }
 
-        if (!brightstarService.DoesStoreExist(storeName)) return Results.NotFound();
+        if (!brightstarService.DoesStoreExist(storeName)) return TypedResults.NotFound();
 
         var job = brightstarService.GetJobInfo(storeName, jobId);
-        return job == null ? Results.NotFound() : Results.Ok(job.ToResponseModel(storeName));
+        return job == null ? TypedResults.NotFound() : TypedResults.Ok(job.ToResponseModel(storeName));
     }
 
-    private static async Task<IResult> HandleCreateJob(
+    private static async Task<Results<Created<JobResponseModel>, BadRequest, BadRequest<object>, NotFound, UnauthorizedHttpResult>> HandleCreateJob(
         string storeName,
         HttpContext httpContext,
         IBrightstarService brightstarService,
         AbstractStorePermissionsProvider permissionsProvider)
     {
-        if (!brightstarService.DoesStoreExist(storeName)) return Results.NotFound();
+        if (!brightstarService.DoesStoreExist(storeName)) return TypedResults.NotFound();
 
         JobRequestObject? jobRequest;
         try
@@ -87,10 +97,10 @@ public static class JobsEndpoints
         }
         catch (JsonException ex)
         {
-            return Results.BadRequest(new { error = ex.Message });
+            return TypedResults.BadRequest<object>(new { error = ex.Message });
         }
 
-        if (jobRequest == null || string.IsNullOrWhiteSpace(jobRequest.JobType)) return Results.BadRequest();
+        if (jobRequest == null || string.IsNullOrWhiteSpace(jobRequest.JobType)) return TypedResults.BadRequest();
 
         var parameters = jobRequest.JobParameters == null
             ? new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase)
@@ -100,23 +110,23 @@ public static class JobsEndpoints
         {
             var queuedJobInfo = CreateJob(httpContext, permissionsProvider, brightstarService, storeName, jobRequest, parameters);
             var responseModel = queuedJobInfo.ToResponseModel(storeName);
-            return Results.Created($"{storeName}/jobs/{queuedJobInfo.JobId}", responseModel);
+            return TypedResults.Created($"{storeName}/jobs/{queuedJobInfo.JobId}", responseModel);
         }
         catch (BadJobRequestException)
         {
-            return Results.BadRequest();
+            return TypedResults.BadRequest();
         }
         catch (UnauthorizedAccessException)
         {
-            return Results.Unauthorized();
+            return TypedResults.Unauthorized();
         }
         catch (NoSuchStoreException)
         {
-            return Results.NotFound();
+            return TypedResults.NotFound();
         }
         catch (BrightstarClientException ex)
         {
-            return Results.BadRequest(new { error = ex.Message });
+            return TypedResults.BadRequest<object>(new { error = ex.Message });
         }
     }
 

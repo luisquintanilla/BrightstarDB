@@ -23,7 +23,7 @@ public sealed class GraphListResult : IResult
     {
         if (_resultsFormat == null)
         {
-            await Results.Json(_graphs).ExecuteAsync(httpContext);
+            await TypedResults.Json(_graphs).ExecuteAsync(httpContext);
             return;
         }
 

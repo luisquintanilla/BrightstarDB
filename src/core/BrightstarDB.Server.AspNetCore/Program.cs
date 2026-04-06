@@ -39,6 +39,7 @@ builder.Services
 
 builder.Services.AddAuthorization();
 builder.Services.AddBrightstarCors();
+builder.Services.AddOpenApi();
 
 // Permission providers (fallback to full access when no auth configured)
 builder.Services.AddSingleton<AbstractStorePermissionsProvider>(
@@ -51,6 +52,7 @@ var app = builder.Build();
 app.UseBrightstarCors();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapOpenApi();
 
 // Map all API endpoints
 app.MapStoresEndpoints();

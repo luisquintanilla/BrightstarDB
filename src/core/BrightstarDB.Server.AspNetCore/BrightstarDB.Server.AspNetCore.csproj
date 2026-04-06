@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="dotNetRdf" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" />
   </ItemGroup>
 

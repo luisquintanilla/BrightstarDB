@@ -5,10 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BrightstarDB.Client;
+using BrightstarDB.Dto;
 using BrightstarDB.Server.AspNetCore.Authorization;
 using BrightstarDB.Server.AspNetCore.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -22,11 +24,14 @@ public static class SparqlUpdateEndpoints
 
     public static IEndpointRouteBuilder MapSparqlUpdateEndpoints(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPost("/{storeName}/update", HandleUpdate);
+        endpoints.MapPost("/{storeName}/update", HandleUpdate)
+            .WithName("SparqlUpdate")
+            .WithTags("SPARQL")
+            .WithSummary("Execute a SPARQL Update operation");
         return endpoints;
     }
 
-    private static async Task<IResult> HandleUpdate(
+    private static async Task<Results<Ok<JobResponseModel>, BadRequest, BadRequest<object>, NotFound, UnauthorizedHttpResult>> HandleUpdate(
         string storeName,
         HttpContext httpContext,
         IBrightstarService brightstarService,
@@ -34,13 +39,13 @@ public static class SparqlUpdateEndpoints
     {
         if (!permissionsProvider.HasStorePermission(httpContext.User, storeName, StorePermissions.SparqlUpdate))
         {
-            return Results.Unauthorized();
+            return TypedResults.Unauthorized();
         }
 
-        if (!brightstarService.DoesStoreExist(storeName)) return Results.NotFound();
+        if (!brightstarService.DoesStoreExist(storeName)) return TypedResults.NotFound();
 
         var updateText = await ReadUpdateTextAsync(httpContext.Request);
-        if (string.IsNullOrWhiteSpace(updateText)) return Results.BadRequest();
+        if (string.IsNullOrWhiteSpace(updateText)) return TypedResults.BadRequest();
 
         try
         {
@@ -48,26 +53,26 @@ public static class SparqlUpdateEndpoints
         }
         catch (RdfParseException ex)
         {
-            return Results.BadRequest(new { error = ex.Message });
+            return TypedResults.BadRequest<object>(new { error = ex.Message });
         }
         catch (RdfException ex)
         {
-            return Results.BadRequest(new { error = ex.Message });
+            return TypedResults.BadRequest<object>(new { error = ex.Message });
         }
 
         try
         {
             var jobInfo = brightstarService.ExecuteUpdate(storeName, updateText, true);
             var responseModel = jobInfo.ToResponseModel(storeName);
-            return jobInfo.JobCompletedOk ? Results.Ok(responseModel) : Results.BadRequest(responseModel);
+            return jobInfo.JobCompletedOk ? TypedResults.Ok(responseModel) : TypedResults.BadRequest<object>(responseModel);
         }
         catch (NoSuchStoreException)
         {
-            return Results.NotFound();
+            return TypedResults.NotFound();
         }
         catch (BrightstarClientException ex)
         {
-            return Results.BadRequest(new { error = ex.Message });
+            return TypedResults.BadRequest<object>(new { error = ex.Message });
         }
     }
 

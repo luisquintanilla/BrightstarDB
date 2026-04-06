@@ -20,7 +20,7 @@ public sealed class StorePermissionFilter(StorePermissions requiredPermission) :
         var httpContext = context.HttpContext;
         if (httpContext.User.Identity?.IsAuthenticated != true)
         {
-            return Results.Challenge(authenticationSchemes: new[] { BasicAuthenticationHandler.AuthenticationScheme });
+            return TypedResults.Challenge(authenticationSchemes: [BasicAuthenticationHandler.AuthenticationScheme]);
         }
 
         if (!TryGetStoreName(httpContext, out var storeName))
@@ -31,7 +31,7 @@ public sealed class StorePermissionFilter(StorePermissions requiredPermission) :
         var permissionsProvider = httpContext.RequestServices.GetRequiredService<AbstractStorePermissionsProvider>();
         if (!permissionsProvider.HasStorePermission(httpContext.User, storeName, RequiredPermission))
         {
-            return Results.Forbid();
+            return TypedResults.Forbid();
         }
 
         return await next(context);
