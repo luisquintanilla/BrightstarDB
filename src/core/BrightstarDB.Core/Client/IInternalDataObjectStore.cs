@@ -20,7 +20,7 @@ namespace BrightstarDB.Client
         /// <summary>
         /// The URI identifiers of the graphs that contribute properties
         /// </summary>
-        string[] DataSetGraphUris { get; } 
+        string[] DataSetGraphUris { get; }
 
         /// <summary>
         /// The URI identifier of the graph that stores data object version numbers
@@ -62,7 +62,7 @@ namespace BrightstarDB.Client
         /// </summary>
         /// <param name="objUri">The object resource URI</param>
         /// <returns>An enumeration of all triples that have <paramref name="objUri"/> as the object of the triple.</returns>
-        IEnumerable<Triple> GetReferencingTriples(string objUri); 
+        IEnumerable<Triple> GetReferencingTriples(string objUri);
 
         /// <summary>
         /// Adds preconditions to validate that there is no existing resource with the URI

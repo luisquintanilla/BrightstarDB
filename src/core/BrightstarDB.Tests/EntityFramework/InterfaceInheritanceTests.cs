@@ -28,16 +28,16 @@ namespace BrightstarDB.Tests.EntityFramework
             baseEntity.BaseStringValue = "This is a base entity";
             context.SaveChanges();
 
-            context = new MyEntityContext(ConnectionString+storeName);
+            context = new MyEntityContext(ConnectionString + storeName);
 
             var baseEntities = context.BaseEntities.ToList();
-            Assert.AreEqual(2,baseEntities.Count);
-            Assert.IsTrue(baseEntities.Any(x=>x.BaseStringValue.Equals("This is a base entity")));
-            Assert.IsTrue(baseEntities.Any(x=>x.BaseStringValue.Equals("This is a dervied entity")));
+            Assert.AreEqual(2, baseEntities.Count);
+            Assert.IsTrue(baseEntities.Any(x => x.BaseStringValue.Equals("This is a base entity")));
+            Assert.IsTrue(baseEntities.Any(x => x.BaseStringValue.Equals("This is a dervied entity")));
 
             var derivedEntities = context.DerivedEntities.ToList();
             Assert.AreEqual(1, derivedEntities.Count);
-            Assert.IsTrue(derivedEntities.Any(x=>x.BaseStringValue.Equals("This is a dervied entity")));
+            Assert.IsTrue(derivedEntities.Any(x => x.BaseStringValue.Equals("This is a dervied entity")));
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace BrightstarDB.Tests.EntityFramework
             entity1.RelatedEntities.Add(entity3);
             context.SaveChanges();
 
-            context=new MyEntityContext(ConnectionString + storeName);
+            context = new MyEntityContext(ConnectionString + storeName);
             var baseEntities = context.BaseEntities.ToList();
             Assert.AreEqual(3, baseEntities.Count);
             var derivedEntities = context.DerivedEntities.ToList();
@@ -63,8 +63,8 @@ namespace BrightstarDB.Tests.EntityFramework
             entity1 = context.DerivedEntities.Where(x => x.BaseStringValue.Equals("Entity1")).FirstOrDefault();
             Assert.IsNotNull(entity1);
             Assert.AreEqual(2, entity1.RelatedEntities.Count);
-            Assert.IsTrue(entity1.RelatedEntities.Any(x=>x.BaseStringValue.Equals("Entity2")));
-            Assert.IsTrue(entity1.RelatedEntities.Any(x=>x.BaseStringValue.Equals("Entity3")));
+            Assert.IsTrue(entity1.RelatedEntities.Any(x => x.BaseStringValue.Equals("Entity2")));
+            Assert.IsTrue(entity1.RelatedEntities.Any(x => x.BaseStringValue.Equals("Entity3")));
 
         }
 
@@ -74,7 +74,7 @@ namespace BrightstarDB.Tests.EntityFramework
             var storeName = MakeStoreName("IdentifierPrefixOnBaseEntity");
             using (var context = new MyEntityContext(ConnectionString + storeName))
             {
-                var entity1 = new DerivedEntity {Id = "entity1"};
+                var entity1 = new DerivedEntity { Id = "entity1" };
                 context.DerivedEntities.Add(entity1);
                 entity1.BaseStringValue = "Entity1";
                 context.SaveChanges();
@@ -101,7 +101,7 @@ namespace BrightstarDB.Tests.EntityFramework
             var entity =
                 context.BaseEntities.Where(x => x.BaseStringValue.Equals("BecomeTest")).FirstOrDefault();
             var derived = (entity as BrightstarEntityObject).Become<IDerivedEntity>();
-            derived.DateTimeProperty = new DateTime(2011, 11,11);
+            derived.DateTimeProperty = new DateTime(2011, 11, 11);
             context.SaveChanges();
 
             context = new MyEntityContext(ConnectionString + storeName);

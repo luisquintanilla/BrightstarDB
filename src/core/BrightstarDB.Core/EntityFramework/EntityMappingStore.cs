@@ -61,8 +61,8 @@ namespace BrightstarDB.EntityFramework
             where I : class
             where T : I
         {
-            _implMappings[typeof (I)] = typeof (T);
-            _interfaceMappings[typeof (T)] = typeof (I);
+            _implMappings[typeof(I)] = typeof(T);
+            _interfaceMappings[typeof(T)] = typeof(I);
         }
 
         /*
@@ -129,7 +129,7 @@ namespace BrightstarDB.EntityFramework
         /// <param name="typeUri">The schema type URI</param>
         public void SetTypeMapping<T>(string typeUri) where T : class
         {
-            _typeMappings[typeof (T)] = typeUri;
+            _typeMappings[typeof(T)] = typeUri;
         }
 
         /// <summary>

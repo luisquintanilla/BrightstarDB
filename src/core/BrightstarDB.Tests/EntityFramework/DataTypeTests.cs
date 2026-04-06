@@ -57,7 +57,7 @@ namespace BrightstarDB.Tests.EntityFramework
             Assert.AreEqual(3, checkEntity.SomeInt);
             Assert.AreEqual("test entity", checkEntity.SomeString);
             Assert.IsTrue(checkEntity.SomeBool);
-            Assert.AreEqual(50L, checkEntity.SomeLong);          
+            Assert.AreEqual(50L, checkEntity.SomeLong);
         }
 
         [Test]
@@ -94,9 +94,9 @@ namespace BrightstarDB.Tests.EntityFramework
             var entity = _myEntityContext.TestEntities.Create();
 
             var now = DateTime.Now;
-            for(var i = 0; i<10;i++)
+            for (var i = 0; i < 10; i++)
             {
-                var date = now.AddDays(i);    
+                var date = now.AddDays(i);
                 entity.CollectionOfDateTimes.Add(date);
             }
             for (var i = 0; i < 10; i++)
@@ -122,7 +122,7 @@ namespace BrightstarDB.Tests.EntityFramework
             entity.CollectionOfBools.Add(false);
             for (var i = 0; i < 10; i++)
             {
-                var l = i*100;
+                var l = i * 100;
                 entity.CollectionOfLong.Add(l);
             }
             for (var i = 0; i < 10; i++)
@@ -173,7 +173,7 @@ namespace BrightstarDB.Tests.EntityFramework
                 Assert.AreEqual(s, lstStrings[i]);
             }
             Assert.AreEqual(2, lstBools.Count);
-            
+
         }
 
         [Test]
@@ -220,7 +220,7 @@ namespace BrightstarDB.Tests.EntityFramework
             Assert.IsNotNull(entity.AnotherChar);
             Assert.IsNull(entity.NullableChar);
             Assert.IsNull(entity.AnotherNullableChar);
-            
+
             Assert.AreEqual('C', entity.SomeChar);
             Assert.AreEqual('c', entity.AnotherChar);
 
@@ -244,7 +244,7 @@ namespace BrightstarDB.Tests.EntityFramework
             Assert.IsNotNull(entity);
             Assert.IsNotNull(entity.SomeSByte);
             Assert.IsNotNull(entity.AnotherSByte);
-            
+
             Assert.AreEqual(127, entity.SomeSByte);
             Assert.AreEqual(64, entity.AnotherSByte);
 
@@ -368,8 +368,8 @@ namespace BrightstarDB.Tests.EntityFramework
             Assert.IsNotNull(entity2);
             Assert.AreEqual(TestEnumeration.Second, entity1.SomeEnumeration);
             Assert.AreEqual(TestEnumeration.Third, entity1.SomeNullableEnumeration);
-            Assert.AreEqual(TestFlagsEnumeration.FlagB|TestFlagsEnumeration.FlagA, entity1.SomeFlagsEnumeration);
-            Assert.AreEqual(TestFlagsEnumeration.FlagC|TestFlagsEnumeration.FlagB, entity1.SomeNullableFlagsEnumeration);
+            Assert.AreEqual(TestFlagsEnumeration.FlagB | TestFlagsEnumeration.FlagA, entity1.SomeFlagsEnumeration);
+            Assert.AreEqual(TestFlagsEnumeration.FlagC | TestFlagsEnumeration.FlagB, entity1.SomeNullableFlagsEnumeration);
             Assert.AreEqual(DayOfWeek.Friday, entity1.SomeSystemEnumeration);
             Assert.AreEqual(DayOfWeek.Friday, entity1.SomeNullableSystemEnumeration);
 

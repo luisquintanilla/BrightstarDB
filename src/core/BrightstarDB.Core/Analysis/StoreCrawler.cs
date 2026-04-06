@@ -62,9 +62,9 @@ namespace BrightstarDB.Analysis
                     new BinaryReader(new FileStream(dataFile.FullName, FileMode.Open, FileAccess.Read,
                                                     FileShare.ReadWrite)))
             {
-                dataStream.BaseStream.Seek((long) offset, SeekOrigin.Begin);
+                dataStream.BaseStream.Seek((long)offset, SeekOrigin.Begin);
                 SerializationUtils.ReadVarint(dataStream);
-                var storeLocationSize = (int) SerializationUtils.ReadVarint(dataStream);
+                var storeLocationSize = (int)SerializationUtils.ReadVarint(dataStream);
                 var locationBytes = dataStream.ReadBytes(storeLocationSize);
                 storeLocation = Encoding.UTF8.GetString(locationBytes, 0, storeLocationSize);
                 nextObjectId = SerializationUtils.ReadVarint(dataStream);
@@ -135,7 +135,7 @@ namespace BrightstarDB.Analysis
                 a.OnNodeStart(node.ObjectId, currentDepth, node.Keys.Count, node.ChildNodes.Count);
             }
 
-            if (typeof (T) == typeof (ObjectRef))
+            if (typeof(T) == typeof(ObjectRef))
             {
                 foreach (var k in node.Keys)
                 {
@@ -171,7 +171,7 @@ namespace BrightstarDB.Analysis
             }
         }
 
-        private T LoadObject<T>(ulong objectId) where T:class,IPersistable
+        private T LoadObject<T>(ulong objectId) where T : class, IPersistable
         {
             if (_loadCount > MaxLoadCount)
             {

@@ -87,14 +87,14 @@ namespace BrightstarDB.Rdf
                 {
                     ParseLine(lineNumber, line);
                 }
-                    catch(TripleSinkException tse)
-                    {
-                        throw tse.InnerException;
-                    }
-                    catch(RdfParserException)
-                    {
-                        throw;
-                    }
+                catch (TripleSinkException tse)
+                {
+                    throw tse.InnerException;
+                }
+                catch (RdfParserException)
+                {
+                    throw;
+                }
                 catch (Exception ex)
                 {
                     throw new RdfParserException(lineNumber, "Error parsing NTriples stream", ex);

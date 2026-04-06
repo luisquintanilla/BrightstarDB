@@ -25,7 +25,7 @@ namespace BrightstarDB.EntityFramework.Query
         private readonly Dictionary<string, string> _variableValueMapping;
         private readonly List<SparqlOrdering> _ordering;
         private readonly List<Tuple<string, string>> _anonymousMembersMap;
-        private readonly List<Tuple<MemberInfo, string>>_membersMap;
+        private readonly List<Tuple<MemberInfo, string>> _membersMap;
         private readonly List<string> _groupByExpressions;
         private readonly List<string> _constructorArgs;
         private readonly Dictionary<string, string> _prefixes = new Dictionary<string, string>();
@@ -39,7 +39,7 @@ namespace BrightstarDB.EntityFramework.Query
         /// List of the graph URIs that form the query dataset, or null to query the default data set
         /// </summary>
         private readonly IList<string> _dataset;
- 
+
         public List<TripleInfo> AllTriples { get; private set; }
 
         public int Limit { get; set; }
@@ -51,14 +51,14 @@ namespace BrightstarDB.EntityFramework.Query
         {
             _context = context;
             _dataset = context.GetDataset();
-            _graphPatternBuilder =new StringBuilder();
+            _graphPatternBuilder = new StringBuilder();
             _querySourceMapping = new QuerySourceMapping();
             _variableValueMapping = new Dictionary<string, string>();
             _ordering = new List<SparqlOrdering>();
             _anonymousMembersMap = new List<Tuple<string, string>>();
             _membersMap = new List<Tuple<MemberInfo, string>>();
             _groupByExpressions = new List<string>();
-            _constructorArgs= new List<string>();
+            _constructorArgs = new List<string>();
             AllTriples = new List<TripleInfo>();
         }
 
@@ -161,22 +161,22 @@ namespace BrightstarDB.EntityFramework.Query
 #if PORTABLE
             foreach (var c in varName.ToCharArray())
 #else
-            foreach(var c in varName)
+            foreach (var c in varName)
 #endif
             {
-                if ( (c >= 0x41 && c <= 0x5A) ||
-                    (c>=0x61 && c<=0x7A) ||
-                    (c>=0x00C0&& c<=0x00D6) || 
-                    (c>=0x00D8 && c<=0x00F6) || 
-                    (c>=0x00F8 && c<=0x02FF) || 
-                    (c>=0x0370 && c<=0x037D) || 
-                    (c>=0x037F && c<=0x1FFF) || 
-                    (c>=0x200C && c<=0x200D) || 
-                    (c>=0x2070 && c<=0x218F) || 
-                    (c>=0x2C00 && c<=0x2FEF) || 
-                    (c>=0x3001 && c<=0xD7FF) || 
-                    (c>=0xF900 && c<=0xFDCF) || 
-                    (c>=0xFDF0 && c<=0xFFFD) )
+                if ((c >= 0x41 && c <= 0x5A) ||
+                    (c >= 0x61 && c <= 0x7A) ||
+                    (c >= 0x00C0 && c <= 0x00D6) ||
+                    (c >= 0x00D8 && c <= 0x00F6) ||
+                    (c >= 0x00F8 && c <= 0x02FF) ||
+                    (c >= 0x0370 && c <= 0x037D) ||
+                    (c >= 0x037F && c <= 0x1FFF) ||
+                    (c >= 0x200C && c <= 0x200D) ||
+                    (c >= 0x2070 && c <= 0x218F) ||
+                    (c >= 0x2C00 && c <= 0x2FEF) ||
+                    (c >= 0x3001 && c <= 0xD7FF) ||
+                    (c >= 0xF900 && c <= 0xFDCF) ||
+                    (c >= 0xFDF0 && c <= 0xFFFD))
                 {
                     sb.Append(c);
                 }
@@ -208,7 +208,7 @@ namespace BrightstarDB.EntityFramework.Query
                         _selectVars[0], i, IsDistinct ? "d" : "");
                 }
             }
-            queryStringBuilder.AppendFormat("?{0} <"+Constants.SelectVariablePredicateUri+"> \"{0}\" .",
+            queryStringBuilder.AppendFormat("?{0} <" + Constants.SelectVariablePredicateUri + "> \"{0}\" .",
                                             _selectVars[0]);
             queryStringBuilder.Append("}");
 
@@ -239,7 +239,7 @@ namespace BrightstarDB.EntityFramework.Query
             if (_prefixes.Count > 0)
             {
                 var prefixesBuilder = new StringBuilder();
-                foreach(var kvp in _prefixes)
+                foreach (var kvp in _prefixes)
                 {
                     prefixesBuilder.AppendFormat("PREFIX {0}: <{1}>\n", kvp.Value, kvp.Key);
                 }
@@ -248,15 +248,15 @@ namespace BrightstarDB.EntityFramework.Query
             return string.Empty;
         }
 
-        private string GetSparqlQuery(bool withDatasetDescription, bool projectSortVariables =false)
+        private string GetSparqlQuery(bool withDatasetDescription, bool projectSortVariables = false)
         {
             var queryStringBuilder = new StringBuilder();
             if (IsDistinct) queryStringBuilder.Append("DISTINCT ");
-            foreach(var sv in _selectVars)
+            foreach (var sv in _selectVars)
             {
                 queryStringBuilder.AppendFormat("?{0} ", sv);
             }
-            foreach(var ag in _aggregates)
+            foreach (var ag in _aggregates)
             {
                 queryStringBuilder.AppendFormat("({0} AS ?{1}) ", ag.Item2, ag.Item1);
             }
@@ -302,17 +302,17 @@ namespace BrightstarDB.EntityFramework.Query
             queryStringBuilder.Append("}");
             if (projectSortVariables && IsDistinct && IsOrdered)
             {
-                    // The ordering needs to be changed to use MIN and MAX expressions too
-                    for (int i = 0; i < _ordering.Count; i++)
-                    {
-                        _ordering[i] = new SparqlOrdering(String.Format("{0}(?{1}_sort{2})",
-                                                                        _ordering[i].OrderingDirection ==
-                                                                        OrderingDirection.Asc
-                                                                            ? "MAX"
-                                                                            : "MIN",
-                                                                        _selectVars[0], i),
-                                                          _ordering[i].OrderingDirection);
-                    }
+                // The ordering needs to be changed to use MIN and MAX expressions too
+                for (int i = 0; i < _ordering.Count; i++)
+                {
+                    _ordering[i] = new SparqlOrdering(String.Format("{0}(?{1}_sort{2})",
+                                                                    _ordering[i].OrderingDirection ==
+                                                                    OrderingDirection.Asc
+                                                                        ? "MAX"
+                                                                        : "MIN",
+                                                                    _selectVars[0], i),
+                                                      _ordering[i].OrderingDirection);
+                }
             }
             AppendModifiers(queryStringBuilder);
             var sparqlString = queryStringBuilder.ToString();
@@ -458,7 +458,7 @@ namespace BrightstarDB.EntityFramework.Query
 
         private string ReplaceFixedVariables(string query)
         {
-            foreach(var varName in _variableValueMapping.Keys)
+            foreach (var varName in _variableValueMapping.Keys)
             {
                 if (_selectVars.Contains(varName))
                 {

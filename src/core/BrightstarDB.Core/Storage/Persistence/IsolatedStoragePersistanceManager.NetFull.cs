@@ -78,7 +78,7 @@ namespace BrightstarDB.Storage.Persistence
         /// <returns></returns>
         public void DeleteDirectory(string dirName)
         {
-            foreach(var fileName in _isolatedStorage.GetFileNames(dirName + Path.DirectorySeparatorChar + "*"))
+            foreach (var fileName in _isolatedStorage.GetFileNames(dirName + Path.DirectorySeparatorChar + "*"))
             {
                 DeleteFile(Path.Combine(dirName, fileName));
             }
@@ -125,7 +125,7 @@ namespace BrightstarDB.Storage.Persistence
 
         public void RenameFile(string storeConsolidateFile, string storeDataFile)
         {
-           _isolatedStorage.MoveFile(storeConsolidateFile, storeDataFile);
+            _isolatedStorage.MoveFile(storeConsolidateFile, storeDataFile);
         }
 
         public void CopyFile(string sourceFilePath, string destinationFilePath, bool overwrite)
@@ -143,7 +143,7 @@ namespace BrightstarDB.Storage.Persistence
         /// <filterpriority>2</filterpriority>
         public void Dispose()
         {
-            if (_isolatedStorage !=null)
+            if (_isolatedStorage != null)
             {
                 _isolatedStorage.Dispose();
                 _isolatedStorage = null;

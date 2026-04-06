@@ -4,484 +4,162 @@
  Running BrightstarDB
 #######################
 
-BrightstarDB can be used as an embedded database or accessed via HTTP(S) as a RESTful 
-web service. The REST service can be hosted in a number of different ways or it can be
-run directly from the command-line.
-
-***********************************
- Namespace Reservation
-***********************************
-
-The BrightstarDB server requires permission from the Windows system to start listening
-for connections on an HTTP port. This permission must be granted to the user that 
-the service runs as. When the BrightstarDB server is run as a service, this will be the 
-service user. When the BrightstarDB server is run from a command line, it will be the
-user who starts the command line shell.
-
-To grant users the permission to listen for connections on a particular endpoint 
-you must run the ``http add urlacl`` command in command prompt with elevated 
-(Administrator) permissions.
-
-If you use the default port and path for the BrightstarDB service, the following
-command will grant all users the required permissions to start the service::
-
-    netsh http add urlacl url=http://+:8090/brightstar/ user=Everyone
-
-note:
-    The BrightstarDB installer will automatically make the required reservation
-    for running the BrightstarDB server as a Windows service using the default
-    port (8090) and path (/brightstar/)
-    
-note:
-    If you chose to host BrightstarDB in IIS or another web application host then
-    the URL reservation will not be required as IIS (or the other host application)
-    should manage this on your behalf.
+BrightstarDB can be used as an embedded database or accessed via HTTP(S) as a RESTful
+web service. The REST service is an ASP.NET Core application that can run as a
+standalone server, a Windows Service, behind IIS as a reverse proxy, or in a Docker container.
 
 *********************************************
  Running BrightstarDB as a Windows Service
 *********************************************
 
-The installer will create a windows service called "BrightstarDB". 
-This exposes a RESTful HTTP service endpoint that can be used to access the database. 
-The configuration for this service can be found in `BrightstarService.exe.config` in the 
-`[INSTALLDIR]\\Service` folder.
+The BrightstarDB ASP.NET Core server supports running as a Windows Service
+using ``Microsoft.Extensions.Hosting.WindowsServices``. To install as a service::
+
+  sc create BrightstarDB binPath="C:\path\to\BrightstarDB.Server.AspNetCore.exe"
+  sc start BrightstarDB
+
+The server reads configuration from ``appsettings.json`` in the application directory.
+See the `BrightstarDB Service Configuration`_ section below for details.
 
 *****************************************
  Running BrightstarDB as an Application
 *****************************************
 
-Running the service as an application rather than a Windows service can be done by running 
-the `BrightstarService.exe` located in the `[INSTALLDIR]\\Service` folder. The configuration 
-from the `BrightstarService.exe.config` file is used by the service when it starts up. However, 
-some properties can also be overridden using command line parameters passed to the service. 
-The format of the command-line is as follows::
+Run the server directly from the command line::
 
-  BrightstarService.exe [options]
+  dotnet run --project src\core\BrightstarDB.Server.AspNetCore
 
-Where ``options`` are:
+Or from a published build::
 
-    ``/c``, ``/ConnectionString``
-        Provides the connection string used by the service to access the BrightstarDB stores.
-        Typically this connection string should be an **embedded** connection string, but it 
-        is not a requirement. If this option is specified on the command-line it overrides
-        any setting contained in the application configuration file. If this option is not
-        specified on the command-line then a value MUST be provided in the the application
-        configuration file.
-        
-    ``/r``, ``/RootPath``
-        Specifies the full file path to the directory containing the `Views` and `assets` folder
-        for the service. The default path used is the path to the directory containing the
-        BrightstarService.exe file itself. This should only need to be overridden in development
-        environments where it can be used to serve views/assets directly from the source folders
-        rather than from the bin directory.
-        
-    ``/u``, ``/ServiceUri``
-        Specifies the base URI path that the service will listen on for connections. This 
-        parameter can be repeated multiple times to create a service that will listen on
-        multiple endpoints. The default value is "http://localhost:8090/brightstar/"
+  BrightstarDB.Server.AspNetCore.exe
+
+By default the server listens on ``http://localhost:5000``. Configure the
+URL with the ``--urls`` parameter or ``ASPNETCORE_URLS`` environment variable::
+
+  BrightstarDB.Server.AspNetCore.exe --urls "http://0.0.0.0:8090"
 
 ***********************************
- Running BrightstarDB In IIS
+ Running BrightstarDB Behind IIS
 ***********************************
 
-    BrightstarDB can be hosted as a .NET 4.0 web application in IIS. If you have installed
-    BrightstarDB from the installer, you will find a pre-built version of the web application
-    in the `INSTALLDIR\\webapp` directory.
-    
-    You will need to ensure that the application pool that the web application runs under
-    has the necessary privileges to access the directory where the BrightstarDB stores
-    are kept. It is strongly advised that this directory should be outside the directory
-    structure used for the IIS website itself.
-    
-    For a step-by-step guide please refer to :ref:`BrightstarDB_In_IIS`
-    
+BrightstarDB's ASP.NET Core server can run behind IIS as a reverse proxy
+using the ASP.NET Core Module. See the Microsoft documentation:
+https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/
+
+For most deployments, running as a standalone Kestrel server or Windows Service
+is recommended.
+
 ********************************
  Running BrightstarDB in Docker
 ********************************
 
-From the 1.8 release we now provide pre-built `Docker <http://www.docker.com>`_ images to run the BrightstarDB service. 
-Docker is an open platform for developers and sysadmins to build, ship and run distributed applications, whether on 
-laptops, data center VMs, or the cloud.
+Create a Dockerfile for the ASP.NET Core server::
 
-The BrightstarDB Docker images are built on the most recent Ubuntu LTS and the most recent Mono stable
-release. The Dockerfile and other configuration files can be found in `our Docker repository on GitHub <https://github.com/BrightstarDB/Docker>`_
-where you will also find important information about how to configure and run the Docker images.
+  FROM mcr.microsoft.com/dotnet/aspnet:10.0
+  WORKDIR /app
+  COPY publish/ .
+  EXPOSE 8090
+  ENTRYPOINT ["dotnet", "BrightstarDB.Server.AspNetCore.dll", "--urls", "http://0.0.0.0:8090"]
+
+Build and run::
+
+  dotnet publish src/core/BrightstarDB.Server.AspNetCore -c Release -o publish
+  docker build -t brightstardb .
+  docker run -p 8090:8090 -v brightstar-data:/data brightstardb
 
 ***********************************
- BrightstarDB Service Configuration 
+ BrightstarDB Service Configuration
 ***********************************
 
-The BrightstarDB server can also be configured from its application configuration file (or web.config
-when hosted in IIS). This is achieved through a custom configuration section which must be registered.
-This custom configuration section grants far more control over the configuration of the service
-than the command line parameters and is the recommended way of configuring the BrightstarDB service.
+The BrightstarDB server is configured via ``appsettings.json`` using the
+``BrightstarService`` section.
 
-The sample below shows a skeleton application configuration file with just the BrightstarDB configuration
-shown::
+Sample ``appsettings.json``::
 
-    <configuration>
-      <configSections>
-        <section name="brightstarService" type="BrightstarDB.Server.Modules.BrightstarServiceConfigurationSectionHandler, BrightstarDB.Server.Modules"/>
-      </configSections>
+  {
+    "BrightstarService": {
+      "ConnectionString": "type=embedded;StoresDirectory=/data/brightstar",
+      "Authentication": {
+        "BasicAuthRealm": "BrightstarDB",
+        "Credentials": [
+          {
+            "Username": "admin",
+            "Password": "your-password-here",
+            "Claims": ["admin"]
+          }
+        ]
+      },
+      "StorePermissions": {
+        "Authenticated": "All",
+        "Anonymous": "Read"
+      },
+      "SystemPermissions": {
+        "Authenticated": "All",
+        "Anonymous": "ListStores"
+      },
+      "Cors": {
+        "DisableCors": false,
+        "AllowOrigin": "*"
+      }
+    }
+  }
 
-      <brightstarService connectionString="type=embedded;StoresDirectory=c:\brightstar">
-        <storePermissions>
-          <passAll anonPermissions="All"/>
-        </storePermissions>
-        <systemPermissions>
-          <passAll anonPermissions="All"/>
-        </systemPermissions>
-		<cors disabled="false">
-			<allowOrigin>*</allowOrigin>
-		</cors>
-      </brightstarService>
-      
-    </configuration>
-    
-Note that the configuration section must first be registered in the `configSections` element so that the correct
-handler is invoked. The section itself consists of the following elements and attributes:
+Configuration Properties
+========================
 
-    `brightstarService`
-        This is the root element for the configuration. It supports a number of attributes (documented below)
-        and contains one or zero `storePermissions` elements and one or zero `systemPermissions` elements.
-        
-    `brightstarService/@connectionString`
-        This attribute specifies the connection string that the BrightstarDB service will use to connect
-        to the stores it serves. The attribute value must be a valid BrightstarDB connection string. 
-        Typically the connection type will be embedded, but this is not required. See the section
-        :ref:`Connection_Strings` for more information about the format of BrightstarDB connection
-        strings.
-        
-    `storePermissions`
-        This element is the root element for configuring the way that the BrightstarDB service manages
-        store access permissions. See :ref:`Configuring Store Permissions` for more details.
-        
-    `systemPermissions`
-        This element is the root element for configuring the way that the BrightstarDB service manages
-        system access permissions.
-		
-	`cors`
-		This is the root element for configuring the way that the BrighstarDB REST server handles
-		cross-origin resource sharing. See :ref:`Configuring_CORS` below.
-        
-.. _Configuring Store Permissions:
+``BrightstarService``
+  Root configuration section.
 
-Configuring Store Permissions
-=============================
+  ``ConnectionString`` : string
+    BrightstarDB connection string. Default uses an embedded store.
+    Example: ``"type=embedded;StoresDirectory=c:\\brightstar"``
 
-When a user attempts to read or write data in a BrightstarDB store, the Store Permissions for that user
-are checked to ensure that the user has the required privileges. Store Permissions for a user are 
-provided by a Store Permissions Provider, and a user may have different permissions for each store
-on the BrightstarDB server. For more information about Store Permissions and providers
-please refer to the :ref:`Store Permissions` section of the :ref:`BrightstarDB Security` documentation.
+``Authentication``
+  Controls HTTP Basic Authentication.
 
-The permissions that a user has are provided to the BrightstarDB service by one or more configured 
-*Store Permission Providers*. The following providers are available "out of the box":
+  ``BasicAuthRealm`` : string
+    The realm name returned in ``WWW-Authenticate`` headers. Default: ``"BrightstarDB"``
 
-    Fallback Provider
-        This provider grants all users (authenticated or anonymous) a specific set of permissions. It
-        is meant to be used in conjunction with a Combined Permissions Provider and some other 
-        providers. The configuration element for a Fallback Provider is::
-        
-            <fallback authenticated="[Flags]" anonymous="[Flags]"/>
+  ``Credentials`` : array of objects
+    Each entry defines a user with the following properties:
 
-        where ``[Flags]`` is one or more of the store permissions levels. Multiple values must be separated by the
-        comma (,) character (e.g. "Read,Export"). The ``anonymous`` attribute can be ommitted, in which
-        case anonymous users will be granted no store permissions.
-            
-    Combined Permissions Provider
-        This provider wraps two other providers and grants a user the combination of all permissions
-        granted by the two child providers. You can use this to combine a custom permissions provider
-        and a Fallback or Pass All provider to provide a backstop set of permissions when your
-        custom provider doesn't grant any at all. The configuration element for a Combined Permissions
-        Provider is::
-        
-            <combine>[child providers]</combine>
-        
-        where ``[child providers]`` is exactly two XML elements one for each of the child permission
-        providers.
-        
-    Static Provider
-        This provider uses a fixed configuration that maps users or claims to permissions.
-        The configuration element for a Static Permissions Provider is::
-        
-            <static>
-                <store name="{storeName}">
-                    <user name="{userName}" permissions="[Flags]" /> *
-                    <claim name="{claimName}" permissions="[Flags]" /> *
-                </store> *
-            </static>
-        
-        where ``storeName`` is the name of the store that the permissions are granted on,
-        ``userName`` and ``claimName`` are the names of a specific user or a claim that a
-        user holds respectively, and ``[Flags]`` is one or more store permission levels.
-        
-        Depending on the user validation you use, the claim names may be specific claims
-        about a user's identity (e.g. their email address) or about their group membership
-        (e.g. group names) or both.
-        
-        Any number of ``store`` elements may appear inside the ``static`` element, and
-        any number of ``user`` and ``claim`` elements may appear inside the ``store``
-        element (in any order).
-        
-        
-.. _Configuring System Permissions:
+    - ``Username`` : string — the login username
+    - ``Password`` : string — the login password
+    - ``Claims`` : array of strings — permission claims assigned to this user
 
-Configuring System Permissions
-==============================
+``StorePermissions``
+  Default permissions for store-level operations.
 
-System Permissions control the access of users to list, create and manage BrightstarDB stores. 
-There is one set of System Permissions for a user on the BrightstarDB server. For more information
-about System Permissions please refer to the :ref:`System Permissions` section of the 
-:ref:`BrightstarDB Security` documentation.
-        
-The permissions that a user has are provided to the BrightstarDB service by one or more configured 
-*System Permission Providers*. The following providers are available "out of the box":
+  ``Authenticated`` : string — permissions for authenticated users. Default: ``"None"``
 
-    Fallback Provider
-        This provider grants all users (authenticated or anonymous) a specific set of permissions. It
-        is meant to be used in conjunction with a Combined Permissions Provider and some other 
-        providers. The configuration element for a Fallback Provider is::
-        
-            <fallback authenticated="[Flags]" anonymous="[Flags]" />
-        
-        where ``[Flags]`` is one or more of the system permissions levels. Multiple values must be separated by the
-        comma (,) character (e.g. "ListStores,CreateStore"). The ``anonymous`` attribute may be omitted
-        in which case anonymous users will be granted no system permissions.
-        
-    Combined Permissions Provider
-        This provider wraps two other providers and grants a user the combination of all permissions
-        granted by the two child providers. You can use this to combine a custom permissions provider
-        and a Fallback or Pass All provider to provide a backstop set of permissions when your
-        custom provider doesn't grant any at all. The configuration element for a Combined Permissions
-        Provider is::
-        
-            <combine>[child providers]</combine>
-        
-        where ``[child providers]`` is exactly two XML elements one for each of the child permission
-        providers.
-        
-    Static Provider
-        This provider uses a fixed configuration that maps users or claims to permissions.
-        The configuration element for a Static Permissions Provider is::
-        
-            <static>
-                <user name="{userName}" permissions="[Flags]" /> *
-                <claim name="{claimName}" permissions="[Flags]" /> *
-            </static>
-        
-        where ``userName`` and ``claimName`` are the names of a specific user or a claim that a
-        user holds respectively, and ``[Flags]`` is one or more system permission levels.
-        
-        Depending on the user validation you use, the claim names may be specific claims
-        about a user's identity (e.g. their email address) or about their group membership
-        (e.g. group names) or both.
-        
-        Any number of ``user`` and ``claim`` elements may appear inside the ``static``
-        element (in any order).
-        
-.. _Configuration_Authentication:
+  ``Anonymous`` : string — permissions for unauthenticated users. Default: ``"None"``
 
-Configuring Authentication
-==========================
+  Valid values: ``None``, ``Read``, ``Export``, ``ViewHistory``,
+  ``SparqlUpdate``, ``TransactionUpdate``, ``Admin``, ``All``
 
-Authentication is the process by which the server determines a user identity for an incoming
-request. BrightstarDB has been developed to give as much flexibility as possible over how
-the server authenticates a user, without (we hope!) making it to complicated to configure.
+``SystemPermissions``
+  Default permissions for system-level operations.
 
-Authentication is a service that is implemented by an Authentication Provider. You can attach
-multiple Authentication Providers to the BrightstarDB server and each one will attempt to 
-determine the user identity from an incoming request. If none of the attached Authentication
-Providers can determine the user identity, then the request is processed as if the user
-were an anonymous user.
+  ``Authenticated`` : string — permissions for authenticated users. Default: ``"None"``
 
-The list of Authentication Providers for the server are configured by adding an ``authenticationProviders``
-element inside the ``brightstarService`` element of the configuration file. The ``authenticationProviders``
-element has the following content::
+  ``Anonymous`` : string — permissions for unauthenticated users. Default: ``"None"``
 
-    <authenticationProviders>
-        <add type="{Provider Type Reference}"/> *
-    </authenticationProviders>
+  Valid values: ``None``, ``ListStores``, ``CreateStore``, ``Admin``, ``All``
 
-where ``Provider Type Reference`` is the full class and assembly reference for the authentication provider
-class to be used. An Authentication Provider class must implement the ``BrightstarDB.Server.Modules.Authentication.IAuthenticationProvider``
-interface and it must also have a default no-args constructor. The ``add`` element used to add the provider
-is passed to the provider instance after it is constructed so depending on the provider implementation
-you may be allowed/required to add more configuration elements inside the ``add`` element. Check the 
-documentation for the individual provider types below.
+``Cors``
+  Cross-Origin Resource Sharing configuration.
 
-BrightstarDB provides the following implementations "out of the box":
+  ``DisableCors`` : bool — set to ``true`` to disable CORS entirely. Default: ``false``
 
-    NullAuthenticationProvider
-        Type Reference: ``BrightstarDB.Server.Modules.Authentication.NullAuthenticationProvider, BrightstarDB.Server.Modules``
-        
-        This provider does no authentication at all, so it is probably of very little interest!
-        
-    BasicAuthenticationProvider
-        Type Reference: ``BrightstarDB.Server.Modules.Authentication.BasicAuthenticationProvider, BrightstarDB.Server.Modules``
-        
-        This provider authenticates a user by their credentials being passed using HTTP Basic Authentication. It uses NancyFX's
-        Basic Authentication Module, which accepts a custom validator class which implements the logic that takes the user name
-        and password provided and determines the user identity. This requires some additional configuration, so the 
-        configuration for this provider follows this pattern::
-        
-            <add type="BrightstarDB.Server.Modules.Authentication.BasicAuthenticationProvider,
-                       BrightstarDB.Server.Modules">
-                <validator type="{Validator Type Reference}"/>
-                <realm>{Authentication Realm}</realm> ?
-            </add>
-        
-        Where ``Validator Type Reference`` is the full class and assembly reference for the validator class. A validator
-        must implement the ``Nancy.Authentication.Basic.IUserValidator`` interface, which has a single method
-        called Validate that receives the user name and password that the user entered and returns an IUserIdentity
-        instance (or null if the username/password pair was not valid).
-        
-BrightstarDB provides the following "out of the box" validators:
+  ``AllowOrigin`` : string — single allowed origin. Default: ``"*"``
 
-    MembershipValidator
-        Type Reference: ``BrightstarDB.Server.AspNet.Authentication, BrightstarDB.Server.AspNet``
-        
-        This provider uses the ASP.NET Membership and Roles framework to validate the user identity.
-        To use this provider you must also configure at least a Membership Provider for the server
-        and optionally a Role Provider. The validator will create a user identity where the validated
-        user name from the request is mapped to the user name of the generated user identity, and the
-        roles that the user is in are mapped to claims on the generated user identity.
-        
-An example ASP.NET-based BrightstarDB service is available in the source code for you to see how
-all these pieces hang together (src\\core\\BrightstarDB.Server.AspNet.Secured).
+  ``AllowedOrigins`` : array of strings — multiple specific allowed origins
 
-.. note::
-    Please note that at present there are no validator implementations available for BrightstarDB
-    running as a Windows Service. The Membership and Role providers bring in a dependency on 
-    ASP.NET that is not suitable for a Windows Service. A future release will address this 
-    deficit, but for now if you want user authentication you will have to run the ASP.NET  
-    implementation of the BrightstarDB server.
+  ``AllowedHeaders`` : array of strings — allowed request headers
 
-.. _Configuring_CORS:
+  ``AllowedMethods`` : array of strings — allowed HTTP methods
 
-Configuring CORS
-================
-
-Cross-Origin Resource Sharing (CORS) is the mechanism by which scripts in one domain can access services on another domain.
-This allows a client-side web application such as a JS script that is served up from one domain
-to make a request to a BrighstarDB server running on a different domain. By default a browser
-will disallow this behaviour unless the server providing the resource enables CORS. 
-
-BrightstarDB defaults to enabling cross-origin requests from any domain. This is equivalent
-to setting the CORS "Access-Control-Allow-Origin" header to "*".
-
-To restrict CORS to a specific domain, add the following snippet inside the ``brightstarService``
-configuration section of the server's ``app.config`` (or ``web.config``) file::
-
-	<cors>
-		<allowOrigin>http://somedomain.com</allowOrigin>
-	</cors>
-    
-To completely disable CORS, add the ``disabled`` attribute to the ``cors`` element and set its value to ``true``::
-
-	<cors disabled="true"/>
-	
-.. _Additional_Configuration_Options:
-
-Additional Configuration Options
-================================
-
-A number of other aspects of BrightstarDB service operations can be configured by adding values to the
-``appSettings`` section of the application configuration file. These are:        
-
-  - ``BrightstarDB.LogLevel`` - configures the level of detail that is logged by the BrightstarDB application. The valid options are ERROR, INFO, WARN, DEBUG, and ALL.  For more information about logging and configuring where logs are written please refer to the section :ref:`Logging <Logging>`. For Windows Phone 7.1 this setting is fixed as ERROR and cannot be overridden.
-
-  - ``BrightstarDB.TxnFlushTripleCount`` - specifies a batch size for importing large sets of triples. At the end of each batch BrightstarDB will perform housekeeping tasks to try to ensure a lower memory footprint. The default value is 10,000 on .NET 4.0. For applications that run on larger, more capable hardware (with available memory of 4GB or more) the value can usually be increased to 50,000 or even 100,000 - but it is worth testing the configured value before committing to it in deployment. For Windows Phone 7.1 this value is fixed as 1,000 and cannot be overridden.
-
-  - ``BrightstarDB.PageCacheSize`` - specifies the amount of memory in MB to be used by the BrightstarDB store page cache. This setting applies only to applications that open a BrightstarDB store as the cache is used to cache pages of data from the data.bs and resources.bs data files. The default value is 2048 on .NET 4.0 and 4 on Windows Phone 7.1. Note that this memory is not all allocated on startup so actual memory usage by the application may initially be lower than this value.
-
-  - ``BrightstarDB.ResourceCacheLimit`` - specifies the number of resource entries to keep cached for each open store. Default values are 1,000,000 on .NET 4.0 and 10,000 on Windows Phone.
-  
-  - ``BrightstarDB.EnableQueryCache`` - specifies whether or not the application should cache the results of SPARQL queries. Allowed values are "true" or "false" and the setting defaults to "true". Query caching is only available on .NET 4.0 so this setting has no effect on Windows Phone 7.1
-
-  - ``BrightstarDB.QueryCacheDirectory`` - specifies the folder location where cached results are stored.
-
-  - ``BrightstarDB.QueryCacheMemory`` - specifies the amount of memory in MB to be used by the SPARQL query cache. The default value is 256.
-
-  - ``BrightstarDB.QueryCacheDisk`` - specifies the amount of disk space (in MB) to be used by the SPARQL query cache. The default value is 2048. The disk space used will be in a subdirectory under the location specified by the BrightstarDB.StoreLocation configuration property.
-  
-  - ``BrightstarDB.QueryExecutionTimeout`` - specifies the amount of time (in milliseconds) that a SPARQL query is allowed to run for - queries that exceed this threshold will be aborted. This setting applies only to embedded stores - when connecting to a server, the query timeout is determined by the server configuration.
-
-  - ``BrightstarDB.PersistenceType`` - specifies the default type of persistence used for the main BrighstarDB index files. Allowed values are "appendonly" or "rewrite" (values are case-insensitive). For more information about the store persistence types please refer to the section :ref:`Store Persistence Types <Store_Persistence_Types>`.
-
-  - ``BrightstarDB.StatsUpdate.Timespan`` - specifies the minimum number of seconds that must pass between automatic update of store statistics.
-  
-  - ``BrightstarDB.StatsUpdate.TransactionCount`` - specifies the minimum number of transactions that must occur between automatic update of store statistics.
-
-  - ``BrightstarDB.UpdateExecutionTimeout`` - specifies the amount of time (in milliseconds) that a SPARQL update is allowed to run for - updates that exceed this threshold will be aborted. This setting applies only to embedded stores - when connecting to a server, the query timeout is determined by the server configuration.
-
-Example Server Configuration
-============================
-
-The sample below shows all the BrightstarDB options with usage comments. ::
-
-  <?xml version="1.0"?>
-  <configuration>
-    <configSections>
-      <!-- This configuration section is required to configure server security -->
-      <section name="brightstarService" type="BrightstarDB.Server.Modules.BrightstarServiceConfigurationSectionHandler, BrightstarDB.Server.Modules" />
-      <!-- This configuration section is required only for advanced configuration options 
-           such as page-cache warmup -->
-      <section name="brightstar" type="BrightstarDB.Config.BrightstarConfigurationSectionHandler, BrightstarDB" />
-    </configSections>
-
-    <appSettings>
-
-      <!-- The logging level for the server. -->
-      <add key="BrightstarDB.LogLevel" value="ALL" />
-
-      <!-- Indicates the number of triples in a transaction to process before doing a partial commit. 
-           Larger numbers require more machine memory but result in faster transaction processing. -->
-      <add key="BrightstarDB.TxnFlushTripleCount" value="100000" />
-
-      <!-- Specifies the maximum amount of memory (in MB) to use for page caching. -->
-      <add key="BrightstarDB.PageCacheSize" value="2048" />
-
-      <!-- Enable (true) or disable (false) the caching of SPARQL query results -->
-      <add key-"BrightstarDB.EnableQueryCache" value="true" />
-      
-      <!-- The amount of memory to use for the SPARQL query cache -->
-      <add key="BrightstarDB.QueryCacheMemory" value="512" />
-
-      <!-- The amount of disk space (in MB) to use for the SPARQL query cache. This only applies to server / embedded applications -->
-      <add key="BrightstarDB.QueryCacheDisk" value="2048" />
-
-      <!-- The default store index persistence type -->
-      <add key="BrightstarDB.PersistenceType" value="AppendOnly" />
-
-    </appSettings>
-   
-    <!-- Core BrightstarDB service configuration -->
-    <brightstarService connectionString="type=embedded;StoresDirectory=c:\brightstar">
-
-      <!-- Store Permissions Provider. -->
-      <storePermissions>
-        <!-- WARNING: This configuration Grants full access to all users -->
-        <passAll anonPermissions="All"/>
-      </storePermissions>
-
-      <!-- System Permissions Provider -->
-      <systemPermissions>
-        <!-- WARNING: This configuration Grants full access to all users -->
-        <passAll anonPermissions="All"/>
-      </systemPermissions>
-
-    </brightstarService>
-    
-    <brightstar>
-    
-      <!-- Enable page-cache warmup -->
-      <preloadPages enabled="true" />
-    
-    </brightstar>
-    
-  </configuration>
-
+  ``AllowCredentials`` : bool — whether to allow credentials in CORS requests
 
 .. _Caching:
 

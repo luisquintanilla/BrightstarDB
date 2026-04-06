@@ -26,6 +26,6 @@ namespace BrightstarDB.Client
         /// <summary>
         /// Gets a dictionary mapping predicate URI to the number of triples in the store using that predicate.
         /// </summary>
-        IDictionary<string, ulong> PredicateTripleCounts { get; } 
+        IDictionary<string, ulong> PredicateTripleCounts { get; }
     }
 }

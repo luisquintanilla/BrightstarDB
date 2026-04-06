@@ -8,7 +8,7 @@ namespace BrightstarDB.Storage.BTreeStore
     {
         void StoreObjects(IEnumerable<IPersistable> objects, ObjectLocationManager objectLocationManager, string storeLocation);
 
-        TObjType ReadObject<TObjType>(Stream dataStream, ulong offset) where TObjType : class, IStorable;        
+        TObjType ReadObject<TObjType>(Stream dataStream, ulong offset) where TObjType : class, IStorable;
         TObjType ReadObject<TObjType>(string fileName, ulong offset) where TObjType : class, IStorable;
         // TObjType ReadObject<TObjType>(Store store, string fileName, ulong offset) where TObjType : class, IPersistable;
 

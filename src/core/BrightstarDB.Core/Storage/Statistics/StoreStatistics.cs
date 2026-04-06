@@ -8,7 +8,7 @@ namespace BrightstarDB.Storage.Statistics
         public ulong CommitNumber { get; set; }
         public DateTime CommitTime { get; set; }
         public ulong TripleCount { get; set; }
-        public Dictionary<string, ulong> PredicateTripleCounts { get; private set; } 
+        public Dictionary<string, ulong> PredicateTripleCounts { get; private set; }
 
         public StoreStatistics(ulong commitNumber, DateTime commitTimestamp, ulong totalTripleCount,
                                Dictionary<string, ulong> predicateTripleCounts)

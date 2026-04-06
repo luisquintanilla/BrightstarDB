@@ -53,11 +53,11 @@ namespace BrightstarDB.Storage
             try
             {
                 var record = new byte[RecordSize];
-                var commitPointRecord = new byte[RecordSize/2];
+                var commitPointRecord = new byte[RecordSize / 2];
                 stream.Read(record, 0, RecordSize);
                 if (!ValidateCommitPointRecord(record, 0, commitPointRecord))
                 {
-                    if (!ValidateCommitPointRecord(record, RecordSize/2, commitPointRecord))
+                    if (!ValidateCommitPointRecord(record, RecordSize / 2, commitPointRecord))
                     {
                         Logging.LogError(BrightstarEventId.CommitPointReadError,
                                          "Invalid commit point. Hashcode validation failed");
@@ -126,13 +126,13 @@ namespace BrightstarDB.Storage
 
         private bool ValidateCommitPointRecord(byte[] rawData, int offset, byte[] validatedRecord)
         {
-            var dataLength = (RecordSize/2) - 16;
+            var dataLength = (RecordSize / 2) - 16;
             byte[] dataToValidate = new byte[dataLength];
             Array.Copy(rawData, offset, dataToValidate, 0, dataLength);
             var hashAlgorithm = MD5.Create();
             var hash = hashAlgorithm.ComputeHash(dataToValidate);
             var recordedHash = new byte[16];
-            Array.Copy(rawData, offset+dataLength, recordedHash, 0, 16);
+            Array.Copy(rawData, offset + dataLength, recordedHash, 0, 16);
             if (hash.Compare(recordedHash) == 0)
             {
                 dataToValidate.CopyTo(validatedRecord, 0);

@@ -20,7 +20,7 @@ namespace BrightstarDB.InternalTests
             var pm = new FilePersistenceManager();
             var dirName = "TestCreateNewMaster1";
             EnsureEmptyDirectory(pm, dirName);
-            var storeConfig = new StoreConfiguration {PersistenceType = PersistenceType.AppendOnly};
+            var storeConfig = new StoreConfiguration { PersistenceType = PersistenceType.AppendOnly };
             var storeSetId = Guid.NewGuid();
             var mf = MasterFile.Create(pm, dirName, storeConfig, storeSetId);
             var storeId = mf.StoreId;
@@ -53,7 +53,7 @@ namespace BrightstarDB.InternalTests
             const string dirName = "TestAppendCommitPoint";
             EnsureEmptyDirectory(pm, dirName);
 
-            var storeConfig = new StoreConfiguration {PersistenceType = PersistenceType.AppendOnly};
+            var storeConfig = new StoreConfiguration { PersistenceType = PersistenceType.AppendOnly };
             var storeSetId = Guid.NewGuid();
             var mf = MasterFile.Create(pm, dirName, storeConfig, storeSetId);
             DateTime commit1Time = DateTime.UtcNow;
@@ -123,7 +123,7 @@ namespace BrightstarDB.InternalTests
             Assert.AreEqual(commit2JobId, lastCommit.JobId);
             Assert.AreEqual(commit2Time.Ticks, lastCommit.CommitTime.Ticks);
 
-            using(var fs = pm.GetOutputStream(Path.Combine(dirName, MasterFile.MasterFileName), FileMode.Open))
+            using (var fs = pm.GetOutputStream(Path.Combine(dirName, MasterFile.MasterFileName), FileMode.Open))
             {
                 fs.Seek(-120, SeekOrigin.End);
                 fs.WriteByte(255);

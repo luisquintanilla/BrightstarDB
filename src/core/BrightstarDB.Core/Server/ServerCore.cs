@@ -119,7 +119,7 @@ namespace BrightstarDB.Server
             RemoveStoreWorker(storeName);
             storeWorker.Shutdown(false, () => _storeManager.DeleteStore(Path.Combine(_baseLocation, storeName)));
 
-            if (waitForCompletion) 
+            if (waitForCompletion)
             {
                 while (DoesStoreExist(storeName))
                 {
@@ -154,7 +154,7 @@ namespace BrightstarDB.Server
                     throw new NoSuchStoreException(storeName);
                 }
                 // create store manager
-                var storeWorker = new StoreWorker(_baseLocation , storeName);
+                var storeWorker = new StoreWorker(_baseLocation, storeName);
                 storeWorker.JobCompleted += HandleStoreWorkerJobCompleted;
                 _stores.Add(_baseLocation + "\\" + storeName, storeWorker);
                 storeWorker.Start();
@@ -183,10 +183,10 @@ namespace BrightstarDB.Server
             {
                 throw new BrightstarStoreNotModifiedException();
             }
-            var g = defaultGraphUris == null ? null : defaultGraphUris.Where(x=>!string.IsNullOrEmpty(x)).ToArray();
+            var g = defaultGraphUris == null ? null : defaultGraphUris.Where(x => !string.IsNullOrEmpty(x)).ToArray();
             if (g != null && g.Length == 0) g = null;
             var query = ParseSparql(queryExpression);
-            var targetFormat = QueryReturnsGraph(query) ? (ISerializationFormat) graphFormat : sparqlResultFormat;
+            var targetFormat = QueryReturnsGraph(query) ? (ISerializationFormat)graphFormat : sparqlResultFormat;
 
             var cacheKey = MakeQueryCacheKey(storeName, commitPoint.CommitTime.Ticks, queryExpression, g, targetFormat);
             var cachedResult = GetCachedResult(cacheKey);
@@ -249,10 +249,10 @@ namespace BrightstarDB.Server
 
         #region Query Caching
 
-        
+
         private string MakeQueryCacheKey(string storeName, long commitTime, string query, string[] defaultGraphUris, ISerializationFormat targetFormat)
         {
-            var graphHashCode = defaultGraphUris == null ? 0 : String.Join(",", defaultGraphUris.OrderBy(s=>s)).GetHashCode();
+            var graphHashCode = defaultGraphUris == null ? 0 : String.Join(",", defaultGraphUris.OrderBy(s => s)).GetHashCode();
             return storeName + "_" + commitTime + "_" + query.GetHashCode() + "_" + graphHashCode + "_" + targetFormat;
         }
 
@@ -306,7 +306,7 @@ namespace BrightstarDB.Server
         public IEnumerable<Triple> GetResourceStatements(string storeId, string resourceUri)
         {
             var storeWorker = GetStoreWorker(storeId);
-            return storeWorker.GetResourceStatements(resourceUri);                        
+            return storeWorker.GetResourceStatements(resourceUri);
         }
 
         public IEnumerable<CommitPoint> GetCommitPoints(string storeId)
@@ -347,9 +347,9 @@ namespace BrightstarDB.Server
         {
             var transactionLog = _storeManager.GetTransactionLog(Path.Combine(_baseLocation, storeId));
             return transactionLog.GetTransactionList(maxCount, ts);
-        } 
+        }
 
-        public Guid ReExecuteTransaction(string storeId, ulong dataStartPosition, TransactionType transactionType, string jobLabel=null)
+        public Guid ReExecuteTransaction(string storeId, ulong dataStartPosition, TransactionType transactionType, string jobLabel = null)
         {
             var storeWorker = GetStoreWorker(storeId);
             var transactionLog = _storeManager.GetTransactionLog(_baseLocation + "\\" + storeId);
@@ -363,7 +363,7 @@ namespace BrightstarDB.Server
                     storeWorker.QueueJob(importJob);
                     break;
                 case TransactionType.UpdateTransaction:
-                    var updateJob = new UpdateTransaction(jobId,jobLabel, storeWorker);
+                    var updateJob = new UpdateTransaction(jobId, jobLabel, storeWorker);
                     updateJob.ReadTransactionDataFromStream(transactionLog.GetTransactionData(dataStartPosition));
                     storeWorker.QueueJob(updateJob);
                     break;
@@ -480,7 +480,7 @@ namespace BrightstarDB.Server
             foreach (var warmupInfo in warmupInfos.OrderBy(x => x.CacheRatio).ThenBy(x => x.DataSize))
             {
                 var storeWorker = GetStoreWorker(warmupInfo.StoreName);
-                storeWorker.WarmupStore(warmupInfo.CacheRatio/totalRatio);
+                storeWorker.WarmupStore(warmupInfo.CacheRatio / totalRatio);
                 totalRatio -= warmupInfo.CacheRatio;
                 if (totalRatio <= 0) break;
             }
@@ -538,7 +538,7 @@ namespace BrightstarDB.Server
                 var other = obj as WarmupInfo;
                 if (other == null) return 1;
                 int result = this.CacheRatio.CompareTo(other.CacheRatio);
-                if (result == 0) result= this.DataSize.CompareTo(other.DataSize);
+                if (result == 0) result = this.DataSize.CompareTo(other.DataSize);
                 return result;
             }
         }

@@ -22,6 +22,8 @@ namespace BrightstarDB.Query.Processor
 {
     class VariableEqualsOptimizer : IAlgebraOptimiser
     {
+        public bool UnsafeOptimisation { get; set; }
+
         public ISparqlAlgebra Optimise(ISparqlAlgebra algebra)
         {
             try
@@ -47,7 +49,7 @@ namespace BrightstarDB.Query.Processor
                 {
                     return unaryOperator.Transform(this);
                 }
-                
+
                 return algebra;
             }
             catch
@@ -86,7 +88,7 @@ namespace BrightstarDB.Query.Processor
             string var;
             INode term;
             bool equals;
-            
+
             // Currently only handle the simple filter cases of a single identity expression
             // or an AND of expressions
             if (IsIdentityExpression(filterExpression, out var, out term, out equals))
@@ -102,11 +104,12 @@ namespace BrightstarDB.Query.Processor
                 {
                     if (IsIdentityExpression(arg, out var, out term, out equals) && CanOptimize(term))
                     {
-                            replacementTerms.Add(var, term);
+                        replacementTerms.Add(var, term);
                     }
                     else
                     {
-                        foreach (var variable in arg.Variables) {
+                        foreach (var variable in arg.Variables)
+                        {
                             // Cannot guarantee that the argument doesn't imply some other possible binding for the variables
                             replacementTerms.Remove(variable);
                         }
@@ -156,7 +159,7 @@ namespace BrightstarDB.Query.Processor
         {
             var vnode = term.AsValuedNode();
             return (term.NodeType == NodeType.Uri ||
-                    vnode.EffectiveType.Equals(RdfDatatypes.PlainLiteral) || 
+                    vnode.EffectiveType.Equals(RdfDatatypes.PlainLiteral) ||
                     vnode.EffectiveType.Equals(String.Empty) ||
                     vnode.EffectiveType.Equals(RdfDatatypes.String));
         }
@@ -179,21 +182,21 @@ namespace BrightstarDB.Query.Processor
                             if (tp is FilterPattern) continue;
                             if (tp is TriplePattern)
                             {
-                                var triplePattern = (TriplePattern) tp;
+                                var triplePattern = (TriplePattern)tp;
                                 if (triplePattern.Variables.Contains(var))
                                 {
                                     PatternItem subjPattern = triplePattern.Subject,
                                         predPattern = triplePattern.Predicate,
                                         objPattern = triplePattern.Object;
-                                    if (var.Equals(triplePattern.Subject.VariableName))
+                                    if (var.Equals(triplePattern.Subject.Variables.FirstOrDefault()))
                                     {
                                         subjPattern = new NodeMatchPattern(term);
                                     }
-                                    if (var.Equals(triplePattern.Predicate.VariableName))
+                                    if (var.Equals(triplePattern.Predicate.Variables.FirstOrDefault()))
                                     {
                                         predPattern = new NodeMatchPattern(term);
                                     }
-                                    if (var.Equals(triplePattern.Object.VariableName))
+                                    if (var.Equals(triplePattern.Object.Variables.FirstOrDefault()))
                                     {
                                         objPattern = new NodeMatchPattern(term);
                                     }
@@ -258,7 +261,7 @@ namespace BrightstarDB.Query.Processor
                 if (rhs is ConstantTerm)
                 {
                     var = lhs.Variables.First();
-                    term = rhs.Evaluate(null, 0);
+                    term = ((ConstantTerm)rhs).Node;
                     if (term.NodeType == NodeType.Uri || term.NodeType == NodeType.Literal)
                     {
                         return true;
@@ -272,7 +275,7 @@ namespace BrightstarDB.Query.Processor
                 if (rhs is VariableTerm)
                 {
                     var = rhs.Variables.First();
-                    term = lhs.Evaluate(null, 0);
+                    term = ((ConstantTerm)lhs).Node;
                     if (term.NodeType == NodeType.Uri || term.NodeType == NodeType.Literal)
                     {
                         return true;
@@ -292,15 +295,15 @@ namespace BrightstarDB.Query.Processor
         public bool IsApplicable(SparqlUpdateCommandSet cmds)
         {
             return true;
-        }       
+        }
     }
 
 
     static class ValueNodeHelper
-{
+    {
         public static bool IsPlainLiteral(this IValuedNode valuedNode)
         {
             return valuedNode.EffectiveType.Equals(RdfDatatypes.PlainLiteral);
         }
-}
+    }
 }

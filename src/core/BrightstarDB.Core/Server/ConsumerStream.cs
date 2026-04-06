@@ -31,7 +31,7 @@ namespace BrightstarDB.Server
         }
 #endif
 
-#region Overrides of Stream
+        #region Overrides of Stream
 
         /// <summary>
         /// When overridden in a derived class, clears all buffers for this stream and causes any buffered data to be written to the underlying device.
@@ -144,7 +144,7 @@ namespace BrightstarDB.Server
             set { throw new NotSupportedException(); }
         }
 
-#endregion
+        #endregion
     }
 }
 #endif

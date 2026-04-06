@@ -1,6 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
-using System.Linq;
 
 namespace BrightstarDB.Storage
 {
@@ -8,15 +8,15 @@ namespace BrightstarDB.Storage
     {
         public static int WriteString(BinaryWriter dataStream, string data)
         {
-            var bytes = Encoding.UTF8.GetBytes(data);                
-            var count = WriteVarint(dataStream, (ulong)bytes.Count());
+            var bytes = Encoding.UTF8.GetBytes(data);
+            var count = WriteVarint(dataStream, (ulong)bytes.Length);
             dataStream.Write(bytes);
             return count;
         }
 
         public static string ReadString(BinaryReader dataStream)
         {
-            var byteCount = (int) ReadVarint(dataStream);
+            var byteCount = (int)ReadVarint(dataStream);
             return Encoding.UTF8.GetString(dataStream.ReadBytes(byteCount), 0, byteCount);
         }
 
@@ -25,19 +25,27 @@ namespace BrightstarDB.Storage
         /// </summary>
         /// <param name="dataStream">Stream to write to</param>
         /// <param name="value">value to serialize</param>
-        /// <returns>Number of </returns>
+        /// <returns>Number of bytes written</returns>
         public static int WriteVarint(BinaryWriter dataStream, ulong value)
         {
             var count = 0;
+#if NET10_0_OR_GREATER
+            Span<byte> buffer = stackalloc byte[10];
+#else
             var buffer = new byte[10];
+#endif
             do
             {
-                buffer[count] = (byte) ((value & 0x7F) | 0x80);
+                buffer[count] = (byte)((value & 0x7F) | 0x80);
                 count++;
             } while ((value >>= 7) != 0);
 
-            buffer[count - 1] &= 0x7F; 
+            buffer[count - 1] &= 0x7F;
+#if NET10_0_OR_GREATER
+            dataStream.Write(buffer[..count]);
+#else
             dataStream.Write(buffer, 0, count);
+#endif
 
             return count;
         }

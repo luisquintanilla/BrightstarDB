@@ -41,7 +41,7 @@ namespace BrightstarDB.EntityFramework
         /// </summary>
         /// <remarks>NULL if the identifier is not generated from entity property values</remarks>
         public PropertyInfo[] KeyProperties { get; private set; }
-            
+
         /// <summary>
         /// The separator to insert between values when multiple properties
         /// are used to generate the key

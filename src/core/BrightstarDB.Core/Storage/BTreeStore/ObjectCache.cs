@@ -34,7 +34,8 @@ namespace BrightstarDB.Storage.BTreeStore
             try
             {
                 _lowPriorityItems.Add(p);
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Logging.LogWarning(BrightstarEventId.CachingError, "Encountered an error when adding object {0} to cache. Cause: {1}",
                     p.ObjectId, ex);

@@ -186,7 +186,7 @@ namespace BrightstarDB.Tests.EntityFramework
             using (var context1 = NewContext())
             {
                 var person1 = context1.FoafPersons.Create();
-                person1.MboxSums = new List<string> {"sum1", "sum2"};
+                person1.MboxSums = new List<string> { "sum1", "sum2" };
                 context1.SaveChanges();
 
                 using (var context2 = NewContext())
@@ -227,7 +227,7 @@ namespace BrightstarDB.Tests.EntityFramework
             using (var context1 = NewContext())
             {
                 var person1 = context1.FoafPersons.Create();
-                person1.MboxSums = new List<string> {"sum1", "sum2"};
+                person1.MboxSums = new List<string> { "sum1", "sum2" };
                 context1.SaveChanges();
 
                 using (var context2 = NewContext())
@@ -276,7 +276,7 @@ namespace BrightstarDB.Tests.EntityFramework
                 programming1.Name = "Programming";
                 var webDesign1 = context1.Skills.Create();
                 webDesign1.Name = "Web Design";
-                alice1.Skills = new List<ISkill> {programming1, webDesign1};
+                alice1.Skills = new List<ISkill> { programming1, webDesign1 };
                 var projMgt1 = context1.Skills.Create();
                 projMgt1.Name = "Project Management";
                 var scrum1 = context1.Skills.Create();
@@ -331,7 +331,7 @@ namespace BrightstarDB.Tests.EntityFramework
                 programming1.Name = "Programming";
                 var webDesign1 = context1.Skills.Create();
                 webDesign1.Name = "Web Design";
-                alice1.Skills = new List<ISkill> {programming1, webDesign1};
+                alice1.Skills = new List<ISkill> { programming1, webDesign1 };
                 var projMgt1 = context1.Skills.Create();
                 projMgt1.Name = "Project Management";
                 var scrum1 = context1.Skills.Create();
@@ -412,7 +412,7 @@ namespace BrightstarDB.Tests.EntityFramework
                 }
                 catch (TransactionPreconditionsFailedException)
                 {
-                    context1.Refresh(RefreshMode.ClientWins, new[] {alice, bob});
+                    context1.Refresh(RefreshMode.ClientWins, new[] { alice, bob });
                     context1.SaveChanges();
 
                     using (var context3 = NewContext())
@@ -458,7 +458,7 @@ namespace BrightstarDB.Tests.EntityFramework
                 }
                 catch (TransactionPreconditionsFailedException)
                 {
-                    context1.Refresh(RefreshMode.StoreWins, new[] {alice, bob});
+                    context1.Refresh(RefreshMode.StoreWins, new[] { alice, bob });
                     Assert.AreEqual(22, alice.Age);
                     Assert.AreEqual(41, bob.Age);
                     context1.SaveChanges();
@@ -538,7 +538,7 @@ namespace BrightstarDB.Tests.EntityFramework
                 context.DeleteObject(alice);
                 context.SaveChanges();
 
-                Assert.That(context.Persons.FirstOrDefault(p=>p.Id.Equals(aliceId)), Is.Null);
+                Assert.That(context.Persons.FirstOrDefault(p => p.Id.Equals(aliceId)), Is.Null);
             }
         }
 

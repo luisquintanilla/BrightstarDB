@@ -26,7 +26,7 @@ namespace BrightstarDB.Server
                     predicateTripleCounts[predicates[i]] = tripleCount;
                     jobStatus.Information =
                         string.Format("Count completed for {0}/{1} predicates. Approximately {2:P1} percent complete",
-                                      i + 1, predicates.Count, (i + 1.0)/predicates.Count);
+                                      i + 1, predicates.Count, (i + 1.0) / predicates.Count);
 
                 }
                 var currentCommitPoint = StoreWorker.ReadStore.GetCommitPoints().First();

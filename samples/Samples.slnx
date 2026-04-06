@@ -1,0 +1,26 @@
+<Solution>
+  <Folder Name="/Samples/" />
+  <Folder Name="/Samples/Embedded/" />
+  <Folder Name="/Samples/Embedded/DataObjectLayer/">
+    <Project Path="Samples/Embedded/DataObjectLayer/DataObjectLayer.SampleCore/DataObjectLayer.SampleCore.csproj" />
+  </Folder>
+  <Folder Name="/Samples/Embedded/Dynamic/">
+    <Project Path="Samples/Embedded/Dynamic/DynamicSamples.Core/DynamicSamples.Core.csproj" />
+  </Folder>
+  <Folder Name="/Samples/Embedded/EntityFramework/">
+    <Project Path="Samples/Embedded/EntityFramework/ChangeTrackingCore/ChangeTrackingCore.csproj" />
+    <Project Path="Samples/Embedded/EntityFramework/FoafCore/FoafCore.csproj" />
+    <Project Path="Samples/Embedded/EntityFramework/GettingStartedCore/GettingStartedCore.csproj" />
+    <Project Path="Samples/Embedded/EntityFramework/TweetBoxCore/TweetBoxCore.csproj" />
+  </Folder>
+  <Folder Name="/Samples/Embedded/RDF/">
+    <Project Path="Samples/Embedded/RDF/GettingStartedCore/GettingStartedCore.csproj" />
+  </Folder>
+  <Folder Name="/Samples/Embedded/StoreAdmin/">
+    <Project Path="Samples/Embedded/StoreAdmin/CommitPointsCore/CommitPointsCore.csproj" />
+  </Folder>
+  <Folder Name="/Samples/Embedded/VectorSimilarity/">
+    <Project Path="Samples/Embedded/VectorSimilarity/VectorSimilarity.csproj" />
+  </Folder>
+  <Project Path="../src/core/BrightstarDB.Core/BrightstarDB.Core.csproj" />
+</Solution>

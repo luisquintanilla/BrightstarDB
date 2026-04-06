@@ -27,7 +27,7 @@ namespace BrightstarDB.InternalTests.BPlusTreeTests
         {
             const int target = 40000000;
             const int batchSize = 50000;
-            const int batchCount = target/batchSize;
+            const int batchCount = target / batchSize;
             // Tests insert of 40 million unique keys in batches of 50,000
             // Reports time for each batch to console.
 
@@ -60,7 +60,7 @@ namespace BrightstarDB.InternalTests.BPlusTreeTests
                 tree = new BPlusTree(pageStore, lastRoot);
                 foreach (var item in testList)
                 {
-                    var insertKey = (ulong) ((item*batchCount) + i);
+                    var insertKey = (ulong)((item * batchCount) + i);
                     try
                     {
                         tree.Insert(txnId, insertKey, testBuffer);
@@ -82,9 +82,9 @@ namespace BrightstarDB.InternalTests.BPlusTreeTests
 
         private static void WriteTestData(IEnumerable<int> data, string path)
         {
-            using(var textStream = new StreamWriter(new FileStream(path, FileMode.Create, FileAccess.Write)))
+            using (var textStream = new StreamWriter(new FileStream(path, FileMode.Create, FileAccess.Write)))
             {
-                foreach(var i in data)
+                foreach (var i in data)
                 {
                     textStream.WriteLine(i);
                 }

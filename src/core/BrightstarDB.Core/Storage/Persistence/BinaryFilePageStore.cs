@@ -66,8 +66,12 @@ namespace BrightstarDB.Storage.Persistence
         /// </summary>
         private bool _disposed;
 
-        
+
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _restartLock = new();
+#else
         private readonly object _restartLock = new object();
+#endif
 
         public BinaryFilePageStore(IPersistenceManager persistenceManager, string filePath, int pageSize, bool readOnly,
             ulong transactionId, ulong nextTransactionId, bool disableBackgroundWrites)
@@ -80,7 +84,7 @@ namespace BrightstarDB.Storage.Persistence
             PageSize = _nominalPageSize - 8;
             CanWrite = !readOnly;
             OpenInputStream();
-            _nextPageId = (ulong) _inputStream.Length/((uint) _nominalPageSize*2) + 1;
+            _nextPageId = (ulong)_inputStream.Length / ((uint)_nominalPageSize * 2) + 1;
             if (CanWrite)
             {
                 if (!disableBackgroundWrites)
@@ -125,7 +129,7 @@ namespace BrightstarDB.Storage.Persistence
                     profiler.Incr("PageCache Hit");
                     return page;
                 }
-               
+
                 // Not found in memory, so go to the disk
                 profiler.Incr("PageCache Miss");
                 using (profiler.Step("Load Page"))
@@ -181,7 +185,7 @@ namespace BrightstarDB.Storage.Persistence
                 {
                     using (var outputStream = _persistenceManager.GetOutputStream(_filePath, FileMode.Open))
                     {
-                        foreach (var pageId in _modifiedPages.Keys.OrderBy(x=>x))
+                        foreach (var pageId in _modifiedPages.Keys.OrderBy(x => x))
                         {
                             var page = PageCache.Instance.Lookup(_partitionId, pageId) as BinaryFilePage;
                             if (page != null && page.IsDirty)
@@ -213,11 +217,7 @@ namespace BrightstarDB.Storage.Persistence
 
         public bool IsWriteable(IPage page)
         {
-            if (page is BinaryFilePage)
-            {
-                return (page as BinaryFilePage).IsWriteable;
-            }
-            return false;
+            return page is BinaryFilePage bfp && bfp.IsWriteable;
         }
 
         public IPage GetWriteablePage(ulong commitId, IPage page)

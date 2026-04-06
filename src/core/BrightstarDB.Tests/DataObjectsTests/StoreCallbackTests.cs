@@ -30,7 +30,7 @@ namespace BrightstarDB.Tests.DataObjectsTests
             newObject.SetProperty("http://example.org/p", "Some Value");
             store.SaveChanges();
 
-            var results = store.ExecuteSparql(string.Format("SELECT ?v WHERE {{ <{0}> <http://example.org/p> ?v }}",newObject.Identity ));
+            var results = store.ExecuteSparql(string.Format("SELECT ?v WHERE {{ <{0}> <http://example.org/p> ?v }}", newObject.Identity));
             Assert.AreEqual(1, results.ResultSet.Count());
         }
 
@@ -47,15 +47,15 @@ namespace BrightstarDB.Tests.DataObjectsTests
             _changedItems.Clear();
             store.SavingChanges += LogChanges;
 
-            obj1  = store.GetDataObject(obj1.Identity);
+            obj1 = store.GetDataObject(obj1.Identity);
             obj1.SetProperty("http://example.org/p", "Updated Object 1");
             var obj3 = store.MakeDataObject();
             obj3.SetProperty("http://example.org/p", "Object 3");
             store.SaveChanges();
 
             Assert.AreEqual(2, _changedItems.Count);
-            Assert.IsTrue(_changedItems.Any(x=>x.Identity.Equals(obj1.Identity)));
-            Assert.IsTrue(_changedItems.Any(x=>x.Identity.Equals(obj3.Identity)));
+            Assert.IsTrue(_changedItems.Any(x => x.Identity.Equals(obj1.Identity)));
+            Assert.IsTrue(_changedItems.Any(x => x.Identity.Equals(obj3.Identity)));
             _changedItems.Clear();
 
         }
@@ -90,7 +90,7 @@ namespace BrightstarDB.Tests.DataObjectsTests
         {
             var store = sender as IDataObjectStore;
             Assert.IsNotNull(store);
-            foreach(var o in store.TrackedObjects)
+            foreach (var o in store.TrackedObjects)
             {
                 if (o.IsModified) _changedItems.Add(o);
             }

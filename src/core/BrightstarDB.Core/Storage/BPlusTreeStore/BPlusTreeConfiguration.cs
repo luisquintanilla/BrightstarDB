@@ -10,7 +10,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
         /// The size of key in bytes
         /// </summary>
         public int KeySize { get; private set; }
-        
+
         /// <summary>
         /// The size of value stored in leaf nodes in bytes
         /// </summary>
@@ -87,12 +87,12 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             KeySize = keySize;
             ValueSize = valueSize;
             PageSize = pageSize;
-            InternalBranchFactor = (PageSize - InternalNodeHeaderSize - NodePointerSize)/(KeySize + NodePointerSize);
-            InternalSplitIndex = InternalBranchFactor/2;
-            InternalNodeChildStartOffset = InternalNodeHeaderSize + (InternalBranchFactor*KeySize);
-            LeafLoadFactor = (PageSize - LeafNodeHeaderSize)/(KeySize + ValueSize + 1); // Each value requires ValueSize+1 bytes, extra byte is for the value length
-            LeafSplitIndex = LeafLoadFactor/2;
-            LeafDataStartOffset = LeafNodeHeaderSize + (KeySize*LeafLoadFactor);
+            InternalBranchFactor = (PageSize - InternalNodeHeaderSize - NodePointerSize) / (KeySize + NodePointerSize);
+            InternalSplitIndex = InternalBranchFactor / 2;
+            InternalNodeChildStartOffset = InternalNodeHeaderSize + (InternalBranchFactor * KeySize);
+            LeafLoadFactor = (PageSize - LeafNodeHeaderSize) / (KeySize + ValueSize + 1); // Each value requires ValueSize+1 bytes, extra byte is for the value length
+            LeafSplitIndex = LeafLoadFactor / 2;
+            LeafDataStartOffset = LeafNodeHeaderSize + (KeySize * LeafLoadFactor);
         }
 
         #region Implementation of IComparer<in byte[]>

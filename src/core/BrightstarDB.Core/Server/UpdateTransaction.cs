@@ -28,7 +28,7 @@ namespace BrightstarDB.Server
         /// </summary>
         private string _insertData;
 
-        public UpdateTransaction(Guid jobId, string label, StoreWorker storeWorker, string preconditionData, string deletePatterns, string insertData, string defaultGraphUri) : 
+        public UpdateTransaction(Guid jobId, string label, StoreWorker storeWorker, string preconditionData, string deletePatterns, string insertData, string defaultGraphUri) :
             base(jobId, label, storeWorker)
         {
             _defaultGraphUri = defaultGraphUri ?? Constants.DefaultGraphUri;
@@ -37,7 +37,7 @@ namespace BrightstarDB.Server
             _preconditions = preconditionData ?? "";
         }
 
-        public UpdateTransaction(Guid jobId, string label, StoreWorker storeWorker) : base(jobId, label, storeWorker) {}
+        public UpdateTransaction(Guid jobId, string label, StoreWorker storeWorker) : base(jobId, label, storeWorker) { }
 
         public string DeletePatterns
         {
@@ -137,7 +137,7 @@ namespace BrightstarDB.Server
             {
                 StoreWorker.TransactionLog.LogEndFailedTransaction(this);
                 Logging.LogError(BrightstarEventId.TransactionServerError,
-                                 "Unexpected exception caught in UpdateTransaction ({0}): {1}",JobId, ex);
+                                 "Unexpected exception caught in UpdateTransaction ({0}): {1}", JobId, ex);
                 throw;
             }
         }

@@ -19,7 +19,7 @@ namespace BrightstarDB.Storage.BTreeStore
         private readonly IPersistenceManager _persistenceManager;
         private readonly StoreConfiguration _configuration;
         internal const int MasterfileHeaderLongCount = 32; // number of long values that comprise the header.
-        internal const int MasterfileHeaderSize = MasterfileHeaderLongCount*8;
+        internal const int MasterfileHeaderSize = MasterfileHeaderLongCount * 8;
 
         // maps the types we persist to unique ids.
         // messing with these except for adding new ones is very dangerous.
@@ -65,7 +65,7 @@ namespace BrightstarDB.Storage.BTreeStore
             }
 
             _persistenceManager.CreateDirectory(storeLocation);
-           
+
             var dataFilePath = Path.Combine(storeLocation, DataFileName);
             _persistenceManager.CreateFile(dataFilePath);
 
@@ -76,7 +76,7 @@ namespace BrightstarDB.Storage.BTreeStore
             return store;
         }
 
-        public IStore CreateStore(string storeLocation, PersistenceType persistenceType, bool readOnly = false, bool withTransactionLogging=true)
+        public IStore CreateStore(string storeLocation, PersistenceType persistenceType, bool readOnly = false, bool withTransactionLogging = true)
         {
             if (persistenceType != PersistenceType.AppendOnly)
             {
@@ -141,7 +141,7 @@ namespace BrightstarDB.Storage.BTreeStore
                 throw new StoreManagerException(storeLocation, "Store does not exist");
             }
         }
-        
+
         private static Type GetObjectType(ulong typeId)
         {
             return PersistantTypeIdentifiers.Keys.ToList()[(int)typeId];
@@ -171,7 +171,7 @@ namespace BrightstarDB.Storage.BTreeStore
                         {
                             // load object
                             var objType = GetObjectType(objLoc.Type);
-                            if (objType.Equals(typeof (Store)))
+                            if (objType.Equals(typeof(Store)))
                             {
                                 // dont write the store.
                                 continue;
@@ -185,7 +185,7 @@ namespace BrightstarDB.Storage.BTreeStore
                             // manage offsets
                             objectLocationManager.SetObjectOffset(obj.ObjectId, offset,
                                                                   PersistantTypeIdentifiers[obj.GetType()], 1);
-                            offset += (ulong) bytes;
+                            offset += (ulong)bytes;
                         }
                     }
 
@@ -230,7 +230,7 @@ namespace BrightstarDB.Storage.BTreeStore
                 }
 
                 fs = _persistenceManager.GetOutputStream(fileName, FileMode.Append);
-                var offset = (ulong) fs.Length;
+                var offset = (ulong)fs.Length;
                 using (var writer = new BinaryWriter(fs))
                 {
                     fs = null;
@@ -247,7 +247,7 @@ namespace BrightstarDB.Storage.BTreeStore
                             // manage offsets
                             objectLocationManager.SetObjectOffset(obj.ObjectId, offset,
                                                                   PersistantTypeIdentifiers[obj.GetType()], 1);
-                            offset += (ulong) bytes;
+                            offset += (ulong)bytes;
                         }
                         catch (Exception ex)
                         {
@@ -291,7 +291,7 @@ namespace BrightstarDB.Storage.BTreeStore
         {
             dataStream.Seek((long)offset, SeekOrigin.Begin);
             var binaryReader = new BinaryReader(dataStream);
-            var obj = Activator.CreateInstance(type) as IPersistable;            
+            var obj = Activator.CreateInstance(type) as IPersistable;
             obj.Read(binaryReader);
             return obj;
         }
@@ -304,7 +304,7 @@ namespace BrightstarDB.Storage.BTreeStore
             try
             {
                 fs = _persistenceManager.GetInputStream(fileName);
-                fs.Seek((long) offset, SeekOrigin.Begin);
+                fs.Seek((long)offset, SeekOrigin.Begin);
                 using (var binaryReader = new BinaryReader(fs))
                 {
                     fs = null;
@@ -315,12 +315,12 @@ namespace BrightstarDB.Storage.BTreeStore
             }
             catch (Exception ex)
             {
-                Logging.LogError(BrightstarEventId.ObjectReadError, 
-                    "Error reading object of type {0} from {1} @ {2}. Cause: {3} ", 
+                Logging.LogError(BrightstarEventId.ObjectReadError,
+                    "Error reading object of type {0} from {1} @ {2}. Cause: {3} ",
                     typeof(TObjType).FullName, fileName, offset, ex);
                 throw new StoreReadException(
                     String.Format("Error reading object of type {0} from {1} @ {2}.",
-                                  typeof (TObjType).FullName, fileName, offset),
+                                  typeof(TObjType).FullName, fileName, offset),
                     ex);
             }
             finally
@@ -373,7 +373,7 @@ namespace BrightstarDB.Storage.BTreeStore
             {
                 while ((pos * CommitPoint.RecordSize) + MasterfileHeaderSize <= fs.Length)
                 {
-                    fs.Seek(-(pos*CommitPoint.RecordSize), SeekOrigin.End);
+                    fs.Seek(-(pos * CommitPoint.RecordSize), SeekOrigin.End);
                     var commitPoint = CommitPoint.Load(fs);
                     pos++;
                     yield return commitPoint;
@@ -397,7 +397,7 @@ namespace BrightstarDB.Storage.BTreeStore
             return _persistenceManager.GetInputStream(storeLocation);
         }
 
-  
+
         #endregion
 
         /// <summary>
@@ -429,9 +429,9 @@ namespace BrightstarDB.Storage.BTreeStore
                 if (_persistenceManager.GetFileLength(masterFileLocation) == 0)
                 {
                     // new master file so add header
-                    for (int i = 0; i < MasterfileHeaderLongCount;i++)
+                    for (int i = 0; i < MasterfileHeaderLongCount; i++)
                     {
-                        binaryWriter.Write(val);                        
+                        binaryWriter.Write(val);
                     }
                 }
                 commitPoint.Save(fs);
@@ -443,10 +443,10 @@ namespace BrightstarDB.Storage.BTreeStore
         {
             try
             {
-                Logging.LogDebug("Retrieving latest store position from masterfile : {0}",masterFilePath);
+                Logging.LogDebug("Retrieving latest store position from masterfile : {0}", masterFilePath);
                 using (var fs = _persistenceManager.GetInputStream(masterFilePath))
                 {
-                    Logging.LogDebug("Masterfile stream length is {0}",  fs.Length);
+                    Logging.LogDebug("Masterfile stream length is {0}", fs.Length);
                     Logging.LogDebug("Attempting to seek to {0} bytes from end of stream.", CommitPoint.RecordSize);
                     fs.Seek(-CommitPoint.RecordSize, SeekOrigin.End);
                     Logging.LogDebug("Seek completed ok. Attempting to load commit point");

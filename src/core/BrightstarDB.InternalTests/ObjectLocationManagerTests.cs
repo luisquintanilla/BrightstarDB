@@ -41,18 +41,18 @@ namespace BrightstarDB.InternalTests
         public void Test1001Inserts()
         {
             var objectLocationManager = new ObjectLocationManager();
-            for (ulong i=0;i < 1001; i++)
+            for (ulong i = 0; i < 1001; i++)
             {
                 objectLocationManager.SetObjectOffset(i, 1000 + i, 1, 1);
-            }            
+            }
 
             // check all OK
             for (ulong i = 0; i < 1001; i++)
             {
                 var offset = objectLocationManager.GetObjectOffset(i);
                 Assert.AreEqual(1000 + i, offset);
-            }     
-       
+            }
+
             Assert.AreEqual(2, objectLocationManager.NumberOfContainers);
         }
 
@@ -75,8 +75,8 @@ namespace BrightstarDB.InternalTests
             // update some value
             objectLocationManager.SetObjectOffset(1, 500, 1, 1);
             objectLocationManager.SetObjectOffset(1000, 500, 1, 1);
-            objectLocationManager.SetObjectOffset(1001, 500, 1, 1);   
-        
+            objectLocationManager.SetObjectOffset(1001, 500, 1, 1);
+
 
 
             Assert.AreEqual(2, objectLocationManager.NumberOfContainers);

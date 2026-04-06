@@ -7,6 +7,6 @@
     /// an entity type that has key proeprties.</remarks>
     public sealed class EntityKeyRequiredException : EntityFrameworkException
     {
-        internal EntityKeyRequiredException() : base(Strings.EntityFramework_KeyRequired){}
+        internal EntityKeyRequiredException() : base(Strings.EntityFramework_KeyRequired) { }
     }
 }

@@ -23,7 +23,7 @@ namespace BrightstarDB.Storage.BTreeStore
             if (pos < 0) pos = uri.LastIndexOf('#');
 
             // no match then no prefix
-            if (pos < 0 || pos == uri.Length-1) return uri;
+            if (pos < 0 || pos == uri.Length - 1) return uri;
             var start = uri.Substring(0, pos + 1);
             var rest = uri.Substring(pos + 1);
 
@@ -31,7 +31,8 @@ namespace BrightstarDB.Storage.BTreeStore
             if (_prefixMappings.TryGetValue(start, out match))
             {
                 return match + ":" + rest;
-            } else
+            }
+            else
             {
                 var prefix = "bs" + _prefixMappings.Count;
                 _prefixMappings.Add(start, prefix);
@@ -47,13 +48,14 @@ namespace BrightstarDB.Storage.BTreeStore
             if (pos < 0) throw new BrightstarInternalException("Invalid shortened uri " + uri);
 
             var shortValue = uri.Substring(0, pos);
-            var rest = uri.Substring(pos+1);
+            var rest = uri.Substring(pos + 1);
 
             string prefix;
             if (_shortValueMappings.TryGetValue(shortValue, out prefix))
             {
                 return prefix + rest;
-            } else
+            }
+            else
             {
                 throw new BrightstarInternalException("No match for short prefix");
             }
@@ -74,7 +76,7 @@ namespace BrightstarDB.Storage.BTreeStore
         public void Read(BinaryReader dataStream)
         {
             var count = SerializationUtils.ReadVarint(dataStream);
-            for (ulong i = 0; i < count;i++)
+            for (ulong i = 0; i < count; i++)
             {
                 var shortPrefix = SerializationUtils.ReadString(dataStream);
                 var prefix = SerializationUtils.ReadString(dataStream);

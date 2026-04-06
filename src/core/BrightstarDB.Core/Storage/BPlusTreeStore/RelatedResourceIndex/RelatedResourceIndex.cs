@@ -11,7 +11,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.RelatedResourceIndex
         private readonly Dictionary<ulong, PredicateRelatedResourceIndex> _predicateIndexes;
         internal const int KeySize = 20;
 
-        public RelatedResourceIndex(ulong txnId, IPageStore pageStore): base(txnId, pageStore, 8, 8)
+        public RelatedResourceIndex(ulong txnId, IPageStore pageStore) : base(txnId, pageStore, 8, 8)
         {
             _predicateIndexes = new Dictionary<ulong, PredicateRelatedResourceIndex>();
         }
@@ -104,7 +104,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.RelatedResourceIndex
                     foreach (var entry in Scan(0ul, UInt64.MaxValue, profiler))
                     {
                         // Load the predicate index into the cache
-                        GetPredicateIndex(entry.Key,BitConverter.ToUInt64(entry.Value, 0), profiler);
+                        GetPredicateIndex(entry.Key, BitConverter.ToUInt64(entry.Value, 0), profiler);
                         // Then a recursive call to enumerate the index tree
                         foreach (var r in EnumerateRelatedResources(resourceId, entry.Key, graphId, profiler))
                         {
@@ -155,7 +155,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.RelatedResourceIndex
             PredicateRelatedResourceIndex predicateIndex = GetPredicateIndex(predicateId, profiler);
             if (predicateIndex != null)
             {
-                foreach(var entry in predicateIndex.Scan(MakePredicateIndexKey(0, 0, 0), MakePredicateIndexKey(ulong.MaxValue, int.MaxValue, ulong.MaxValue), profiler))
+                foreach (var entry in predicateIndex.Scan(MakePredicateIndexKey(0, 0, 0), MakePredicateIndexKey(ulong.MaxValue, int.MaxValue, ulong.MaxValue), profiler))
                 {
                     var thisResource = GetResourceIdFromKey(entry.Key);
                     var graphId = GetGraphIdFromKey(entry.Key);
@@ -173,9 +173,9 @@ namespace BrightstarDB.Storage.BPlusTreeStore.RelatedResourceIndex
         /// <returns></returns>
         public IEnumerable<IResourceRelationship> EnumerateAll(Func<int, bool> graphFilter, BrightstarProfiler profiler)
         {
-            foreach(var predicateIndexEntry in EnumeratePredicateIndexes(profiler))
+            foreach (var predicateIndexEntry in EnumeratePredicateIndexes(profiler))
             {
-                foreach(var relatedResourceEntry in predicateIndexEntry.Value.Scan(MakePredicateIndexKey(0, 0, 0), MakePredicateIndexKey(ulong.MaxValue, int.MaxValue, ulong.MaxValue), profiler))
+                foreach (var relatedResourceEntry in predicateIndexEntry.Value.Scan(MakePredicateIndexKey(0, 0, 0), MakePredicateIndexKey(ulong.MaxValue, int.MaxValue, ulong.MaxValue), profiler))
                 {
                     if (graphFilter(GetGraphIdFromKey(relatedResourceEntry.Key)))
                     {
@@ -207,7 +207,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.RelatedResourceIndex
             }
         }
 
-        private IEnumerable<KeyValuePair<byte[], byte []>> WritePredicateIndexes(IPageStore pageStore, ulong transactionId, BrightstarProfiler profiler)
+        private IEnumerable<KeyValuePair<byte[], byte[]>> WritePredicateIndexes(IPageStore pageStore, ulong transactionId, BrightstarProfiler profiler)
         {
             foreach (var entry in EnumeratePredicateIndexes(profiler))
             {
@@ -240,14 +240,14 @@ namespace BrightstarDB.Storage.BPlusTreeStore.RelatedResourceIndex
 
         public void FlushCache()
         {
-            var unmodifiedIndexKeys  = _predicateIndexes.Where(e => !e.Value.IsModified).Select(e => e.Key).ToList();
-            foreach(var k in unmodifiedIndexKeys)
+            var unmodifiedIndexKeys = _predicateIndexes.Where(e => !e.Value.IsModified).Select(e => e.Key).ToList();
+            foreach (var k in unmodifiedIndexKeys)
             {
                 _predicateIndexes.Remove(k);
             }
         }
 
-        public int Preload(int maxPages, BrightstarProfiler profiler=null)
+        public int Preload(int maxPages, BrightstarProfiler profiler = null)
         {
             int pagesLoaded = this.PreloadTree(maxPages, profiler);
             int remainingPages = maxPages - pagesLoaded;
@@ -263,7 +263,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.RelatedResourceIndex
                     // instead we will just enumerate through them loading remainingPages / numPredicatesToLoad
                     foreach (var predicateIndex in EnumeratePredicateIndexes(profiler))
                     {
-                        pagesLoaded += predicateIndex.Value.PreloadTree(remainingPages/numPredicatesToLoad, profiler);
+                        pagesLoaded += predicateIndex.Value.PreloadTree(remainingPages / numPredicatesToLoad, profiler);
                         remainingPages = maxPages - pagesLoaded;
                         if (remainingPages <= 0) break;
                         numPredicatesToLoad--;
@@ -293,7 +293,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.RelatedResourceIndex
 
         private PredicateRelatedResourceIndex GetPredicateIndex(ulong predicateId, ulong rootPageId, BrightstarProfiler profiler)
         {
-            lock(_predicateIndexes)
+            lock (_predicateIndexes)
             {
                 PredicateRelatedResourceIndex predicateIndex;
                 if (_predicateIndexes.TryGetValue(predicateId, out predicateIndex)) return predicateIndex;
@@ -338,7 +338,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.RelatedResourceIndex
             return BitConverter.ToInt32(key, 8);
         }
 
-        private static ulong GetRelatedResourceIdFromKey(byte [] key)
+        private static ulong GetRelatedResourceIdFromKey(byte[] key)
         {
             return BitConverter.ToUInt64(key, 0);
         }

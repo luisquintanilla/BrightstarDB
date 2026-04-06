@@ -29,7 +29,7 @@ namespace BrightstarDB.InternalTests
             string retrieved;
             for (int i = 0; i < 8; i++)
             {
-                cache.InsertOrUpdate(i, "test:"+i);
+                cache.InsertOrUpdate(i, "test:" + i);
             }
             for (int i = 0; i < 8; i++)
             {

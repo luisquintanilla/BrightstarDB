@@ -97,7 +97,7 @@ namespace BrightstarDB.Client
                 var subjects =
                     AddTriples.Subjects
                               .Union(DeletePatterns.Subjects)
-                              .Except(new[] {Constants.WildcardUri})
+                              .Except(new[] { Constants.WildcardUri })
                               .ToList();
                 foreach (var subject in subjects)
                 {
@@ -116,15 +116,15 @@ namespace BrightstarDB.Client
                         intVersion++;
                         entity.SetProperty(Constants.VersionPredicateUri, intVersion);
                         Preconditions.Add(new Triple
-                            {
-                                Subject = subject,
-                                Predicate = Constants.VersionPredicateUri,
-                                Object = version.ToString(),
-                                IsLiteral = true,
-                                DataType = RdfDatatypes.Integer,
-                                LangCode = null, 
-                                Graph = VersionGraphUri
-                            });
+                        {
+                            Subject = subject,
+                            Predicate = Constants.VersionPredicateUri,
+                            Object = version.ToString(),
+                            IsLiteral = true,
+                            DataType = RdfDatatypes.Integer,
+                            LangCode = null,
+                            Graph = VersionGraphUri
+                        });
                     }
                 }
             }
@@ -161,7 +161,7 @@ namespace BrightstarDB.Client
             queryContext.SparqlResultsFormat = SparqlResultsFormat.Xml;
             queryContext.GraphResultsFormat = RdfFormat.NTriples;
             var results = Client.ExecuteQuery(queryContext, DataSetGraphUris);
-            foreach(var row in results.ResultSet)
+            foreach (var row in results.ResultSet)
             {
                 // create new triple
                 var triple = new Triple

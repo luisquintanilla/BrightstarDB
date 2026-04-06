@@ -9,11 +9,13 @@ using VDS.RDF.Parsing;
 using VDS.RDF.Query;
 using System.Linq;
 
-namespace BrightstarDB.InternalTests.SparqlTestSuite {
+namespace BrightstarDB.InternalTests.SparqlTestSuite
+{
     [TestFixture]
-	public partial class ManifestSyntax {
+    public partial class ManifestSyntax
+    {
 
-		private IStoreManager _storeManager;
+        private IStoreManager _storeManager;
         private string _storeLocation;
         private IStore _store;
 
@@ -22,12 +24,12 @@ namespace BrightstarDB.InternalTests.SparqlTestSuite {
             _storeManager = StoreManagerFactory.GetStoreManager();
         }
 
-		[SetUp]
-		public void SetUp()
-		{
-		    _storeLocation = "brightstar\\" + Guid.NewGuid();
-		    _store = _storeManager.CreateStore(_storeLocation);
-		}
+        [SetUp]
+        public void SetUp()
+        {
+            _storeLocation = "brightstar\\" + Guid.NewGuid();
+            _store = _storeManager.CreateStore(_storeLocation);
+        }
 
         [TearDown]
         public void TearDown()
@@ -35,13 +37,13 @@ namespace BrightstarDB.InternalTests.SparqlTestSuite {
             _storeManager.DeleteStore(_storeLocation);
         }
 
-		#region Test Methods
+        #region Test Methods
 
-		#endregion
+        #endregion
 
-		#region Support Methods
-		
-		private void ImportData(string dataPath, string defaultGraphUri = null)
+        #region Support Methods
+
+        private void ImportData(string dataPath, string defaultGraphUri = null)
         {
             var g = new Graph();
             FileLoader.Load(g, dataPath);
@@ -91,32 +93,34 @@ namespace BrightstarDB.InternalTests.SparqlTestSuite {
         }
 
 
-		private void ImportGraph(string dataPath, Uri graphUri) {
+        private void ImportGraph(string dataPath, Uri graphUri)
+        {
             ImportData(dataPath, graphUri.ToString());
-		}
+        }
 
-		private string ExecuteQuery(string queryPath)
-		{
-		    var queryExp = File.ReadAllText(queryPath);
+        private string ExecuteQuery(string queryPath)
+        {
+            var queryExp = File.ReadAllText(queryPath);
             return _store.ExecuteSparqlQuery(queryExp, SparqlResultsFormat.Xml);
-		}
+        }
 
-		private void CheckResult(string results, string expectedResultPath, bool laxCardinality) 
+        private void CheckResult(string results, string expectedResultPath, bool laxCardinality)
         {
             Assert.IsNotNull(results);
-		    var resultExtension = Path.GetExtension(expectedResultPath).ToLower();
+            var resultExtension = Path.GetExtension(expectedResultPath).ToLower();
             if (resultExtension.Equals(".srx"))
             {
                 CompareSparqlResults(results, expectedResultPath, laxCardinality);
-            } 
+            }
             else if (resultExtension.Equals(".ttl"))
             {
                 CompareResultGraphs(results, expectedResultPath, laxCardinality);
             }
-            else {
-				Assert.Fail("Don't know how to compare results to results file {0}", expectedResultPath);              
-			}
-		}
+            else
+            {
+                Assert.Fail("Don't know how to compare results to results file {0}", expectedResultPath);
+            }
+        }
 
         private void CompareSparqlResults(string results, string expectedResultsPath, bool reduced)
         {
@@ -137,7 +141,7 @@ namespace BrightstarDB.InternalTests.SparqlTestSuite {
             var xmlParser = new SparqlXmlParser();
             var actualResultSet = new SparqlResultSet();
             var expectedResultSet = new SparqlResultSet();
-            using(var tr = new StringReader(results))
+            using (var tr = new StringReader(results))
             {
                 xmlParser.Load(actualResultSet, tr);
             }
@@ -178,10 +182,10 @@ namespace BrightstarDB.InternalTests.SparqlTestSuite {
             }
         }
 
-        private static bool CompareSolutions(SparqlResult x, SparqlResult y)
+        private static bool CompareSolutions(ISparqlResult x, ISparqlResult y)
         {
             if (x.Variables.Count().Equals(y.Variables.Count()) &&
-                x.Variables.All(xv=>y.Variables.Contains(xv)))
+                x.Variables.All(xv => y.Variables.Contains(xv)))
             {
                 foreach (var xv in x.Variables)
                 {
@@ -197,7 +201,7 @@ namespace BrightstarDB.InternalTests.SparqlTestSuite {
         private static bool CompareNodes(INode xb, INode yb)
         {
             if (!xb.NodeType.Equals(yb.NodeType)) return false;
-            switch(xb.NodeType)
+            switch (xb.NodeType)
             {
                 case NodeType.Literal:
                     var xl = xb as LiteralNode;
@@ -219,8 +223,8 @@ namespace BrightstarDB.InternalTests.SparqlTestSuite {
             return true;
         }
 
-        private static void CompareTripleCollections(BaseTripleCollection actualTriples, BaseTripleCollection expectedTriples, bool reduced) 
-		{
+        private static void CompareTripleCollections(BaseTripleCollection actualTriples, BaseTripleCollection expectedTriples, bool reduced)
+        {
             var alreadySeen = new HashSet<Triple>();
             foreach (var expectedTriple in expectedTriples)
             {
@@ -228,13 +232,13 @@ namespace BrightstarDB.InternalTests.SparqlTestSuite {
                 Assert.IsTrue(actualTriples.Contains(expectedTriple),
                               "Could not find expected triple '{0}' in results set.", expectedTriple);
             }
-            foreach(var actualTriple in actualTriples)
+            foreach (var actualTriple in actualTriples)
             {
                 Assert.IsTrue(expectedTriples.Contains(actualTriple),
                     "Unexpected result set triple '{0}'", actualTriple);
             }
-		}
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

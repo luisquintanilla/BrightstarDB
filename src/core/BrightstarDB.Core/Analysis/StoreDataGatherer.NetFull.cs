@@ -7,7 +7,7 @@ namespace BrightstarDB.Analysis
     /// <summary>
     /// An analyzer that simply builds up an in-memory structure of the information reported by the crawler
     /// </summary>
-    public class StoreDataGatherer: IStoreAnalyzer
+    public class StoreDataGatherer : IStoreAnalyzer
     {
         private StoreReport _report;
         private BTreeReport _btreeReport;
@@ -62,7 +62,7 @@ namespace BrightstarDB.Analysis
         /// <param name="indexName"></param>
         public void OnPredicateIndexEnd(string indexName)
         {
-            
+
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace BrightstarDB.Analysis
         /// <param name="btreeId"></param>
         public void OnBTreeEnd(string btreeName, ulong btreeId)
         {
-            _report.BTrees.Add(_btreeReport);      
+            _report.BTrees.Add(_btreeReport);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace BrightstarDB.Analysis
         ///<param name="storeId"></param>
         public void OnStoreEnd(ulong storeId)
         {
-            
+
         }
 
         /// <summary>

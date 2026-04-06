@@ -4,20 +4,28 @@ BrightstarDB
 [![Build status](https://ci.appveyor.com/api/projects/status/s8cinpfl2dh6y31a/branch/develop?svg=true)](https://ci.appveyor.com/project/kal/brightstardb/branch/develop)
 
 
-BrightstarDB is a native .NET RDF triple store. It uses dotNetRDF to provide support for 
+BrightstarDB is a native .NET RDF triple store targeting .NET 10 and .NET Standard 2.0. It uses dotNetRDF to provide support for 
 a wide range of RDF syntaxes as well as SPARQL query support. In addition to providing
 a raw RDF-based API, BrightstarDB also provides support for binding RDF resources to
 .NET dynamic objects; and a contract-first entity framework that enables the use of
 LINQ rather than SPARQL for query purposes.
 
-For details and documentation, please see our website at http://brightstardb.com/
+For details and documentation, please see the ``doc/src/`` directory (Sphinx/reStructuredText format).
 
 To get started with BrightstarDB you may want to check out the following resources:
- * [Getting Started](http://brightstardb.readthedocs.org/en/latest/Getting_Started/) provides you with links into the User and Developer documentation
- * [API Documentation](http://brightstardb.com/api/latest/)
- 
-If you want a binary installer that includes BrightstarDB, the BrightstarDB service and the Polaris management tool, 
-please get them from the [releases page](https://github.com/BrightstarDB/BrightstarDB/releases/latest)
+ * [Developer Quick Start](doc/src/Developer_Quick_Start.rst) provides a step-by-step introduction
+ * [Entity Framework Guide](doc/src/Entity_Framework.rst) covers the full entity framework
+ * [Migration Documentation](docs/migration/) documents the .NET 10 migration plan, decisions, and lessons learned
+
+Building
+--------
+
+Requires [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0):
+
+```
+dotnet build src\core\core.sln
+dotnet test src\core\core.sln
+```
 
 Licensing
 ---------

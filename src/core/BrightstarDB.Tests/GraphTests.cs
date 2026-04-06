@@ -40,7 +40,7 @@ namespace BrightstarDB.Tests
             }
 #else
             var importFile = new FileInfo(Path.Combine(TestContext.CurrentContext.TestDirectory, Configuration.DataLocation, testDataFileName));
-            var targetDir = new DirectoryInfo(Path.Combine(Configuration.StoreLocation,"import"));
+            var targetDir = new DirectoryInfo(Path.Combine(Configuration.StoreLocation, "import"));
             if (!targetDir.Exists)
             {
                 targetDir.Create();
@@ -61,11 +61,11 @@ namespace BrightstarDB.Tests
             var client = GetEmbeddedClient();
             client.CreateStore(storeName);
             var job = client.ExecuteTransaction(storeName, new UpdateTransactionData
-                {
-                    InsertData = @"<http://np.com/s> <http://np.com/p> <http://np.com/o2> <http://np.com/g1> .
+            {
+                InsertData = @"<http://np.com/s> <http://np.com/p> <http://np.com/o2> <http://np.com/g1> .
 <http://np.com/s> <http://np.com/p> <http://np.com/o> .
 "
-                });
+            });
             TestHelper.AssertJobCompletesSuccessfully(client, storeName, job);
 
             var result = client.ExecuteQuery(storeName,
@@ -133,7 +133,7 @@ namespace BrightstarDB.Tests
 
         }
 
-        
+
 
         [Test]
         public void TestExportGraphs()
@@ -167,7 +167,7 @@ namespace BrightstarDB.Tests
 #endif
             {
                 var content = sr.ReadToEnd();
-                Assert.AreEqual(2, content.Split(new [] {"\r\n"}, StringSplitOptions.RemoveEmptyEntries).Count());
+                Assert.AreEqual(2, content.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Count());
                 sr.Close();
             }
 
@@ -187,7 +187,7 @@ namespace BrightstarDB.Tests
 #endif
             {
                 var content = sr.ReadToEnd();
-                Assert.AreEqual(1, content.Split(new [] {"\r\n"}, StringSplitOptions.RemoveEmptyEntries).Count());
+                Assert.AreEqual(1, content.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).Count());
                 sr.Close();
             }
         }
@@ -208,11 +208,11 @@ namespace BrightstarDB.Tests
             var client = GetEmbeddedClient();
             client.CreateStore(storeName);
             var job = client.ExecuteTransaction(storeName, new UpdateTransactionData
-                {
-                    InsertData = @"<http://np.com/s> <http://np.com/p> <http://np.com/o2> <http://np.com/g1> .
+            {
+                InsertData = @"<http://np.com/s> <http://np.com/p> <http://np.com/o2> <http://np.com/g1> .
 <http://np.com/s> <http://np.com/p> <http://np.com/o> .
 "
-                });
+            });
             TestHelper.AssertJobCompletesSuccessfully(client, storeName, job);
 
             var result = client.ExecuteQuery(storeName,
@@ -224,11 +224,11 @@ namespace BrightstarDB.Tests
             Assert.AreEqual(new Uri("http://np.com/o2"), resultRow.GetColumnValue("o"));
 
             job = client.ExecuteTransaction(storeName, new UpdateTransactionData
-                {
-                    ExistencePreconditions =
+            {
+                ExistencePreconditions =
                         @"<http://np.com/s> <http://np.com/p> <http://np.com/o2> <http://np.com/g1> .",
-                    DeletePatterns = @"<http://np.com/s> <http://np.com/p> <http://np.com/o2> <http://np.com/g1> ."
-                });
+                DeletePatterns = @"<http://np.com/s> <http://np.com/p> <http://np.com/o2> <http://np.com/g1> ."
+            });
             TestHelper.AssertJobCompletesSuccessfully(client, storeName, job);
             result = client.ExecuteQuery(storeName,
                                 "SELECT ?o FROM <http://np.com/g1> WHERE { <http://np.com/s> <http://np.com/p> ?o }");

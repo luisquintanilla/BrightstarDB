@@ -9,6 +9,6 @@
         /// <summary>
         /// Create a new exception instance with a default message
         /// </summary>
-        public BrightstarStoreNotModifiedException() : base ("Store not modified"){}
+        public BrightstarStoreNotModifiedException() : base("Store not modified") { }
     }
 }

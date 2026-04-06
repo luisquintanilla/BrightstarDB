@@ -9,18 +9,18 @@ namespace BrightstarDB.Client
     public class BrightstarClientException : BrightstarException
     {
 
-        internal BrightstarClientException(string message) : base(message){}
+        internal BrightstarClientException(string message) : base(message) { }
 
         internal BrightstarClientException(string message, RdfParserException parserException) : base(
-            parserException.HaveLineNumber ?String.Format( "{0} Line {1}: {2}", message, parserException.LineNumber, parserException.Message):
+            parserException.HaveLineNumber ? String.Format("{0} Line {1}: {2}", message, parserException.LineNumber, parserException.Message) :
             String.Format("{0} {1}", message, parserException.Message), parserException)
         {
-            
+
         }
 
         internal BrightstarClientException(string message, Exception inner) : base(message, inner)
         {
-            
+
         }
     }
 }

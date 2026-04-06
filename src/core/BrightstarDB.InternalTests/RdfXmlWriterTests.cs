@@ -1,4 +1,3 @@
-﻿#if !NETCOREAPP10
 using System;
 using System.IO;
 using System.Linq;
@@ -41,7 +40,7 @@ namespace BrightstarDB.InternalTests
             using (var writer = GetStringWriter(out sw))
             {
                 writer.Triple("http://example.org/s", false,
-                    "http://example.org/p", false, 
+                    "http://example.org/p", false,
                     "http://example.org/o", false, false, null, null, null);
             }
             XNamespace expectedNamespace = "http://example.org/";
@@ -65,7 +64,7 @@ namespace BrightstarDB.InternalTests
             StringWriter sw;
             using (var writer = GetStringWriter(out sw))
             {
-                writer.Triple("http://example.org/s", false, 
+                writer.Triple("http://example.org/s", false,
                     "http://example.org/p", false,
                     "o", true, false, null, null, null);
                 writer.Triple("o", true,
@@ -209,4 +208,3 @@ namespace BrightstarDB.InternalTests
 
     }
 }
-#endif

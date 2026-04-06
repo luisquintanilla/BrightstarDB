@@ -5,7 +5,7 @@ namespace BrightstarDB.EntityFramework
     /// <summary>
     /// Property attribute which flags the property that is bound to the resource address
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple=false)]
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public sealed class IdentifierAttribute : Attribute
     {
         /// <summary>
@@ -47,6 +47,6 @@ namespace BrightstarDB.EntityFramework
             BaseAddress = baseAddress;
         }
 
-        
+
     }
 }

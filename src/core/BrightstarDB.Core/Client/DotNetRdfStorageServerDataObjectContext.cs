@@ -89,7 +89,7 @@ namespace BrightstarDB.Client
             }
             catch (Exception e)
             {
-             throw new BrightstarInternalException(Strings.DotNetRdf_ErrorFromUnderlyingServer, e);
+                throw new BrightstarInternalException(Strings.DotNetRdf_ErrorFromUnderlyingServer, e);
             }
         }
 

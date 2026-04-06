@@ -49,7 +49,7 @@ namespace BrightstarDB.Server
                 {
                     _importTripleSink = new StoreTripleSink(StoreWorker.WriteStore, JobId,
                                                             Configuration.TransactionFlushTripleCount,
-                                                            profiler:profiler);
+                                                            profiler: profiler);
                     parser.Parse(_fileStream, this, _graphUri);
                 }
                 StoreWorker.WriteStore.Commit(JobId, profiler);
@@ -109,7 +109,7 @@ namespace BrightstarDB.Server
             using (var reader = new BinaryReader(logStream))
             {
                 _contentFileName = reader.ReadString();
-                _graphUri =  reader.ReadString();
+                _graphUri = reader.ReadString();
             }
         }
 

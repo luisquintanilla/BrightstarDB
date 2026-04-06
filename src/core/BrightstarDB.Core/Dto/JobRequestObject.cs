@@ -30,13 +30,13 @@ namespace BrightstarDB.Dto
         /// <summary>
         /// Get or set the parameters to pass into the job
         /// </summary>
-        public Dictionary<string, string> JobParameters { get; set; } 
+        public Dictionary<string, string> JobParameters { get; set; }
 
         /// <summary>
         /// Create an empty request object. For deserialization purposes only.
         /// </summary>
         [Obsolete("Provided for serialization purposes only.")]
-        public JobRequestObject(){}
+        public JobRequestObject() { }
 
         /// <summary>
         /// Create a new request object
@@ -57,7 +57,7 @@ namespace BrightstarDB.Dto
         /// <param name="updateTransaction">The update transaction data</param>
         /// <param name="label">OPTIONAL: A user-friendly label for the job. May be NULL to </param>
         /// <returns>A new <see cref="JobRequestObject"/> instance</returns>
-        public static JobRequestObject CreateTransactionJob(UpdateTransactionData updateTransaction, 
+        public static JobRequestObject CreateTransactionJob(UpdateTransactionData updateTransaction,
                                                             string label)
         {
             return new JobRequestObject("Transaction",
@@ -145,7 +145,7 @@ namespace BrightstarDB.Dto
             if (String.IsNullOrWhiteSpace(updateExpression)) throw new ArgumentException(Strings.StringParameterMustBeNonEmpty, "updateExpression");
 
             return new JobRequestObject("SparqlUpdate",
-                                        new Dictionary<string, string> {{"UpdateExpression", updateExpression}},
+                                        new Dictionary<string, string> { { "UpdateExpression", updateExpression } },
                                         label);
         }
 
@@ -168,7 +168,7 @@ namespace BrightstarDB.Dto
         public static JobRequestObject CreateRepeatTransactionJob(Guid jobId, string label = null)
         {
             return new JobRequestObject("RepeatTransaction",
-                                        new Dictionary<string, string> {{"JobId", jobId.ToString()}},
+                                        new Dictionary<string, string> { { "JobId", jobId.ToString() } },
                                         label);
         }
 

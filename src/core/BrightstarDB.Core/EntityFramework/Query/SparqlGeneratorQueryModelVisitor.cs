@@ -26,19 +26,19 @@ namespace BrightstarDB.EntityFramework.Query
                 resultType = resultType.GetGenericArguments()[0];
             }
             var bindType = context.GetImplType(resultType);
-            bool useConstruct = typeof (IEntityObject).IsAssignableFrom(bindType);
+            bool useConstruct = typeof(IEntityObject).IsAssignableFrom(bindType);
             return visitor.GetSparqlQuery(useConstruct);
         }
 
         SparqlGeneratorQueryModelVisitor(EntityContext context)
         {
             _context = context;
-            _queryBuilder  = new SparqlQueryBuilder(context);
+            _queryBuilder = new SparqlQueryBuilder(context);
         }
 
         public override void VisitQueryModel(QueryModel queryModel)
         {
-            if (queryModel.BodyClauses.Count == 1 
+            if (queryModel.BodyClauses.Count == 1
                 && queryModel.BodyClauses[0] is Remotion.Linq.Clauses.WhereClause
                 && queryModel.SelectClause.Selector is QuerySourceReferenceExpression
                 && (queryModel.SelectClause.Selector as QuerySourceReferenceExpression).ReferencedQuerySource.Equals(queryModel.MainFromClause))
@@ -87,7 +87,7 @@ namespace BrightstarDB.EntityFramework.Query
                                 }
                             }
                         }
-                    } 
+                    }
                     else if (whereClause.Predicate.NodeType == ExpressionType.Call)
                     {
                         var call = whereClause.Predicate as MethodCallExpression;
@@ -170,7 +170,7 @@ namespace BrightstarDB.EntityFramework.Query
                                                                                   _context.FilterOptimizationEnabled);
                 if (fromExpression is SelectVariableNameExpression)
                 {
-                    _queryBuilder.RenameVariable((fromExpression as SelectVariableNameExpression).Name,fromVar);
+                    _queryBuilder.RenameVariable((fromExpression as SelectVariableNameExpression).Name, fromVar);
                 }
             }
             base.VisitAdditionalFromClause(fromClause, queryModel, index);
@@ -403,7 +403,7 @@ namespace BrightstarDB.EntityFramework.Query
                     _queryBuilder.AnonymousMembersMap,
                     _queryBuilder.Constructor,
                     _queryBuilder.ConstructorArgs,
-                    _queryBuilder.MembersMap, 
+                    _queryBuilder.MembersMap,
                     _queryBuilder.MemberInitExpression,
                     _queryBuilder.GetOrdering());
         }

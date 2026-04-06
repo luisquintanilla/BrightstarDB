@@ -6,12 +6,12 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
     internal class LruResourceIdCache : IResourceIdCache
     {
         private LruCache<string, ulong> _cache;
- 
+
         public int CacheEntryCount { get { return _cache.Count; } }
 
         public LruResourceIdCache() : this(Configuration.ResourceCacheLimit)
         {
-            
+
         }
 
         public LruResourceIdCache(int limit, int highWatermark = 0, int lowWatermark = 0)

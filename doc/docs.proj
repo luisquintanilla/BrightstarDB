@@ -1,19 +1,13 @@
-<Project ToolsVersion="4.0" 
-	 xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
-	 DefaultTargets="Build">
- 
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+         DefaultTargets="Build">
+
   <Target Name="Html">
     <Exec Command="make.bat html" WorkingDirectory="src" />
   </Target>
 
-  <Target Name="APIDocs">
-    <MSBuild Projects="api\BrightstarDB.shfbproj" />
-    <ItemGroup>
-      <CHMFile Include="..\website\documentation\API\*.chm"/>
-    </ItemGroup>
-	<Move SourceFiles="@(CHMFile)" DestinationFolder="build"/>
-  </Target>
+  <!-- API documentation: The legacy Sandcastle/CHM toolchain (api/BrightstarDB.shfbproj)
+       is no longer functional with the .NET 10 build. Consider using docfx for API docs:
+       https://dotnet.github.io/docfx/ -->
+  <Target Name="Build" DependsOnTargets="Html"/>
 
-  <Target Name="Build" DependsOnTargets="APIDocs;Html"/>
-  
 </Project>

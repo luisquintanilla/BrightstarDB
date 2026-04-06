@@ -83,7 +83,7 @@ namespace BrightstarDB.Storage.BTreeStore
         {
             if (objectId == StoreConstants.NullUlong) return null;
             return _store.LoadObject<Node<T>>(objectId);
-        }        
+        }
 
         /// <summary>
         /// Default constuctor to support serialisation
@@ -95,7 +95,7 @@ namespace BrightstarDB.Storage.BTreeStore
         private void AddToCommitList(IPersistable node)
         {
             _store.AddToCommitList(node);
-        }        
+        }
 
         public Node<T> MakeNewNode(ulong parent = StoreConstants.NullUlong)
         {
@@ -103,18 +103,19 @@ namespace BrightstarDB.Storage.BTreeStore
             var newNode = new Node<T>(nodeId, parent, KeyCount);
 
             _store.AddToCommitList(newNode);
-            
+
             return newNode;
         }
 
         public Node<T> Root
-        {            
+        {
             get
             {
                 if (_rootNodeId == 0) return null;
                 return LoadNode(_rootNodeId);
             }
-            set { 
+            set
+            {
                 _rootNodeId = value.NodeId;
                 _store.AddToCommitList(this);
             }
@@ -153,7 +154,7 @@ namespace BrightstarDB.Storage.BTreeStore
             }
             return FindKeyEntry(Root, new Entry<T>(key), out entry, out node);
         }
-        
+
         public IEnumerable<Entry<T>> InOrderTraversal()
         {
             return TraverseNode(Root);
@@ -162,14 +163,14 @@ namespace BrightstarDB.Storage.BTreeStore
         private IEnumerable<Entry<T>> TraverseNode(Node<T> node)
         {
             if (node == null) yield break;
-            
+
             if (node.ChildNodes.Count == 0)
             {
                 foreach (var k in node.Keys) yield return k;
             }
             else
             {
-                for (int i = 0; i < node.Keys.Count; i++ )
+                for (int i = 0; i < node.Keys.Count; i++)
                 {
                     foreach (var k in TraverseNode(LoadNode(node.ChildNodes[i]))) yield return k;
                     yield return node.Keys[i];
@@ -193,20 +194,20 @@ namespace BrightstarDB.Storage.BTreeStore
         {
             if (node.ChildNodes.Count == 0)
             {
-                foreach(var e in node.Keys) yield return e;
+                foreach (var e in node.Keys) yield return e;
                 yield break;
             }
 
             for (int i = 0; i < node.Keys.Count; i++)
             {
-                foreach(var e in TraverseNode(tree, tree.LoadNode(node.ChildNodes[i])))
+                foreach (var e in TraverseNode(tree, tree.LoadNode(node.ChildNodes[i])))
                 {
                     yield return e;
                 }
                 yield return node.Keys[i];
             }
 
-            foreach(var e in TraverseNode(tree, tree.LoadNode(node.ChildNodes.Last())))
+            foreach (var e in TraverseNode(tree, tree.LoadNode(node.ChildNodes.Last())))
             {
                 yield return e;
             }
@@ -238,7 +239,8 @@ namespace BrightstarDB.Storage.BTreeStore
                 node.Keys.Remove(key);
                 AddToCommitList(node);
                 AssertAfterDeleteInvariant(node);
-            } else
+            }
+            else
             {
                 // delete from internal node
                 // find the pos get the first key in the node to the right as the seperator
@@ -287,7 +289,7 @@ namespace BrightstarDB.Storage.BTreeStore
                 {
                     // do left merge
                     PerformLeftMerge(node, nodeIndexInParentChildNodes, leftSibling);
-                    
+
                     // unless we have become the new root check the parent is ok
                     if (node.NodeId != Root.NodeId)
                     {
@@ -308,7 +310,7 @@ namespace BrightstarDB.Storage.BTreeStore
                     return;
                 }
             }
-            
+
         }
 
         private void PerformRightMerge(Node<T> node, int nodeIndexInParentChildNodes, Node<T> rightSibling)
@@ -335,7 +337,7 @@ namespace BrightstarDB.Storage.BTreeStore
                 // update parent pointers
                 foreach (var childNodeId in rightSibling.ChildNodes)
                 {
-                    var childNode = LoadNode(childNodeId); 
+                    var childNode = LoadNode(childNodeId);
                     childNode.ParentNodeId = node.ParentNodeId;
                     AddToCommitList(childNode);
                 }
@@ -414,7 +416,7 @@ namespace BrightstarDB.Storage.BTreeStore
                 AddToCommitList(rightSiblingFirstChild);
             }
 
-            parentNode.Keys[nodeIndexInParentChildNodes] = leftMostKey;            
+            parentNode.Keys[nodeIndexInParentChildNodes] = leftMostKey;
             AddToCommitList(parentNode);
         }
 
@@ -422,7 +424,7 @@ namespace BrightstarDB.Storage.BTreeStore
         {
             // get the successor key in parent
             var parentNode = LoadNode(node.ParentNodeId);
-            var successorKey = parentNode.Keys[nodeIndexInParentChildNodes-1];
+            var successorKey = parentNode.Keys[nodeIndexInParentChildNodes - 1];
 
             // move that down and add it to the beginning
             node.Keys.Insert(0, successorKey);
@@ -430,7 +432,7 @@ namespace BrightstarDB.Storage.BTreeStore
 
             // move the rigth most key in left sibling to position in parent
             var rightMostKey = leftSibling.Keys.Last();
-            leftSibling.Keys.RemoveAt(leftSibling.Keys.Count-1);
+            leftSibling.Keys.RemoveAt(leftSibling.Keys.Count - 1);
             AddToCommitList(leftSibling);
 
             // if this sibling has children make it the left most pointer
@@ -443,7 +445,7 @@ namespace BrightstarDB.Storage.BTreeStore
                 AddToCommitList(leftSiblingLastChild);
             }
 
-            parentNode.Keys[nodeIndexInParentChildNodes-1] = rightMostKey;
+            parentNode.Keys[nodeIndexInParentChildNodes - 1] = rightMostKey;
             AddToCommitList(parentNode);
         }
 
@@ -466,7 +468,7 @@ namespace BrightstarDB.Storage.BTreeStore
             {
                 return LoadNode(parentNode.ChildNodes[nodeIndexInParentChildNodes - 1]);
             }
-            return null;            
+            return null;
         }
 
         private Node<T> GetSuccessorLeftTraversal(Node<T> node)
@@ -494,7 +496,7 @@ namespace BrightstarDB.Storage.BTreeStore
             {
                 // create a new node and insert the element.
                 Root = MakeNewNode();
-                Root.Keys.Add(key);                
+                Root.Keys.Add(key);
                 return;
             }
 
@@ -613,10 +615,10 @@ namespace BrightstarDB.Storage.BTreeStore
                         var transferredNodes = insertNode.ChildNodes.GetRange(KeyMedian + 1,
                                                                               insertNode.ChildNodes.Count -
                                                                               (KeyMedian + 1));
-                        
+
                         newNode.ChildNodes.AddRange(transferredNodes);
                         insertNode.ChildNodes.RemoveRange(KeyMedian + 1, insertNode.ChildNodes.Count - (KeyMedian + 1));
-                        foreach(var i in transferredNodes)
+                        foreach (var i in transferredNodes)
                         {
                             var childNode = LoadNode(i);
                             childNode.ParentNodeId = newNode.NodeId;
@@ -657,14 +659,16 @@ namespace BrightstarDB.Storage.BTreeStore
             if (index >= 0)
             {
                 return node;
-            } else
+            }
+            else
             {
                 if (node.ChildNodes.Count == 0)
                 {
                     return null;
-                } else
+                }
+                else
                 {
-                    return FindKeyNode(LoadNode(node.ChildNodes[~index]), key);    
+                    return FindKeyNode(LoadNode(node.ChildNodes[~index]), key);
                 }
             }
         }
@@ -695,7 +699,7 @@ namespace BrightstarDB.Storage.BTreeStore
                 if (node.Keys.BinarySearch(key, key) >= 0) throw new BrightstarInternalException("Key already exists");
                 return node;
             }
-            var index = node.Keys.BinarySearch(key,key);
+            var index = node.Keys.BinarySearch(key, key);
             if (index >= 0)
             {
                 throw new BrightstarInternalException("Key already exists");

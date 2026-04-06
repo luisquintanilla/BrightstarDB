@@ -50,11 +50,11 @@ namespace BrightstarDB
         private const PersistenceType DefaultPersistenceType = PersistenceType.AppendOnly;
 
         private const int DefaultQueryCacheDiskSpace = 2048; // in MB
-        private const long MegabytesToBytes = 1024*1024;
+        private const long MegabytesToBytes = 1024 * 1024;
 
-        private const long DefaultQueryExecutionTimeout =  180000;
+        private const long DefaultQueryExecutionTimeout = 180000;
         private const long DefaultUpdateExecutionTimeout = 180000;
-        
+
         private const int DefaultPageCacheSize = 2048; // in MB
         private const int DefaultQueryCacheMemory = 256; // in MB
         private const int DefaultResourceCacheLimit = 1000000; // number of entries
@@ -63,7 +63,7 @@ namespace BrightstarDB
         {
             IsRunningOnMono = (Type.GetType("Mono.Runtime") != null);
             var configuration = new ConfigurationBuilder();
-            configuration.AddXmlFile("app.config",true)
+            configuration.AddXmlFile("app.config", true)
                 .AddJsonFile("appSettings.json", true);
             var appSettings = configuration.Build();
             StoreLocation = appSettings[StoreLocationPropertyName];
@@ -118,25 +118,14 @@ namespace BrightstarDB
 
             // Persistence Type
             var persistenceTypeSetting = GetApplicationSetting(appSettings, PersistenceTypeName);
-            if (!String.IsNullOrEmpty(persistenceTypeSetting))
-            {
-                switch (persistenceTypeSetting.ToLowerInvariant())
+            PersistenceType = !String.IsNullOrEmpty(persistenceTypeSetting)
+                ? persistenceTypeSetting.ToLowerInvariant() switch
                 {
-                    case PersistenceTypeAppendOnly:
-                        PersistenceType = PersistenceType.AppendOnly;
-                        break;
-                    case PersistenceTypeRewrite:
-                        PersistenceType = PersistenceType.Rewrite;
-                        break;
-                    default:
-                        PersistenceType = DefaultPersistenceType;
-                        break;
+                    PersistenceTypeAppendOnly => PersistenceType.AppendOnly,
+                    PersistenceTypeRewrite => PersistenceType.Rewrite,
+                    _ => DefaultPersistenceType
                 }
-            }
-            else
-            {
-                PersistenceType = DefaultPersistenceType;
-            }
+                : DefaultPersistenceType;
 
             // Page Cache Size
             var pageCacheSizeSetting = GetApplicationSetting(appSettings, PageCacheSizeName);
@@ -357,14 +346,14 @@ namespace BrightstarDB
                 {
                     Directory.CreateDirectory(cacheDir);
                 }
-                ICache directoryCache = new DirectoryCache(cacheDir, MegabytesToBytes*QueryCacheDiskSpace,
+                ICache directoryCache = new DirectoryCache(cacheDir, MegabytesToBytes * QueryCacheDiskSpace,
                                                            new LruCacheEvictionPolicy()),
-                       memoryCache = new MemoryCache(MegabytesToBytes*QueryCacheMemory, new LruCacheEvictionPolicy());
+                       memoryCache = new MemoryCache(MegabytesToBytes * QueryCacheMemory, new LruCacheEvictionPolicy());
                 return new TwoLevelCache(memoryCache, directoryCache);
             }
             else
             {
-                ICache memoryCache = new MemoryCache(MegabytesToBytes*QueryCacheMemory, new LruCacheEvictionPolicy());
+                ICache memoryCache = new MemoryCache(MegabytesToBytes * QueryCacheMemory, new LruCacheEvictionPolicy());
                 return memoryCache;
             }
         }

@@ -36,29 +36,32 @@ namespace BrightstarDB.EntityFramework
         /// <returns>The URI encoded string</returns>
         public virtual string Convert(object v)
         {
+            if (v is IEntityObject entityObj)
+            {
+                // Entity keys are already per-segment URI-encoded by prior GenerateKey calls.
+                // Do not re-encode, as that would encode '/' separators in composite/hierarchical keys.
+                return entityObj.GetKey();
+            }
+
             string ret;
             if (v is int)
             {
-                ret=((int)v).ToString(CultureInfo.InvariantCulture);
+                ret = ((int)v).ToString(CultureInfo.InvariantCulture);
             }
             else if (v is long)
             {
-                ret=((long) v).ToString(CultureInfo.InvariantCulture);
+                ret = ((long)v).ToString(CultureInfo.InvariantCulture);
             }
             else if (v is decimal)
             {
-                ret = ((decimal) v).ToString(CultureInfo.InvariantCulture);
+                ret = ((decimal)v).ToString(CultureInfo.InvariantCulture);
             }
             else if (v is string)
             {
                 ret = v as string;
             }
-            else if (v is IEntityObject)
-            {
-                ret = (v as IEntityObject).GetKey();
-            }
             else ret = v.ToString();
-            return Uri.EscapeUriString(ret);
+            return Uri.EscapeDataString(ret);
         }
     }
 }

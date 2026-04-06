@@ -7,7 +7,7 @@ namespace BrightstarDB.Utils
     {
         private readonly Dictionary<TKey, LinkedListNode<KeyValuePair<TKey, TValue>>> _dictionary;
         private readonly LinkedList<KeyValuePair<TKey, TValue>> _accessList;
- 
+
         private readonly int _highWatermark;
         private readonly int _lowWatermark;
 
@@ -19,11 +19,11 @@ namespace BrightstarDB.Utils
             }
             if (highWatermark <= 0)
             {
-                highWatermark = (int) (limit*0.95);
+                highWatermark = (int)(limit * 0.95);
             }
             if (lowWatermark <= 0)
             {
-                lowWatermark = (int) (limit*0.85);
+                lowWatermark = (int)(limit * 0.85);
             }
 
             _highWatermark = highWatermark;

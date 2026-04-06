@@ -71,7 +71,7 @@ namespace BrightstarDB.Storage
         public Guid StoreId { get; private set; }
 
 
-        private readonly ConcurrentDictionary<long, CommitPoint> _commitPoints; 
+        private readonly ConcurrentDictionary<long, CommitPoint> _commitPoints;
 
         public static MasterFile Create(IPersistenceManager persistenceManager, string directoryPath,
                                         StoreConfiguration storeConfiguration, Guid storeSetId)
@@ -129,8 +129,8 @@ namespace BrightstarDB.Storage
         {
             var header = new byte[HeaderSize];
             BitConverter.GetBytes(MagicNumber).CopyTo(header, 0);
-            header[4] = (byte) StoreType;
-            header[5] = (byte) PersistenceType;
+            header[4] = (byte)StoreType;
+            header[5] = (byte)PersistenceType;
             BitConverter.GetBytes(StoreFormatVersion).CopyTo(header, 6);
             StoreSetId.ToByteArray().CopyTo(header, 10);
             StoreId.ToByteArray().CopyTo(header, 26);
@@ -146,8 +146,8 @@ namespace BrightstarDB.Storage
             {
                 throw new Exception("Invalid master file. Magic number does not match expected value");
             }
-            StoreType = (StoreType) header[4];
-            PersistenceType = (PersistenceType) header[5];
+            StoreType = (StoreType)header[4];
+            PersistenceType = (PersistenceType)header[5];
             StoreFormatVersion = BitConverter.ToInt32(header, 6);
             var guidBytes = new byte[16];
             Array.Copy(header, 10, guidBytes, 0, 16);
@@ -191,14 +191,14 @@ namespace BrightstarDB.Storage
         public CommitPoint GetCommitPoint(ulong commitPointLocation)
         {
             if (commitPointLocation < HeaderSize ||
-                ((commitPointLocation - HeaderSize)%(ulong) CommitPoint.RecordSize) != 0)
+                ((commitPointLocation - HeaderSize) % (ulong)CommitPoint.RecordSize) != 0)
             {
                 throw new ArgumentException("Invalid commit point offset", "commitPointLocation");
             }
             Stream inputStream = null;
             try
             {
-                return _GetCommitPoint((long) commitPointLocation,
+                return _GetCommitPoint((long)commitPointLocation,
                     () => (inputStream = _persistenceManager.GetInputStream(_masterFilePath)));
             }
             finally
@@ -207,7 +207,7 @@ namespace BrightstarDB.Storage
             }
         }
 
-        private CommitPoint _GetCommitPoint(long commitPointLocation, Func<Stream> getStream )
+        private CommitPoint _GetCommitPoint(long commitPointLocation, Func<Stream> getStream)
         {
             CommitPoint ret;
             if (_commitPoints.TryGetValue(commitPointLocation, out ret)) return ret;
@@ -244,14 +244,14 @@ namespace BrightstarDB.Storage
                         return null;
                     }
                     long recordStart;
-                    if ((stream.Length - HeaderSize)%CommitPoint.RecordSize != 0)
+                    if ((stream.Length - HeaderSize) % CommitPoint.RecordSize != 0)
                     {
-                        recordStart = stream.Length - ((stream.Length - HeaderSize)%CommitPoint.RecordSize) -
-                                      ((skipRecords + 1)*CommitPoint.RecordSize);
+                        recordStart = stream.Length - ((stream.Length - HeaderSize) % CommitPoint.RecordSize) -
+                                      ((skipRecords + 1) * CommitPoint.RecordSize);
                     }
                     else
                     {
-                        recordStart = stream.Length-((skipRecords + 1)*CommitPoint.RecordSize);
+                        recordStart = stream.Length - ((skipRecords + 1) * CommitPoint.RecordSize);
                     }
                     var commitPoint = _GetCommitPoint(recordStart, stream);
                     commitPoint.NextCommitNumber = commitPoint.CommitNumber + (ulong)skipRecords + 1;

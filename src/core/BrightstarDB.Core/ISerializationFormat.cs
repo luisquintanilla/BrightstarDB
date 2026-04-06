@@ -25,7 +25,7 @@ namespace BrightstarDB
         /// </summary>
         String DefaultExtension { get; }
 
-        
+
         /// <summary>
         /// Returns the model that 
         /// </summary>

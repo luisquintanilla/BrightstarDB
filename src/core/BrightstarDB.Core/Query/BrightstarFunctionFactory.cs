@@ -41,7 +41,7 @@ namespace BrightstarDB.Query
                         if (args.Count == 2)
                         {
                             brightstarFunc = new BitAndFunc(args[0], args[1]);
-                        } 
+                        }
                         else
                         {
                             throw new RdfParseException("Incorrect number of arguments for the BrightstarDB bit_and() function.");

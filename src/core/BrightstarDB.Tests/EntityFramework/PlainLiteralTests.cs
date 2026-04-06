@@ -32,11 +32,11 @@ namespace BrightstarDB.Tests.EntityFramework
                 using (var context = new MyEntityContext(dataObjectStore))
                 {
                     var conceptA = context.Concepts.Create();
-                    conceptA.PrefLabel = new []
+                    conceptA.PrefLabel = new[]
                         {
                             new PlainLiteral("Default value"),
-                            new PlainLiteral("English value", "en"), 
-                            new PlainLiteral("US English value", "en-US"), 
+                            new PlainLiteral("English value", "en"),
+                            new PlainLiteral("US English value", "en-US"),
                         };
                     context.SaveChanges();
                     conceptAId = conceptA.Id;
@@ -46,9 +46,9 @@ namespace BrightstarDB.Tests.EntityFramework
                     var conceptA = context.Concepts.FirstOrDefault(c => c.Id.Equals(conceptAId));
                     Assert.IsNotNull(conceptA);
                     Assert.That(conceptA.PrefLabel.Count, Is.EqualTo(3));
-                    Assert.That(conceptA.PrefLabel.Any(l=>l.Value.Equals("Default value") && l.Language.Equals(String.Empty)));
-                    Assert.That(conceptA.PrefLabel.Any(l=>l.Value.Equals("English value") && l.Language.Equals("en")));
-                    Assert.That(conceptA.PrefLabel.Any(l=>l.Value.Equals("US English value") && l.Language.Equals("en-us")));
+                    Assert.That(conceptA.PrefLabel.Any(l => l.Value.Equals("Default value") && l.Language.Equals(String.Empty)));
+                    Assert.That(conceptA.PrefLabel.Any(l => l.Value.Equals("English value") && l.Language.Equals("en")));
+                    Assert.That(conceptA.PrefLabel.Any(l => l.Value.Equals("US English value") && l.Language.Equals("en-us")));
                 }
             }
         }
@@ -85,7 +85,7 @@ namespace BrightstarDB.Tests.EntityFramework
                 {
                     var conceptB = context.Concepts.FirstOrDefault(c => c.Id.Equals(conceptBId));
                     Assert.IsNotNull(conceptB);
-                    Assert.IsNull(conceptB.PrefLabel.FirstOrDefault(l=>l.Language.Equals("en")));
+                    Assert.IsNull(conceptB.PrefLabel.FirstOrDefault(l => l.Language.Equals("en")));
                     var label = conceptB.PrefLabel.FirstOrDefault(l => l.Language.Equals("en-us"));
                     Assert.IsNotNull(label);
                     Assert.AreEqual("US English value", label.Value);
@@ -158,14 +158,14 @@ namespace BrightstarDB.Tests.EntityFramework
                     var results =
                         context.Concepts.SelectMany(c => c.PrefLabel.Where(p => p.Language.Equals("fr"))).ToList();
                     Assert.AreEqual(2, results.Count());
-                    foreach(var r in results) Console.WriteLine("{0}@{1}", r.Value, r.Language);
-                    Assert.IsTrue(results.All(r=>r.Language.Equals("fr")));
-                    Assert.IsTrue(results.Any(r=>r.Value.Equals("Cartes topiques")));
+                    foreach (var r in results) Console.WriteLine("{0}@{1}", r.Value, r.Language);
+                    Assert.IsTrue(results.All(r => r.Language.Equals("fr")));
+                    Assert.IsTrue(results.Any(r => r.Value.Equals("Cartes topiques")));
                     Assert.IsTrue(results.Any(r => r.Value.Equals("Web sémantique")));
                 }
             }
         }
 
-        
+
     }
 }

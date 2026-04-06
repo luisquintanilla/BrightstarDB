@@ -4,7 +4,7 @@
     {
         public static string Pluralize(this string singular)
         {
-            string root=singular, suffix;
+            string root = singular, suffix;
             if (singular.EndsWith("y"))
             {
                 root = singular.Substring(0, singular.Length - 1);

@@ -135,12 +135,12 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                     // Append all of the siblings entries
                     _page.SetData(sibling.GetData(), KeyOffset(0),
                                KeyOffset(KeyCount),
-                               sibling.KeyCount*_config.KeySize);
+                               sibling.KeyCount * _config.KeySize);
                     if (_config.ValueSize > 0)
                     {
                         _page.SetData(sibling.GetData(), ValueOffset(0),
                                    ValueOffset(KeyCount),
-                                   sibling.KeyCount*_config.ValueSize);
+                                   sibling.KeyCount * _config.ValueSize);
                     }
                 }
                 else
@@ -149,10 +149,10 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                     RightShift(sibling.KeyCount);
                     _page.SetData(sibling.GetData(), KeyOffset(0),
                                KeyOffset(0),
-                               sibling.KeyCount*_config.KeySize);
+                               sibling.KeyCount * _config.KeySize);
                     _page.SetData(sibling.GetData(), ValueOffset(0),
                                ValueOffset(0),
-                               sibling.KeyCount*_config.ValueSize);
+                               sibling.KeyCount * _config.ValueSize);
                 }
                 KeyCount += sibling.KeyCount;
                 return true;
@@ -171,7 +171,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                     if (overwrite)
                     {
                         EnsureWriteable(txnId);
-                        _page.SetData(value, 0, 
+                        _page.SetData(value, 0,
                             ValueOffset(insertIndex),
                             Math.Min(value.Length, _config.ValueSize));
                         return;
@@ -205,11 +205,11 @@ _config.BTreeDebug("LeafNode.Insert@{0}. Key={1}. Updated Node: {2}",PageId, key
             _config.BTreeDebug("LeafNode.Split@{0}. Keys before: {1}", PageId, DumpKeys());
 #endif
             rightNodePage.SetData(_page.Data, KeyOffset(_config.LeafSplitIndex),
-                                  KeyOffset(0), numToMove*_config.KeySize);
+                                  KeyOffset(0), numToMove * _config.KeySize);
             if (_config.ValueSize > 0)
             {
                 rightNodePage.SetData(_page.Data, ValueOffset(_config.LeafSplitIndex),
-                                      ValueOffset(0), numToMove*_config.ValueSize);
+                                      ValueOffset(0), numToMove * _config.ValueSize);
             }
             var rightNodeKeyCount = numToMove;
             rightNodePage.SetData(BitConverter.GetBytes(rightNodeKeyCount), 0, 0, 4);
@@ -248,10 +248,10 @@ _config.BTreeDebug("LeafNode.Split@{0}. Keys after: {1}", PageId, DumpKeys());
                 {
                     Array.Copy(_page.Data, KeyOffset(deleteIndex + 1),
                                _page.Data, KeyOffset(deleteIndex),
-                               moveUp*_config.KeySize);
+                               moveUp * _config.KeySize);
                     Array.Copy(_page.Data, ValueOffset(deleteIndex + 1),
                                _page.Data, ValueOffset(deleteIndex),
-                               moveUp*_config.ValueSize);
+                               moveUp * _config.ValueSize);
                 }
                 KeyCount--;
             }
@@ -262,18 +262,18 @@ _config.BTreeDebug("LeafNode.Split@{0}. Keys after: {1}", PageId, DumpKeys());
             var left = leftNode as LeafNode;
             if (left == null) throw new ArgumentException("Expected a LeafNode instance", "leftNode");
 
-            int copyCount = (KeyCount + left.KeyCount)/2 - KeyCount;
+            int copyCount = (KeyCount + left.KeyCount) / 2 - KeyCount;
             if (copyCount > 0)
             {
                 EnsureWriteable(txnId);
                 RightShift(copyCount);
                 // Copy keys and data from left node
                 int keyOffset = KeyOffset(left.KeyCount - copyCount);
-                _page.SetData(left.GetData(), keyOffset, KeyOffset(0), copyCount*_config.KeySize);
+                _page.SetData(left.GetData(), keyOffset, KeyOffset(0), copyCount * _config.KeySize);
                 if (_config.ValueSize > 0)
                 {
                     int valueOffset = ValueOffset(left.KeyCount - copyCount);
-                    _page.SetData(left.GetData(), valueOffset, ValueOffset(0), copyCount*_config.ValueSize);
+                    _page.SetData(left.GetData(), valueOffset, ValueOffset(0), copyCount * _config.ValueSize);
                 }
                 KeyCount += copyCount;
                 left.KeyCount -= copyCount;
@@ -288,13 +288,13 @@ _config.BTreeDebug("LeafNode.Split@{0}. Keys after: {1}", PageId, DumpKeys());
             var right = rightNode as LeafNode;
             if (right == null) throw new ArgumentException("Expected a LeafNode instance", "rightNode");
 
-            int copyCount = (KeyCount + rightNode.KeyCount)/2 - KeyCount;
+            int copyCount = (KeyCount + rightNode.KeyCount) / 2 - KeyCount;
             if (copyCount > 0)
             {
                 EnsureWriteable(txnId);
                 // Copy keys and data from right
                 _page.SetData(right.GetData(), BPlusTreeConfiguration.LeafNodeHeaderSize,
-                              KeyOffset(KeyCount), copyCount*_config.KeySize);
+                              KeyOffset(KeyCount), copyCount * _config.KeySize);
                 if (_config.ValueSize > 0)
                 {
                     _page.SetData(right.GetData(), _config.LeafDataStartOffset,
@@ -321,8 +321,8 @@ _config.BTreeDebug("LeafNode.Split@{0}. Keys after: {1}", PageId, DumpKeys());
         {
             // TODO: Replace this with a version that passes in a key/value buffer to fill instead of always creating a new KeyValuePair
             int startOffset, startIx, offset, ix;
-            int endIx = BPlusTreeConfiguration.LeafNodeHeaderSize + (_keyCount*_config.KeySize);
-            for (startOffset = BPlusTreeConfiguration.LeafNodeHeaderSize, startIx = 0; startOffset < endIx && _page.Data.Compare(startOffset, fromKey, 0, _config.KeySize) < 0; startOffset+=_config.KeySize, startIx++ ){}
+            int endIx = BPlusTreeConfiguration.LeafNodeHeaderSize + (_keyCount * _config.KeySize);
+            for (startOffset = BPlusTreeConfiguration.LeafNodeHeaderSize, startIx = 0; startOffset < endIx && _page.Data.Compare(startOffset, fromKey, 0, _config.KeySize) < 0; startOffset += _config.KeySize, startIx++) { }
             for (offset = startOffset, ix = startIx;
                  offset < endIx && (_page.Data.Compare(offset, toKey, 0, _config.KeySize) <= 0);
                  offset += _config.KeySize, ix++)
@@ -378,7 +378,7 @@ _config.BTreeDebug("LeafNode.Split@{0}. Keys after: {1}", PageId, DumpKeys());
                 return;
             }
             Console.WriteLine("{0}LEAF@{1}[{2} keys: {3} - {4}]",
-                new string(' ', indentLevel*4), PageId, KeyCount, LeftmostKey.Dump(), RightmostKey.Dump());
+                new string(' ', indentLevel * 4), PageId, KeyCount, LeftmostKey.Dump(), RightmostKey.Dump());
         }
 
         public string Dump()
@@ -415,10 +415,10 @@ _config.BTreeDebug("LeafNode.Split@{0}. Keys after: {1}", PageId, DumpKeys());
         private void LeftShift(int count)
         {
             int remaining = KeyCount - count;
-            _page.SetData(_page.Data, BPlusTreeConfiguration.LeafNodeHeaderSize + (count*_config.KeySize),
-                          BPlusTreeConfiguration.LeafNodeHeaderSize, remaining*_config.KeySize);
-            _page.SetData(_page.Data, _config.LeafDataStartOffset + (count*_config.ValueSize),
-                          _config.LeafDataStartOffset, remaining*_config.ValueSize);
+            _page.SetData(_page.Data, BPlusTreeConfiguration.LeafNodeHeaderSize + (count * _config.KeySize),
+                          BPlusTreeConfiguration.LeafNodeHeaderSize, remaining * _config.KeySize);
+            _page.SetData(_page.Data, _config.LeafDataStartOffset + (count * _config.ValueSize),
+                          _config.LeafDataStartOffset, remaining * _config.ValueSize);
             KeyCount -= count;
         }
 
@@ -429,14 +429,14 @@ _config.BTreeDebug("LeafNode.Split@{0}. Keys after: {1}", PageId, DumpKeys());
         private void RightShift(int count)
         {
             int i, keyOffset;
-            int keyShift = count*_config.KeySize;
+            int keyShift = count * _config.KeySize;
             if (_config.ValueSize > 0)
             {
                 int valueOffset;
                 int valueShift = count * _config.ValueSize;
                 for (i = KeyCount - 1,
-                     keyOffset = BPlusTreeConfiguration.LeafNodeHeaderSize + ((KeyCount - 1)*_config.KeySize),
-                     valueOffset = _config.LeafDataStartOffset + ((KeyCount - 1)*_config.ValueSize);
+                     keyOffset = BPlusTreeConfiguration.LeafNodeHeaderSize + ((KeyCount - 1) * _config.KeySize),
+                     valueOffset = _config.LeafDataStartOffset + ((KeyCount - 1) * _config.ValueSize);
                      i >= 0;
                      i--, keyOffset -= _config.KeySize, valueOffset -= _config.ValueSize)
                 {
@@ -459,11 +459,11 @@ _config.BTreeDebug("LeafNode.Split@{0}. Keys after: {1}", PageId, DumpKeys());
         private void RightShiftFrom(int ix, int numPlaces)
         {
             int i, keyOffset;
-            int keyShift = numPlaces*_config.KeySize;
+            int keyShift = numPlaces * _config.KeySize;
             if (_config.ValueSize > 0)
             {
                 int valueOffset;
-                int valueShift = numPlaces*_config.ValueSize;
+                int valueShift = numPlaces * _config.ValueSize;
                 for (i = KeyCount - 1,
                      keyOffset = BPlusTreeConfiguration.LeafNodeHeaderSize + ((KeyCount - 1) * _config.KeySize),
                      valueOffset = _config.LeafDataStartOffset + ((KeyCount - 1) * _config.ValueSize);
@@ -499,7 +499,7 @@ _config.BTreeDebug("LeafNode.Split@{0}. Keys after: {1}", PageId, DumpKeys());
         /// <param name="buff">The buffer to load the key into</param>
         private void GetKey(int ix, byte[] buff)
         {
-            var offset = BPlusTreeConfiguration.LeafNodeHeaderSize + (_config.KeySize*ix);
+            var offset = BPlusTreeConfiguration.LeafNodeHeaderSize + (_config.KeySize * ix);
             Array.Copy(_page.Data, offset, buff, 0, _config.KeySize);
         }
 
@@ -526,9 +526,9 @@ _config.BTreeDebug("LeafNode.Split@{0}. Keys after: {1}", PageId, DumpKeys());
         /// </summary>
         /// <param name="ix">The offset of the value to be read</param>
         /// <param name="buff">The buffer to load the value into</param>
-        private void GetValue(int ix , byte[] buff)
+        private void GetValue(int ix, byte[] buff)
         {
-            var offset = _config.LeafDataStartOffset + (_config.ValueSize*ix);
+            var offset = _config.LeafDataStartOffset + (_config.ValueSize * ix);
             Array.Copy(_page.Data, offset, buff, 0, _config.ValueSize);
         }
 
@@ -540,7 +540,7 @@ _config.BTreeDebug("LeafNode.Split@{0}. Keys after: {1}", PageId, DumpKeys());
         /// <param name="buff">The new value to write</param>
         private void SetValue(int ix, byte[] buff)
         {
-            var offset = _config.LeafDataStartOffset + (_config.ValueSize*ix);
+            var offset = _config.LeafDataStartOffset + (_config.ValueSize * ix);
             _page.SetData(buff, 0, offset, _config.ValueSize);
         }
 
@@ -549,7 +549,7 @@ _config.BTreeDebug("LeafNode.Split@{0}. Keys after: {1}", PageId, DumpKeys());
             // TODO: replace with a binary search algorithm
             for (int i = 0, keyOffset = BPlusTreeConfiguration.LeafNodeHeaderSize;
                  i < KeyCount;
-                 i++,keyOffset += _config.KeySize)
+                 i++, keyOffset += _config.KeySize)
             {
                 var cmp = key.Compare(0, _page.Data, keyOffset, _config.KeySize);
                 if (cmp == 0) return i;
@@ -560,12 +560,12 @@ _config.BTreeDebug("LeafNode.Split@{0}. Keys after: {1}", PageId, DumpKeys());
 
         private int KeyOffset(int keyIndex)
         {
-            return BPlusTreeConfiguration.LeafNodeHeaderSize + (keyIndex*_config.KeySize);
+            return BPlusTreeConfiguration.LeafNodeHeaderSize + (keyIndex * _config.KeySize);
         }
 
         private int ValueOffset(int valueIndex)
         {
-            return _config.LeafDataStartOffset + (valueIndex*_config.ValueSize);
+            return _config.LeafDataStartOffset + (valueIndex * _config.ValueSize);
         }
 
         private void EnsureWriteable(ulong txnId)

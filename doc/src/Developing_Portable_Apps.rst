@@ -4,6 +4,12 @@
  Developing Portable Apps
 =========================
 
+.. warning::
+
+   **This page is archived.** It describes features from BrightstarDB 1.x that are
+   no longer part of the actively maintained codebase as of BrightstarDB 2.0 (.NET 10).
+   See :ref:`Archived Documentation <Archived_Docs>` for context.
+
 BrightstarDB provides support for a restricted set of platforms through the Windows Portable 
 Class library. The set of platforms has been restricted to ensure that all of the supported
 platforms support the complete set of BrightstarDB features, including the :ref:`Data Object 

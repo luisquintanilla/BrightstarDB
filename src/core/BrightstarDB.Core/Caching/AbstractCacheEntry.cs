@@ -3,7 +3,7 @@ namespace BrightstarDB.Caching
     /// <summary>
     /// Abstract base class for entries in a <see cref="AbstractCache"/>
     /// </summary>
-    public abstract  class AbstractCacheEntry
+    public abstract class AbstractCacheEntry
     {
         /// <summary>
         /// Get or set the entry key

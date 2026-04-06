@@ -14,6 +14,29 @@ either data migration or code changes in client code, these are marked with **BR
 marked with FIX. A number in brackets like this (#123) refers to the relevant issue number in our GitHub issue tracker.
 
 ****************************
+ BrightstarDB 2.0.0
+****************************
+
+**BREAKING**: This release targets .NET 10 (LTS) and .NET Standard 2.0. .NET Framework 4.x is no longer supported as a build target for the core library.
+
+- **BREAKING**: Nancy-based REST server replaced with ASP.NET Core Minimal APIs. Server configuration now uses ``appsettings.json`` instead of XML config sections.
+- **BREAKING**: dotNetRDF upgraded from 2.7.5 to 3.5.1. This is a major version bump with breaking API changes in custom SPARQL extensions.
+- **BREAKING**: OData support removed. Use the REST API or SPARQL endpoints instead.
+- **BREAKING**: Polaris WPF management tool archived. Use SPARQL clients or the HTTP API.
+- **BREAKING**: Portable Class Library (PCL) builds removed. Use the ``netstandard2.0`` target instead.
+- **BREAKING**: Mono-specific build support removed. Use the standard .NET 10 SDK cross-platform.
+- NEW: ``BrightstarDB.Server.AspNetCore`` — modern REST server with Minimal APIs, HTTP Basic Auth, CORS support, and Windows Service hosting.
+- NEW: Central Package Management via ``Directory.Packages.props``
+- NEW: ``Directory.Build.props`` for shared build configuration across all projects
+- NEW: Comprehensive migration documentation in ``docs/migration/``
+- FIX: PlainLiteral vs xsd:string matching for RDF 1.1 compatibility (dual-search strategy in StoreSparqlDataset)
+- FIX: C# 14 ``array.Reverse()`` resolution change (LangVersion pinned to 12.0)
+- FIX: ``Uri.EscapeUriString`` deprecation (SYSLIB0013) — composite key encoding fixed
+- FIX: ``SHA1Managed`` deprecation (SYSLIB0021) — replaced with ``SHA1.Create()``
+- FIX: Empty language code serialization in SPARQL DELETE statements
+- FIX: ``BitAndFunc``/``BitOrFunc`` rewritten for dotNetRDF 3.x expression evaluation API
+
+****************************
  BrightstarDB 1.13.3
 ****************************
 

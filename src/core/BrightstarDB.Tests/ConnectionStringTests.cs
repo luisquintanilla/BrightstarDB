@@ -38,11 +38,11 @@ namespace BrightstarDB.Tests
 
         [Test]
         public void TestEmbeddedWithoutStoresDirectory()
+        {
+            Assert.Throws<FormatException>(() =>
             {
-                Assert.Throws<FormatException>(() =>
-                {
-                    var cs = new ConnectionString("type=embedded;storeDirectory=c:\\brightstar");
-                });
-            }
+                var cs = new ConnectionString("type=embedded;storeDirectory=c:\\brightstar");
+            });
+        }
     }
 }

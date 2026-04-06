@@ -42,11 +42,11 @@ namespace BrightstarDB.Tests.EntityFramework
             _dept.Persons.Add(bert);
             _context.SaveChanges();
         }
-        
+
         [Test]
         public void TestSimpleCollectionFilter()
         {
-            
+
 
             // If we look for all people whose name starts with A (using context as starting point), we get two results
             var queryResult = _context.Persons.Where(p => p.Name.StartsWith("A")).ToList();

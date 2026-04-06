@@ -33,7 +33,7 @@ namespace BrightstarDB.Tests
         {
             var storeName = "TestBitwiseAnd_" + DateTime.Now.Ticks;
             _client.CreateStore(storeName);
-            var job = _client.ExecuteTransaction(storeName, new UpdateTransactionData {InsertData = _testData});
+            var job = _client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = _testData });
             TestHelper.AssertJobCompletesSuccessfully(_client, storeName, job);
 
             var results = _client.ExecuteQuery(storeName,
@@ -54,7 +54,7 @@ SELECT ?s WHERE {
         {
             var storeName = "TestBitwiseOr_" + DateTime.Now.Ticks;
             _client.CreateStore(storeName);
-            var job = _client.ExecuteTransaction(storeName, new UpdateTransactionData {InsertData = _testData});
+            var job = _client.ExecuteTransaction(storeName, new UpdateTransactionData { InsertData = _testData });
             TestHelper.AssertJobCompletesSuccessfully(_client, storeName, job);
 
             var results = _client.ExecuteQuery(storeName,
@@ -66,7 +66,7 @@ SELECT ?s WHERE {
 }");
             var resultsDoc = XDocument.Load(results);
             Assert.AreEqual(2, resultsDoc.SparqlResultRows().Count());
-            Assert.IsTrue(resultsDoc.SparqlResultRows().Any(r=>r.GetColumnValue("s").ToString().Equals("http://example.org/x")));
+            Assert.IsTrue(resultsDoc.SparqlResultRows().Any(r => r.GetColumnValue("s").ToString().Equals("http://example.org/x")));
             Assert.IsTrue(resultsDoc.SparqlResultRows().Any(r => r.GetColumnValue("s").ToString().Equals("http://example.org/y")));
         }
     }

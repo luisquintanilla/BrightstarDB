@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BrightstarDB.Caching;
@@ -19,7 +20,7 @@ namespace BrightstarDB.Client
     /// <summary>
     /// .NET wrapper for the Brightstar REST API
     /// </summary>
-    public class BrightstarRestClient : IBrightstarService
+    public partial class BrightstarRestClient : IBrightstarService
     {
         private const string JsonContentType = "application/json";
         private const string UrlEncodedFormContentType = "application/x-www-form-urlencoded";
@@ -28,8 +29,6 @@ namespace BrightstarDB.Client
 
         private readonly Uri _serviceEndpoint;
         private readonly IRequestAuthenticator _requestAuthenticator;
-        private int _pollInterval = DefaultPollInterval;
-        private int _pollTimeout = DefaultPollTimeout;
 
         private ICache _clientCache;
 
@@ -39,11 +38,13 @@ namespace BrightstarDB.Client
         /// </summary>
         public int PollInterval
         {
-            get { return _pollInterval; }
-            set { if (value <= 0) throw new ArgumentException("Poll interval must be greater than 0");
-                _pollInterval = value;
+            get;
+            set
+            {
+                if (value <= 0) throw new ArgumentException("Poll interval must be greater than 0");
+                field = value;
             }
-        }
+        } = DefaultPollInterval;
 
         /// <summary>
         /// Get or set the amount of time (in milliseconds)
@@ -53,13 +54,13 @@ namespace BrightstarDB.Client
         /// should wait indefinitely for completion.</remarks>
         public int PollTimeout
         {
-            get { return _pollTimeout; }
+            get;
             set
             {
                 if (value < 0) throw new ArgumentException("Poll timeout must be greater than or equal to 0");
-                _pollTimeout = value;
+                field = value;
             }
-        }
+        } = DefaultPollTimeout;
 
         internal BrightstarRestClient(string serviceEndpoint, IRequestAuthenticator requestAuthenticator, ICache clientCache)
         {
@@ -95,7 +96,7 @@ namespace BrightstarDB.Client
             return storesResponse.Stores;
         }
 
-        
+
         /// <summary>
         /// Create a new store
         /// </summary>
@@ -149,11 +150,22 @@ namespace BrightstarDB.Client
             }
         }
 
+#if NET7_0_OR_GREATER
+        [GeneratedRegex(@"^[a-zA-Z0-9-_\.\+,\(\)]{1,1024}$")]
+        private static partial Regex StoreNameValidationRegex();
+#else
+        private static readonly Regex StoreNameValidationRegex = new Regex(@"^[a-zA-Z0-9-_\.\+,\(\)]{1,1024}$", RegexOptions.Compiled);
+#endif
+
         private static void ValidateStoreName(string storeName, string argName = "storeName")
         {
             if (storeName == null) throw new ArgumentNullException(argName, Strings.BrightstarServiceClient_StoreNameMustNotBeNull);
             if (String.IsNullOrEmpty(storeName)) throw new ArgumentException(Strings.BrightstarServiceClient_StoreNameMustNotBeEmptyString, argName);
-            if (!System.Text.RegularExpressions.Regex.IsMatch(storeName, Constants.StoreNameRegex))
+#if NET7_0_OR_GREATER
+            if (!StoreNameValidationRegex().IsMatch(storeName))
+#else
+            if (!StoreNameValidationRegex.IsMatch(storeName))
+#endif
             {
                 throw new ArgumentException(Strings.BrightstarServiceClient_InvalidStoreName, argName);
             }
@@ -204,7 +216,7 @@ namespace BrightstarDB.Client
                     return false;
                 }
                 var webExceptionDetail = GetAndLogWebExceptionDetail("HEAD", storeName, wex);
-                throw new BrightstarClientException(String.Format("Could not verify existence of store - '{0}'",webExceptionDetail), wex);                
+                throw new BrightstarClientException(String.Format("Could not verify existence of store - '{0}'", webExceptionDetail), wex);
             }
         }
 
@@ -219,7 +231,7 @@ namespace BrightstarDB.Client
             try
             {
                 var response = AuthenticatedGet(storeName + "/graphs");
-                return Deserialize <List<string>>(response);
+                return Deserialize<List<string>>(response);
             }
             catch (BrightstarClientException ex)
             {
@@ -238,7 +250,7 @@ namespace BrightstarDB.Client
                 }
                 var webExceptionDetail = GetAndLogWebExceptionDetail("GET", storeName + "/graphs", wex);
                 throw new BrightstarClientException(
-                    String.Format("Could not retrieve named graphs for store '{0}' - '{1}'.",storeName,webExceptionDetail), wex);
+                    String.Format("Could not retrieve named graphs for store '{0}' - '{1}'.", storeName, webExceptionDetail), wex);
             }
         }
 
@@ -328,7 +340,7 @@ namespace BrightstarDB.Client
 
             var queryResponse = AuthenticatedFormPost(storeName + "/sparql", parameters, accept);
             var responseStream = queryResponse.GetResponseStream();
-            streamFormat = (ISerializationFormat) SparqlResultsFormat.GetResultsFormat(queryResponse.ContentType) ??
+            streamFormat = (ISerializationFormat)SparqlResultsFormat.GetResultsFormat(queryResponse.ContentType) ??
                            RdfFormat.GetResultsFormat(queryResponse.ContentType);
 
             // Cache result and return
@@ -383,7 +395,7 @@ namespace BrightstarDB.Client
                                    SparqlResultsFormat resultsFormat = null,
             RdfFormat graphFormat = null)
         {
-            return ExecuteQuery(storeName, queryExpression, (string[]) null, ifNotModifiedSince, resultsFormat, graphFormat);
+            return ExecuteQuery(storeName, queryExpression, (string[])null, ifNotModifiedSince, resultsFormat, graphFormat);
         }
 
         /// <summary>
@@ -403,7 +415,7 @@ namespace BrightstarDB.Client
                                    SparqlResultsFormat resultsFormat = null,
             RdfFormat graphFormat = null)
         {
-            return ExecuteQuery(storeName, queryExpression, defaultGraphUri == null ? null : new[] {defaultGraphUri},
+            return ExecuteQuery(storeName, queryExpression, defaultGraphUri == null ? null : new[] { defaultGraphUri },
                 ifNotModifiedSince, resultsFormat, graphFormat);
         }
 
@@ -461,7 +473,7 @@ namespace BrightstarDB.Client
         public Stream ExecuteQuery(ICommitPointInfo commitPoint, string queryExpression,
                                    SparqlResultsFormat resultsFormat = null, RdfFormat graphFormat = null)
         {
-            return ExecuteQuery(commitPoint, queryExpression, (IEnumerable<string>) null, resultsFormat, graphFormat);
+            return ExecuteQuery(commitPoint, queryExpression, (IEnumerable<string>)null, resultsFormat, graphFormat);
         }
 
 
@@ -477,7 +489,7 @@ namespace BrightstarDB.Client
         public Stream ExecuteQuery(ICommitPointInfo commitPoint, string queryExpression, string defaultGraphUri,
                                    SparqlResultsFormat resultsFormat = null, RdfFormat graphFormat = null)
         {
-            return ExecuteQuery(commitPoint, queryExpression, new string[] {defaultGraphUri}, resultsFormat, graphFormat);
+            return ExecuteQuery(commitPoint, queryExpression, new string[] { defaultGraphUri }, resultsFormat, graphFormat);
         }
 
 
@@ -531,7 +543,7 @@ namespace BrightstarDB.Client
             }
             var queryResponse = AuthenticatedFormPost(queryUri, postParameters, MakeAcceptHeader(resultsFormat, graphFormat));
             streamFormat = SparqlResultsFormat.GetResultsFormat(queryResponse.ContentType) ??
-                           (ISerializationFormat) RdfFormat.GetResultsFormat(queryResponse.ContentType);
+                           (ISerializationFormat)RdfFormat.GetResultsFormat(queryResponse.ContentType);
             return queryResponse.GetResponseStream();
         }
 
@@ -599,13 +611,13 @@ namespace BrightstarDB.Client
         {
             return ExecuteTransaction(storeName,
                                       new UpdateTransactionData
-                                          {
-                                              ExistencePreconditions = preconditions,
-                                              NonexistencePreconditions = String.Empty,
-                                              DeletePatterns = deletePatterns,
-                                              InsertData = insertData,
-                                              DefaultGraphUri = defaultGraphUri
-                                          }, waitForCompletion, label);
+                                      {
+                                          ExistencePreconditions = preconditions,
+                                          NonexistencePreconditions = String.Empty,
+                                          DeletePatterns = deletePatterns,
+                                          InsertData = insertData,
+                                          DefaultGraphUri = defaultGraphUri
+                                      }, waitForCompletion, label);
         }
 
 
@@ -868,12 +880,12 @@ namespace BrightstarDB.Client
 
             var postUri = storeName + "/commits";
             var postCommit = new CommitPointInfoObject
-                {
-                    Id = commitPoint.Id,
-                    StoreName = commitPoint.StoreName,
-                    CommitTime = commitPoint.CommitTime,
-                    JobId = commitPoint.JobId
-                };
+            {
+                Id = commitPoint.Id,
+                StoreName = commitPoint.StoreName,
+                CommitTime = commitPoint.CommitTime,
+                JobId = commitPoint.JobId
+            };
             AuthenticatedPost(postUri, postCommit);
         }
 
@@ -1280,7 +1292,7 @@ namespace BrightstarDB.Client
             catch (WebException wex)
             {
                 var webExceptionDetail = GetAndLogWebExceptionDetail("DELETE", relativePath, wex);
-                throw new BrightstarClientException(webExceptionDetail, wex);                
+                throw new BrightstarClientException(webExceptionDetail, wex);
             }
         }
 
@@ -1289,32 +1301,32 @@ namespace BrightstarDB.Client
             String webExceptionDetail;
 
             if (wex.Response is HttpWebResponse)
-            {                
-                    var httpResponse = wex.Response as HttpWebResponse;
-                    var responseStream = wex.Response.GetResponseStream();
-                    if (responseStream != null)
+            {
+                var httpResponse = wex.Response as HttpWebResponse;
+                var responseStream = wex.Response.GetResponseStream();
+                if (responseStream != null)
+                {
+                    using (var rdr = new StreamReader(responseStream))
                     {
-                        using (var rdr = new StreamReader(responseStream))
-                        {
-                            var responseContent = rdr.ReadToEnd();
+                        var responseContent = rdr.ReadToEnd();
 
-                            webExceptionDetail = String.Format("HTTP {0} to {1} failed. Server response was: {2} - {3} : {4}",
-                                               httpMethod, requestUri, httpResponse.StatusCode,
-                                               httpResponse.StatusDescription,
-                                               responseContent);
-                        }
-                    }
-                    else
-                    {
-                        webExceptionDetail = String.Format("HTTP {0} to {1} failed. Server response was: {2} - {3}",
+                        webExceptionDetail = String.Format("HTTP {0} to {1} failed. Server response was: {2} - {3} : {4}",
                                            httpMethod, requestUri, httpResponse.StatusCode,
-                                           httpResponse.StatusDescription);                        
-                    }                                    
+                                           httpResponse.StatusDescription,
+                                           responseContent);
+                    }
+                }
+                else
+                {
+                    webExceptionDetail = String.Format("HTTP {0} to {1} failed. Server response was: {2} - {3}",
+                                       httpMethod, requestUri, httpResponse.StatusCode,
+                                       httpResponse.StatusDescription);
+                }
             }
             else
             {
                 webExceptionDetail = String.Format("HTTP {0} to {1} failed. Could not process server response.",
-                    httpMethod, requestUri);                
+                    httpMethod, requestUri);
             }
 
             Logging.LogWarning(BrightstarEventId.TransportError, webExceptionDetail);

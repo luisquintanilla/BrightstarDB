@@ -28,7 +28,7 @@ namespace BrightstarDB.Tests
         private BrightstarDynamicContext GetDynamicContext()
         {
             return new BrightstarDynamicContext(GetContext("embedded"));
-        } 
+        }
 
         [Test]
         public void TestCreateDynamicContext()
@@ -117,7 +117,7 @@ namespace BrightstarDB.Tests
             var dc = GetDynamicContext();
             var store = dc.CreateStore(storeId);
             var o = store.MakeNewObject();
-            o.Name = new List<string> {"graham", "gra"};
+            o.Name = new List<string> { "graham", "gra" };
             store.SaveChanges();
             store = dc.OpenStore(storeId);
             var p = store.GetDataObject(o.Identity);
@@ -138,7 +138,7 @@ namespace BrightstarDB.Tests
             store = dc.OpenStore(storeId);
             var p = store.GetDataObject(o.Identity);
             var name = p.Name;
-            
+
             p.Name = name;
 
             var names = p.Name as IEnumerable<object>;
@@ -198,7 +198,7 @@ namespace BrightstarDB.Tests
             var o3 = store.MakeNewObject();
             o3.Name = "fred";
 
-            o1.friends = new [] {o2, o3};
+            o1.friends = new[] { o2, o3 };
             store.SaveChanges();
 
             store = dc.OpenStore(storeId);

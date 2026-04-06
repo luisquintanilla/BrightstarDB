@@ -18,7 +18,7 @@ namespace BrightstarDB.EntityFramework
     /// <summary>
     /// The non-generic base for the <see cref="IEntityCollection{T}"/> interface
     /// </summary>
-    public interface IEntityCollection 
+    public interface IEntityCollection
     {
         /// <summary>
         /// Returns true if the entity collection is already loaded

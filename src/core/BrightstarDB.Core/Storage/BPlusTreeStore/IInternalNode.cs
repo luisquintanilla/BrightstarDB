@@ -79,7 +79,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
         /// <returns>True if the node achieves its minimum size by the redistribution process, false otherwise</returns>
         bool RedistributeFromLeft(ulong txnId, IInternalNode leftSibling, byte[] joinKey, byte[] newJoinKey);
 
-        bool RedistributeFromRight(ulong txnId, IInternalNode rightSibling, byte[] joinKey, byte [] newJoinKey);
+        bool RedistributeFromRight(ulong txnId, IInternalNode rightSibling, byte[] joinKey, byte[] newJoinKey);
 
         /// <summary>
         /// Modifies the key that is immediately before the one that indexes the specified child node

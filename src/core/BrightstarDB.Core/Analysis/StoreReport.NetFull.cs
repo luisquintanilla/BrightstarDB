@@ -16,19 +16,19 @@ namespace BrightstarDB.Analysis
         /// </summary>
         [XmlAttribute]
         public String StorePath { get; set; }
-        
+
         /// <summary>
         /// The date/time when this report was generated
         /// </summary>
         [XmlAttribute]
         public DateTime ReportTimestamp { get; set; }
-        
+
         /// <summary>
         /// The ID of the store root object
         /// </summary>
         [XmlAttribute]
         public ulong StoreId { get; set; }
-        
+
         /// <summary>
         /// The next object ID to be assigned
         /// </summary>
@@ -54,7 +54,7 @@ namespace BrightstarDB.Analysis
         /// <summary>
         /// Creates a new empty report
         /// </summary>
-        public StoreReport(){ BTrees = new List<BTreeReport>();}
+        public StoreReport() { BTrees = new List<BTreeReport>(); }
 
         /// <summary>
         /// Creates a new initialized report

@@ -29,12 +29,12 @@ namespace BrightstarDB.Tests.EntityFramework
         public void TestCreateItemWithSpecialCharactersInIdentifier()
         {
             var person = new DBPediaPerson
-                             {
-                                 Id = "Aleksandar_Đorđević",
-                                 Name = "Aleksandar Djordjevic",
-                                 GivenName = "Aleksandar",
-                                 Surname = "Djordjevic"
-                             };
+            {
+                Id = "Aleksandar_Đorđević",
+                Name = "Aleksandar Djordjevic",
+                GivenName = "Aleksandar",
+                Surname = "Djordjevic"
+            };
             _myEntityContext.DBPediaPersons.Add(person);
             _myEntityContext.SaveChanges();
 
@@ -46,6 +46,6 @@ namespace BrightstarDB.Tests.EntityFramework
 
         }
 
-        
+
     }
 }

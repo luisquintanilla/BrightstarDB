@@ -10,7 +10,7 @@ namespace BrightstarDB.Rdf
     {
         private readonly XmlWriter _writer;
         private const string RdfNamespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-        
+
 
         public RdfXmlWriter(XmlWriter writer)
         {
@@ -58,7 +58,7 @@ namespace BrightstarDB.Rdf
         {
             if (!String.IsNullOrEmpty(langCode))
             {
-                _writer.WriteAttributeString("xml","lang", null, langCode);
+                _writer.WriteAttributeString("xml", "lang", null, langCode);
             }
         }
 
@@ -74,7 +74,7 @@ namespace BrightstarDB.Rdf
         {
             var ix = uriString.IndexOf('#');
             if (ix < 0) ix = uriString.LastIndexOf('/');
-            return new Tuple<string, string>(uriString.Substring(0, ix+1), uriString.Substring(ix+1));
+            return new Tuple<string, string>(uriString.Substring(0, ix + 1), uriString.Substring(ix + 1));
         }
 
         public void Dispose()

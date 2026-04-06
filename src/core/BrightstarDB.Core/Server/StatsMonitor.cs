@@ -18,13 +18,13 @@ namespace BrightstarDB.Server
             }
             else
             {
-                _jobCounter = (int) (lastCommitId - lastStats.CommitNumber);
+                _jobCounter = (int)(lastCommitId - lastStats.CommitNumber);
                 _lastStatsUpdateTime = lastStats.CommitTime;
             }
             _statsUpdateAction = statsUpdateAction;
         }
 
-        public void OnJobScheduled( bool incrementTransactionCount  =true)
+        public void OnJobScheduled(bool incrementTransactionCount = true)
         {
             if (_statsUpdateAction == null) return;
             if (Configuration.StatsUpdateTransactionCount == 0 && Configuration.StatsUpdateTimespan == 0) return;

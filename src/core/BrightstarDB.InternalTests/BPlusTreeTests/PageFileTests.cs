@@ -21,9 +21,9 @@ namespace BrightstarDB.InternalTests.BPlusTreeTests
             PersistenceManager = new FilePersistenceManager();
 #endif
             TestBuffer = new byte[8192];
-            for (ulong i = 0; i < 1024; i++ )
+            for (ulong i = 0; i < 1024; i++)
             {
-                BitConverter.GetBytes(i).CopyTo(TestBuffer, (int)i*8);
+                BitConverter.GetBytes(i).CopyTo(TestBuffer, (int)i * 8);
             }
         }
 
@@ -32,7 +32,7 @@ namespace BrightstarDB.InternalTests.BPlusTreeTests
         {
             if (PersistenceManager.FileExists(PageFilePath)) PersistenceManager.DeleteFile(PageFilePath);
             using (var readwritePageStore =
-                                new AppendOnlyFilePageStore(PersistenceManager, PageFilePath,8192, false, false))
+                                new AppendOnlyFilePageStore(PersistenceManager, PageFilePath, 8192, false, false))
             {
                 Assert.AreEqual(8192, readwritePageStore.PageSize);
                 Assert.IsTrue(readwritePageStore.CanRead);
@@ -75,7 +75,7 @@ namespace BrightstarDB.InternalTests.BPlusTreeTests
         private static void ValidateBuffer(byte[] buffer)
         {
             Assert.AreEqual(8192, buffer.Length);
-            for(int i = 0; i < buffer.Length;i++)
+            for (int i = 0; i < buffer.Length; i++)
             {
                 Assert.AreEqual(TestBuffer[i], buffer[i], "Mismatch in buffer at index {0}", i);
             }

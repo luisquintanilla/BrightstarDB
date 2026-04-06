@@ -1,6 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net472</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <AssemblyName>BrightstarDB.CodeGeneration.Console</AssemblyName>
     <SignAssembly>true</SignAssembly>
@@ -26,8 +26,8 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Build" Version="17.5.0" />
-    <PackageReference Include="PowerArgs" Version="3.6.0" />
+    <PackageReference Include="Microsoft.Build" />
+    <PackageReference Include="PowerArgs" />
   </ItemGroup>
 
   <ItemGroup>

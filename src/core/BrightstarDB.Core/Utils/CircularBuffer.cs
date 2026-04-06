@@ -6,11 +6,15 @@
         private int _index;
         public int Count { get; private set; }
         public int Capacity { get; private set; }
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _lock = new();
+#else
         private readonly object _lock = new object();
+#endif
 
         public CircularBuffer(int capacity)
         {
-            _buffer= new T[capacity];
+            _buffer = new T[capacity];
             _index = 0;
             Capacity = capacity;
         }
@@ -21,7 +25,7 @@
             {
                 int insertIndex = _index++;
                 _buffer[insertIndex] = item;
-                _index = _index%Capacity;
+                _index = _index % Capacity;
                 if (Count < Capacity) Count++;
                 return insertIndex;
             }
@@ -29,7 +33,7 @@
 
         public T this[int ix]
         {
-            get { lock(_lock) {return _buffer[ix];} }
+            get { lock (_lock) { return _buffer[ix]; } }
         }
 
         public T ItemAt(int ix)

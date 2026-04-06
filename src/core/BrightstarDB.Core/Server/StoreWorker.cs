@@ -256,7 +256,11 @@ namespace BrightstarDB.Server
         /// This is used to ensure there is no race condition when returning
         /// the readstore when commits are occurring.
         /// </summary>
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _readStoreLock = new();
+#else
         private readonly object _readStoreLock = new object();
+#endif
 
         private readonly IStoreManager _storeManager;
 
@@ -290,7 +294,11 @@ namespace BrightstarDB.Server
             }
         }
 
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _writeStoreLock = new();
+#else
         private readonly object _writeStoreLock = new object();
+#endif
         internal IStore WriteStore
         {
             get
@@ -337,13 +345,13 @@ namespace BrightstarDB.Server
                     _jobExecutionStatus.TryAdd(
                         job.JobId.ToString(),
                         new JobExecutionStatus
-                            {
-                                JobId = job.JobId,
-                                JobStatus = JobStatus.Pending,
-                                Queued = DateTime.UtcNow,
-                                Label = job.Label,
-                                WaitEvent = new AutoResetEvent(false)
-                            }))
+                        {
+                            JobId = job.JobId,
+                            JobStatus = JobStatus.Pending,
+                            Queued = DateTime.UtcNow,
+                            Label = job.Label,
+                            WaitEvent = new AutoResetEvent(false)
+                        }))
                 {
                     _jobs.Enqueue(job);
                     queuedJob = true;
@@ -391,14 +399,14 @@ namespace BrightstarDB.Server
             var exportJob = new ExportJob(jobId, jobLabel, this, fileName, graphUri, exportFormat);
             _jobExecutionStatus.TryAdd(jobId.ToString(),
                                        new JobExecutionStatus
-                                           {
-                                               JobId = jobId,
-                                               JobStatus = JobStatus.Started,
-                                               Queued = DateTime.UtcNow,
-                                               Started = DateTime.UtcNow,
-                                               Label = jobLabel,
-                                               WaitEvent = new AutoResetEvent(false)
-                                           });
+                                       {
+                                           JobId = jobId,
+                                           JobStatus = JobStatus.Started,
+                                           Queued = DateTime.UtcNow,
+                                           Started = DateTime.UtcNow,
+                                           Label = jobLabel,
+                                           WaitEvent = new AutoResetEvent(false)
+                                       });
             exportJob.Run((id, ex) =>
                               {
                                   JobExecutionStatus jobExecutionStatus;

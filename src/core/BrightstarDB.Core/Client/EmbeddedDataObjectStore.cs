@@ -48,7 +48,7 @@ namespace BrightstarDB.Client
             return registeredDataObject;
         }
 
-        
+
         public override IEnumerable<IDataObject> BindDataObjectsWithSparql(string sparqlExpression)
         {
             var helper = new SparqlResultDataObjectHelper(this);
@@ -91,7 +91,7 @@ namespace BrightstarDB.Client
                 // get subject entity and see if there is a version triple
                 var subjects = AddTriples.Subjects
                     .Union(DeletePatterns.Subjects)
-                    .Except(new[] {Constants.WildcardUri}).ToList();
+                    .Except(new[] { Constants.WildcardUri }).ToList();
                 foreach (var subject in subjects)
                 {
                     var entity = LookupDataObject(subject);
@@ -110,15 +110,15 @@ namespace BrightstarDB.Client
                         intVersion++;
                         entity.SetProperty(Constants.VersionPredicateUri, intVersion);
                         Preconditions.Add(new Triple
-                                                {
-                                                    Graph = VersionGraphUri,
-                                                    DataType = RdfDatatypes.Integer,
-                                                    IsLiteral = true,
-                                                    LangCode = null,
-                                                    Object = version.ToString(),
-                                                    Predicate = Constants.VersionPredicateUri,
-                                                    Subject = subject
-                                                });
+                        {
+                            Graph = VersionGraphUri,
+                            DataType = RdfDatatypes.Integer,
+                            IsLiteral = true,
+                            LangCode = null,
+                            Object = version.ToString(),
+                            Predicate = Constants.VersionPredicateUri,
+                            Subject = subject
+                        });
                     }
                 }
             }
@@ -135,7 +135,7 @@ namespace BrightstarDB.Client
             var aw = new BrightstarTripleSinkAdapter(new NQuadsWriter(addData));
             foreach (var triple in AddTriples.Items)
             {
-                aw.Triple(triple);               
+                aw.Triple(triple);
             }
             addData.Close();
 
@@ -155,19 +155,19 @@ namespace BrightstarDB.Client
             }
             nePreconditionsData.Close();
 
-            var jobId = _serverCore.ProcessTransaction(_storeName, preconditionsData.ToString(), 
+            var jobId = _serverCore.ProcessTransaction(_storeName, preconditionsData.ToString(),
                 nePreconditionsData.ToString(),
                 deleteData.ToString(), addData.ToString(), UpdateGraphUri);
             var status = _serverCore.GetJobStatus(_storeName, jobId.ToString());
             status.WaitEvent.WaitOne();
-//            while (!(status.JobStatus == JobStatus.CompletedOk || status.JobStatus == JobStatus.TransactionError))
-//            {
-//                // wait for completion.
-//#if !PORTABLE
-//                Thread.Sleep(5);
-//#endif
-//                status = _serverCore.GetJobStatus(_storeName, jobId.ToString());
-//            }
+            //            while (!(status.JobStatus == JobStatus.CompletedOk || status.JobStatus == JobStatus.TransactionError))
+            //            {
+            //                // wait for completion.
+            //#if !PORTABLE
+            //                Thread.Sleep(5);
+            //#endif
+            //                status = _serverCore.GetJobStatus(_storeName, jobId.ToString());
+            //            }
 
             if (status.JobStatus == JobStatus.TransactionError)
             {
@@ -176,7 +176,7 @@ namespace BrightstarDB.Client
                     Preconditions.Clear();
                     throw TransactionPreconditionsFailedException.FromExceptionDetail(status.ExceptionDetail);
                 }
-                throw new BrightstarClientException(status.ExceptionDetail != null  && !String.IsNullOrEmpty(status.ExceptionDetail.Message) ? status.ExceptionDetail.Message : "The transaction encountered an error");
+                throw new BrightstarClientException(status.ExceptionDetail != null && !String.IsNullOrEmpty(status.ExceptionDetail.Message) ? status.ExceptionDetail.Message : "The transaction encountered an error");
             }
             if (status.JobStatus != JobStatus.CompletedOk)
             {

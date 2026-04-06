@@ -1,0 +1,26 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="Mixed Platforms" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Tests/">
+    <Project Path="BrightstarDB.CodeGeneration.Tests/BrightstarDB.CodeGeneration.Tests.csproj" />
+    <Project Path="BrightstarDB.EntityFramework.Tests/BrightstarDB.EntityFramework.Tests.csproj" />
+    <Project Path="BrightstarDB.InternalTests/BrightstarDB.InternalTests.csproj" />
+    <Project Path="BrightstarDB.Tests/BrightstarDB.Tests.csproj" />
+  </Folder>
+  <Project Path="BrightstarDB.CodeGeneration.Console/BrightstarDB.CodeGeneration.Console.csproj" />
+  <Project Path="BrightstarDB.CodeGeneration.T4/BrightstarDB.CodeGeneration.T4.csproj" />
+  <Project Path="BrightstarDB.CodeGeneration/BrightstarDB.CodeGeneration.csproj" />
+  <Project Path="BrightstarDB.Core/BrightstarDB.Core.csproj" />
+  <Project Path="BrightstarDB.Server.AspNetCore.Tests/BrightstarDB.Server.AspNetCore.Tests.csproj" />
+  <Project Path="BrightstarDB.Server.AspNetCore/BrightstarDB.Server.AspNetCore.csproj" />
+  <Project Path="BrightstarDB/BrightstarDB.csproj">
+    <Build Solution="*|x86" Project="false" />
+  </Project>
+  <Properties Name="TestCaseManagementSettings" Scope="PostLoad">
+    <Property Name="CategoryFile" Value="BrightstarDB.vsmdi" />
+  </Properties>
+</Solution>

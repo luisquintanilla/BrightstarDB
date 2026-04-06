@@ -6,7 +6,7 @@ namespace BrightstarDB.Tests.EntityFramework.InverseProperty
     public interface IProductionPerson
     {
         string Id { get; }
-        
+
         string Name { get; set; }
     }
 }

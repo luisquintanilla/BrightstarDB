@@ -25,7 +25,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.GraphIndex
         {
             _pageStore = pageStore;
             _graphUriIndex = new Dictionary<string, int>();
-            _allEntries= new List<GraphIndexEntry>();
+            _allEntries = new List<GraphIndexEntry>();
         }
 
         public ConcurrentGraphIndex(IPageStore pageStore, ulong rootPage, BrightstarProfiler profiler)
@@ -249,68 +249,68 @@ namespace BrightstarDB.Storage.BPlusTreeStore.GraphIndex
 
         #endregion
 
-       public ulong Save(ulong transactionId, BrightstarProfiler profiler)
-       {
-           return Write(_pageStore, transactionId, profiler);
-       }
+        public ulong Save(ulong transactionId, BrightstarProfiler profiler)
+        {
+            return Write(_pageStore, transactionId, profiler);
+        }
 
-       public ulong Write(IPageStore pageStore, ulong transactionId, BrightstarProfiler profiler)
-       {
-           IPage rootPage = pageStore.Create(transactionId);
-           IPage currentPage = rootPage;
-           var buff = new byte[pageStore.PageSize];
-           int offset = 0;
-           foreach (var graphIndexEntry in _allEntries)
-           {
-               int entrySize = String.IsNullOrEmpty(graphIndexEntry.Uri)
-                                   ? 1
-                                   : 3 + Encoding.UTF8.GetByteCount(graphIndexEntry.Uri);
-               if (offset + entrySize > pageStore.PageSize - 9)
-               {
-                   IPage nextPage = pageStore.Create(transactionId);
-                   buff[offset] = 0xff;
-                   BitConverter.GetBytes(nextPage.Id).CopyTo(buff, pageStore.PageSize - 8);
-                   currentPage.SetData(buff);
-                   currentPage = nextPage;
-                   offset = 0;
-               }
-               else
-               {
-                   if (String.IsNullOrEmpty(graphIndexEntry.Uri))
-                   {
-                       // Record an empty entry
-                       buff[offset++] = 2;
-                   }
-                   else
-                   {
-                       if (graphIndexEntry.IsDeleted)
-                       {
-                           buff[offset++] = 1;
-                       }
-                       else
-                       {
-                           buff[offset++] = 0;
-                       }
-                       var uriBytes = Encoding.UTF8.GetBytes(graphIndexEntry.Uri);
-                       BitConverter.GetBytes(uriBytes.Length).CopyTo(buff, offset);
-                       offset += 4;
-                       uriBytes.CopyTo(buff, offset);
-                       offset += uriBytes.Length;
-                   }
-               }
-           }
-           buff[offset] = 0xff;
-           BitConverter.GetBytes(0ul).CopyTo(buff, pageStore.PageSize - 8);
-           currentPage.SetData(buff);
-           return rootPage.Id;
-       }
+        public ulong Write(IPageStore pageStore, ulong transactionId, BrightstarProfiler profiler)
+        {
+            IPage rootPage = pageStore.Create(transactionId);
+            IPage currentPage = rootPage;
+            var buff = new byte[pageStore.PageSize];
+            int offset = 0;
+            foreach (var graphIndexEntry in _allEntries)
+            {
+                int entrySize = String.IsNullOrEmpty(graphIndexEntry.Uri)
+                                    ? 1
+                                    : 3 + Encoding.UTF8.GetByteCount(graphIndexEntry.Uri);
+                if (offset + entrySize > pageStore.PageSize - 9)
+                {
+                    IPage nextPage = pageStore.Create(transactionId);
+                    buff[offset] = 0xff;
+                    BitConverter.GetBytes(nextPage.Id).CopyTo(buff, pageStore.PageSize - 8);
+                    currentPage.SetData(buff);
+                    currentPage = nextPage;
+                    offset = 0;
+                }
+                else
+                {
+                    if (String.IsNullOrEmpty(graphIndexEntry.Uri))
+                    {
+                        // Record an empty entry
+                        buff[offset++] = 2;
+                    }
+                    else
+                    {
+                        if (graphIndexEntry.IsDeleted)
+                        {
+                            buff[offset++] = 1;
+                        }
+                        else
+                        {
+                            buff[offset++] = 0;
+                        }
+                        var uriBytes = Encoding.UTF8.GetBytes(graphIndexEntry.Uri);
+                        BitConverter.GetBytes(uriBytes.Length).CopyTo(buff, offset);
+                        offset += 4;
+                        uriBytes.CopyTo(buff, offset);
+                        offset += uriBytes.Length;
+                    }
+                }
+            }
+            buff[offset] = 0xff;
+            BitConverter.GetBytes(0ul).CopyTo(buff, pageStore.PageSize - 8);
+            currentPage.SetData(buff);
+            return rootPage.Id;
+        }
 
         void Read(ulong rootPageId, BrightstarProfiler profiler)
         {
             IPage currentPage = _pageStore.Retrieve(rootPageId, profiler);
             int offset = 0;
             int entryIndex = 0;
-            while(true)
+            while (true)
             {
                 var marker = currentPage.Data[offset++];
                 if (marker == 0xff)

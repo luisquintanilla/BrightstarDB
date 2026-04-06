@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net462</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -11,9 +11,9 @@
     <Reference Include="System.Configuration.Install" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Nancy" Version="1.4.5" />
-    <PackageReference Include="Nancy.Hosting.Self" Version="1.4.1" />
-    <PackageReference Include="System.ServiceProcess.ServiceController" Version="7.0.0" />
+    <PackageReference Include="Nancy" />
+    <PackageReference Include="Nancy.Hosting.Self" />
+    <PackageReference Include="System.ServiceProcess.ServiceController" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

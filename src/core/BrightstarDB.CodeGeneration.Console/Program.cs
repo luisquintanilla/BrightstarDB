@@ -6,30 +6,31 @@ namespace BrightstarDB.CodeGeneration.Console
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using PowerArgs;
 
     class Program
     {
-        static int Main(string[] args)
+        static async Task<int> Main(string[] args)
         {
             try
             {
                 var arguments = Args.Parse<Arguments>(args);
                 var language = arguments.Language.GetValueOrDefault(DetermineLanguageByOutputFileName(arguments.OutputFile));
                 var entityAccessibilitySelector = arguments.InternalEntityClasses
-                    ? (Func < INamedTypeSymbol, Accessibility>) Generator.InteralyEntityAccessibilitySelector
+                    ? (Func<INamedTypeSymbol, Accessibility>)Generator.InteralyEntityAccessibilitySelector
                     : Generator.DefaultEntityAccessibilitySelector;
-                var result = Generator.GenerateAsync(
+                var result = await Generator.GenerateAsync(
                     language,
                     arguments.SolutionFile,
                     arguments.ContextNamespace,
                     arguments.ContextName,
                     entityAccessibilitySelector: entityAccessibilitySelector,
-                    brightstarAssemblyPath:arguments.BrightstarAssemblyPath).Result;
+                    brightstarAssemblyPath: arguments.BrightstarAssemblyPath);
                 var resultString = result
                     .Aggregate(new StringBuilder(), (sb, next) => sb.AppendLine(next.ToFullString()), x => x.ToString());
 
-                File.WriteAllText(arguments.OutputFile, resultString);
+                await File.WriteAllTextAsync(arguments.OutputFile, resultString);
                 return 0;
             }
             catch (ArgException ex)

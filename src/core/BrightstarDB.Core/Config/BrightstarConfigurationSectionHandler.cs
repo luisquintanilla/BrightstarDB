@@ -50,7 +50,7 @@ namespace BrightstarDB.Config
         private static PageCachePreloadConfiguration ProcessPreloadConfiguration(XmlElement preloadPages)
         {
             var enabled = IsEnabled(preloadPages);
-            var preloadConfiguration = new PageCachePreloadConfiguration {Enabled = enabled};
+            var preloadConfiguration = new PageCachePreloadConfiguration { Enabled = enabled };
             decimal defaultRatio;
             preloadConfiguration.DefaultCacheRatio = Decimal.TryParse(preloadPages.GetAttribute("defaultCacheRatio"),
                                                                       out defaultRatio)
@@ -65,9 +65,9 @@ namespace BrightstarDB.Config
                     Decimal.TryParse(storeConfiguration.GetAttribute("cacheRatio"), out cacheRatio))
                 {
                     preloadConfiguration.StorePreloadConfigurations[storeName] = new StorePreloadConfiguration
-                        {
-                            CacheRatio = cacheRatio
-                        };
+                    {
+                        CacheRatio = cacheRatio
+                    };
                 }
             }
             return preloadConfiguration;

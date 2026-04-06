@@ -7,9 +7,13 @@ using BrightstarDB.Utils;
 
 namespace BrightstarDB.Storage.Persistence
 {
-    internal class LruPageCache: IPageCache
+    internal class LruPageCache : IPageCache
     {
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _updateLock = new();
+#else
         private readonly object _updateLock = new object();
+#endif
         private int _count;
         private readonly int _highWaterMark;
         private readonly int _lowWaterMark;
@@ -33,8 +37,8 @@ namespace BrightstarDB.Storage.Persistence
 
         public LruPageCache(int limit)
         {
-            _highWaterMark = (int) (limit*0.95);
-            _lowWaterMark = (int) (limit*0.80);
+            _highWaterMark = (int)(limit * 0.95);
+            _lowWaterMark = (int)(limit * 0.80);
             _cacheItems = new Dictionary<string, LinkedListNode<KeyValuePair<string, IPageCacheItem>>>(limit);
             _accessList = new LinkedList<KeyValuePair<string, IPageCacheItem>>();
 #if DEBUG

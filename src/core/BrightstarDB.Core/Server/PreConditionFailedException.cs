@@ -14,7 +14,7 @@ namespace BrightstarDB.Server
         public int NonExistenceFailureCount { get; private set; }
         public string NonExistenceFailedTriples { get; private set; }
         private readonly string _msg;
-        
+
         public PreconditionFailedException(int existancePreconditionFailureCount, string existancePreconditionFailedNTriples,
             int nonExistancePreconditionFailureCount, string nonExistancePreconditionFailedNTriples) : base(Strings.PreconditionFailedBasicMessage)
         {

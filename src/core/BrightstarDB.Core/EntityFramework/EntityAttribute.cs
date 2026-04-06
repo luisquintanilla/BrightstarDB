@@ -8,13 +8,13 @@ namespace BrightstarDB.EntityFramework
     /// a relative or an absolute URI. Relative URIs are resolved relative to 
     /// the base URI specified by the <see cref="TypeIdentifierPrefixAttribute"/> on the assembly.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Interface|AttributeTargets.Class, AllowMultiple=false)]
+    [AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = false)]
     public sealed class EntityAttribute : RelativeOrAbsoluteIdentifierAttribute
     {
         /// <summary>
         /// Default attribute constructor
         /// </summary>
-        public EntityAttribute() : base(null) {}
+        public EntityAttribute() : base(null) { }
 
         /// <summary>
         /// Creates an attribute with the entity type identifier defined

@@ -27,7 +27,7 @@ namespace BrightstarDB.Tests.EntityFramework
         {
             using (var context = GetContext())
             {
-                var entity = new StringKeyEntity {Name = "Entity1", Description = "This is Entity 1"};
+                var entity = new StringKeyEntity { Name = "Entity1", Description = "This is Entity 1" };
                 context.StringKeyEntities.Add(entity);
                 context.SaveChanges();
             }
@@ -83,10 +83,10 @@ namespace BrightstarDB.Tests.EntityFramework
         {
             using (var context = GetContext())
             {
-                var parent = new BaseEntity{Id="foo"};
+                var parent = new BaseEntity { Id = "foo" };
                 context.BaseEntities.Add(parent);
-                var child = new ChildKeyEntity {Parent = parent, Position = 1};
-                var child2 = new ChildKeyEntity {Parent = parent, Position = 2};
+                var child = new ChildKeyEntity { Parent = parent, Position = 1 };
+                var child2 = new ChildKeyEntity { Parent = parent, Position = 2 };
                 context.ChildKeyEntities.Add(child);
                 context.ChildKeyEntities.Add(child2);
                 context.SaveChanges();
@@ -106,9 +106,9 @@ namespace BrightstarDB.Tests.EntityFramework
         {
             using (var context = GetContext())
             {
-                var root = new HierarchicalKeyEntity {Code = "root"};
-                var child = new HierarchicalKeyEntity {Parent = root, Code = "Child"};
-                var grandchild = new HierarchicalKeyEntity {Parent = child, Code = "Grandchild"};
+                var root = new HierarchicalKeyEntity { Code = "root" };
+                var child = new HierarchicalKeyEntity { Parent = root, Code = "Child" };
+                var grandchild = new HierarchicalKeyEntity { Parent = child, Code = "Grandchild" };
                 context.HierarchicalKeyEntities.Add(root);
                 context.HierarchicalKeyEntities.Add(child);
                 context.HierarchicalKeyEntities.Add(grandchild);
@@ -191,9 +191,17 @@ namespace BrightstarDB.Tests.EntityFramework
 
             using (var context = GetContext())
             {
-                var child = context.ChildEntities.First(x=>x.Id.Equals(childId));
+                var child = context.ChildEntities.First(x => x.Id.Equals(childId));
                 child.Description = "Update description";
                 context.SaveChanges();
+            }
+
+            using (var context = GetContext())
+            {
+                var child = context.ChildEntities.FirstOrDefault(x => x.Id.Equals(childId));
+                Assert.That(child, Is.Not.Null);
+                Assert.That(child.Description, Is.EqualTo("Update description"));
+                Assert.That(child.Parent, Is.Not.Null);
             }
         }
 
@@ -215,11 +223,11 @@ namespace BrightstarDB.Tests.EntityFramework
             {
                 Assert.Throws<EntityKeyRequiredException>(() =>
                 {
-                    var entity = new StringKeyEntity {Name = ""};
+                    var entity = new StringKeyEntity { Name = "" };
                     context.StringKeyEntities.Add(entity);
                 });
             }
-            
+
         }
 
         [Test]
@@ -253,6 +261,16 @@ namespace BrightstarDB.Tests.EntityFramework
                 context.ChildEntities.Add(modifiedChild);
                 context.SaveChanges();
             }
+
+            using (var context = GetContext())
+            {
+                var children = context.ChildEntities.Where(x => x.Code.Equals("child")).ToList();
+                Assert.That(children.Count, Is.EqualTo(1));
+                var child = children.FirstOrDefault();
+                Assert.That(child, Is.Not.Null);
+                Assert.That(child.Description, Is.EqualTo("A new description for the existing child"));
+                Assert.That(child.Parent, Is.Not.Null);
+            }
         }
 
         [Test]
@@ -285,6 +303,16 @@ namespace BrightstarDB.Tests.EntityFramework
                 context.DeleteObject(existingChild);
                 context.ChildEntity2s.Add(modifiedChild);
                 context.SaveChanges();
+            }
+
+            using (var context = GetContext())
+            {
+                var children = context.ChildEntity2s.Where(x => x.Code.Equals("child")).ToList();
+                Assert.That(children.Count, Is.EqualTo(1));
+                var child = children.FirstOrDefault();
+                Assert.That(child, Is.Not.Null);
+                Assert.That(child.Description, Is.EqualTo("A new description for the existing child"));
+                Assert.That(child.Parent, Is.Not.Null);
             }
         }
     }

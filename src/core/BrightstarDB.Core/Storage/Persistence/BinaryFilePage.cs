@@ -22,17 +22,17 @@ namespace BrightstarDB.Storage.Persistence
             _nominalPageSize = nominalPageSize;
             Id = pageId;
             var pages = new byte[nominalPageSize * 2];
-            var startOffset = nominalPageSize*2*((long) pageId - 1);
+            var startOffset = nominalPageSize * 2 * ((long)pageId - 1);
             lock (LoadLock)
             {
                 inputStream.Seek(startOffset, SeekOrigin.Begin);
-                inputStream.Read(pages, 0, nominalPageSize*2);
+                inputStream.Read(pages, 0, nominalPageSize * 2);
             }
             FirstTransactionId = BitConverter.ToUInt64(pages, 0);
             SecondTransactionId = BitConverter.ToUInt64(pages, nominalPageSize);
-            FirstBuffer = new byte[nominalPageSize-8];
-            Array.Copy(pages, 8, FirstBuffer, 0, nominalPageSize-8);
-            SecondBuffer = new byte[nominalPageSize-8];
+            FirstBuffer = new byte[nominalPageSize - 8];
+            Array.Copy(pages, 8, FirstBuffer, 0, nominalPageSize - 8);
+            SecondBuffer = new byte[nominalPageSize - 8];
             Array.Copy(pages, nominalPageSize + 8, SecondBuffer, 0, nominalPageSize - 8);
             Data = GetCurrentBuffer(currentTxnId);
             Logging.LogDebug("BinaryFilePage: Load {0} [{1}|{2}] @ txn {3}", Id, FirstTransactionId, SecondTransactionId, currentTxnId);
@@ -47,9 +47,9 @@ namespace BrightstarDB.Storage.Persistence
             _nominalPageSize = nominalPageSize;
             Id = pageId;
             FirstTransactionId = currentTxnId;
-            FirstBuffer = new byte[nominalPageSize-8];
+            FirstBuffer = new byte[nominalPageSize - 8];
             SecondTransactionId = 0;
-            SecondBuffer = new byte[nominalPageSize-8];
+            SecondBuffer = new byte[nominalPageSize - 8];
             Data = FirstBuffer;
             IsWriteable = true;
             Logging.LogDebug("BinaryFilePage: Create {0} [{1}|{2}] @ txn {3}", Id, FirstTransactionId, SecondTransactionId, currentTxnId);
@@ -61,10 +61,10 @@ namespace BrightstarDB.Storage.Persistence
             Id = readOnlyPage.Id;
             FirstTransactionId = readOnlyPage.FirstTransactionId;
             SecondTransactionId = readOnlyPage.SecondTransactionId;
-            FirstBuffer = new byte[_nominalPageSize-8];
-            SecondBuffer = new byte[_nominalPageSize-8];
-            Array.Copy(readOnlyPage.FirstBuffer, FirstBuffer, _nominalPageSize-8);
-            Array.Copy(readOnlyPage.SecondBuffer, SecondBuffer, _nominalPageSize-8);
+            FirstBuffer = new byte[_nominalPageSize - 8];
+            SecondBuffer = new byte[_nominalPageSize - 8];
+            Array.Copy(readOnlyPage.FirstBuffer, FirstBuffer, _nominalPageSize - 8);
+            Array.Copy(readOnlyPage.SecondBuffer, SecondBuffer, _nominalPageSize - 8);
             _MakeWriteable(writeTxnId);
             Logging.LogDebug("BinaryFilePage: Create writeable copy {0} [{1}|{2}] @ {3}", Id, FirstTransactionId, SecondTransactionId, writeTxnId);
         }
@@ -180,7 +180,7 @@ namespace BrightstarDB.Storage.Persistence
         {
             lock (this)
             {
-                var offset = _nominalPageSize*2*((long) Id - 1);
+                var offset = _nominalPageSize * 2 * ((long)Id - 1);
                 outputStream.Seek(offset, SeekOrigin.Begin);
                 outputStream.Write(BitConverter.GetBytes(FirstTransactionId), 0, 8);
                 outputStream.Write(FirstBuffer, 0, _nominalPageSize - 8);

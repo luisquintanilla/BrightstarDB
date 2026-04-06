@@ -13,7 +13,7 @@ namespace BrightstarDB.Tests
                 Thread.Sleep(10);
                 job = client.GetJobInfo(storeName, job.JobId);
             }
-            Assert.IsTrue(job.JobCompletedOk, 
+            Assert.IsTrue(job.JobCompletedOk,
                           "Expected job to complete successfully, but it failed with message '{0}' : {1}", job.StatusMessage, job.ExceptionInfo);
         }
     }

@@ -51,10 +51,10 @@ namespace BrightstarDB.InternalTests
                 {
                     store.Import(jobId, triplesStream);
                 }
-                store.Commit(jobId);                
+                store.Commit(jobId);
             }
 
-            using(var triplesStream = File.OpenRead(fileName))
+            using (var triplesStream = File.OpenRead(fileName))
             {
                 using (var store = _storeManager.OpenStore(storeName))
                 {
@@ -97,7 +97,7 @@ namespace BrightstarDB.InternalTests
             /// <param name="graphUri">The graph URI for the statement</param>
             public void Triple(string subject, bool subjectIsBNode, string predicate, bool predicateIsBNode, string obj, bool objIsBNode, bool objIsLiteral, string dataType, string langCode, string graphUri)
             {
-                
+
                 if (
                     subject.Equals(
                         "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Producer1") &&
@@ -149,7 +149,7 @@ namespace BrightstarDB.InternalTests
 
             #endregion
         }
-        
+
         class ValidatorSink : ITripleSink
         {
             private IStore _store;
@@ -206,9 +206,9 @@ namespace BrightstarDB.InternalTests
 
             var tasks = new List<Task>();
 
-            for (var i=0;i < 10;i++)
+            for (var i = 0; i < 10; i++)
             {
-                var t = new Task(() => ExecuteSmallUnitOfWork(context, storeId));                
+                var t = new Task(() => ExecuteSmallUnitOfWork(context, storeId));
                 tasks.Add(t);
                 t.Start();
             }
@@ -216,7 +216,7 @@ namespace BrightstarDB.InternalTests
             Task.WaitAll(tasks.ToArray());
             var et = DateTime.UtcNow;
             var duration = et.Subtract(st).TotalMilliseconds;
-            Console.WriteLine(duration);                
+            Console.WriteLine(duration);
         }
 
         private static void ExecuteSmallUnitOfWork(IDataObjectContext context, string storeId)
@@ -474,7 +474,7 @@ namespace BrightstarDB.InternalTests
             timer.Start();
             ulong val;
 
-            for (ulong i = 0; i < 10000000; i++ )
+            for (ulong i = 0; i < 10000000; i++)
             {
                 var key = "http://www.networkedplanet.com/people/" + i;
                 if (!dict.TryGetValue(key, out val))
@@ -487,74 +487,74 @@ namespace BrightstarDB.InternalTests
             Console.WriteLine("time to check and insert from cache : " + timer.ElapsedMilliseconds);
         }
 
-            [Test]
-            public void TestImportAndLookupPerformance()
+        [Test]
+        public void TestImportAndLookupPerformance()
+        {
+            if (!File.Exists(Configuration.StoreLocation + "\\import\\bsbm_5m.nt"))
             {
-                if (!File.Exists(Configuration.StoreLocation + "\\import\\bsbm_5m.nt"))
-                {
-                    Assert.Inconclusive("Cannot locate required test file at {0}. Test will not run.",
-                        Configuration.StoreLocation + "\\import\\bsbm_5m.nt");
-                    return;
-                }
-                var storeId = Guid.NewGuid().ToString();
-                _storeManager.CreateStore(Configuration.StoreLocation + "\\" + storeId);
-                var timer = new Stopwatch();
-                var storeWorker = new StoreWorker(Configuration.StoreLocation, storeId);
-                storeWorker.Start();
-                timer.Start();
-                var jobId = storeWorker.Import("bsbm_5m.nt", Constants.DefaultGraphUri).ToString();
-                JobExecutionStatus jobStatus = storeWorker.GetJobStatus(jobId);
-                while (jobStatus.JobStatus == JobStatus.Pending || jobStatus.JobStatus == JobStatus.Started)
-                {
-                    Thread.Sleep(100);
-                    jobStatus = storeWorker.GetJobStatus(jobId);
-                }
-
-                timer.Stop();
-                Console.WriteLine("Time to import 5M triples test file: " + timer.ElapsedMilliseconds);
-
-                var store = _storeManager.OpenStore(Configuration.StoreLocation + "\\" + storeId);
-                var validator = new TriplesValidator(store, Configuration.StoreLocation + "\\import\\bsbm_5m.nt" );
-                timer.Reset();
-                timer.Start();
-                validator.Run();
-                timer.Stop();
-                Console.WriteLine("Time to validate 5M triples test file:" + timer.ElapsedMilliseconds);
-                if(validator.UnmatchedTriples.Any())
-                {
-                    Assert.Fail("Validator failed to match {0} triples:\n",
-                        validator.UnmatchedTriples.Count,
-                        String.Join("\n", validator.UnmatchedTriples)
-                        );
-                }
+                Assert.Inconclusive("Cannot locate required test file at {0}. Test will not run.",
+                    Configuration.StoreLocation + "\\import\\bsbm_5m.nt");
+                return;
+            }
+            var storeId = Guid.NewGuid().ToString();
+            _storeManager.CreateStore(Configuration.StoreLocation + "\\" + storeId);
+            var timer = new Stopwatch();
+            var storeWorker = new StoreWorker(Configuration.StoreLocation, storeId);
+            storeWorker.Start();
+            timer.Start();
+            var jobId = storeWorker.Import("bsbm_5m.nt", Constants.DefaultGraphUri).ToString();
+            JobExecutionStatus jobStatus = storeWorker.GetJobStatus(jobId);
+            while (jobStatus.JobStatus == JobStatus.Pending || jobStatus.JobStatus == JobStatus.Started)
+            {
+                Thread.Sleep(100);
+                jobStatus = storeWorker.GetJobStatus(jobId);
             }
 
-            [Test]
-            public void TestImportPerformance25M()
+            timer.Stop();
+            Console.WriteLine("Time to import 5M triples test file: " + timer.ElapsedMilliseconds);
+
+            var store = _storeManager.OpenStore(Configuration.StoreLocation + "\\" + storeId);
+            var validator = new TriplesValidator(store, Configuration.StoreLocation + "\\import\\bsbm_5m.nt");
+            timer.Reset();
+            timer.Start();
+            validator.Run();
+            timer.Stop();
+            Console.WriteLine("Time to validate 5M triples test file:" + timer.ElapsedMilliseconds);
+            if (validator.UnmatchedTriples.Any())
             {
-                const string fileName = "bsbm_25m.nt";
-                if (!File.Exists(BrightstarDB.Configuration.StoreLocation + "\\import\\" + fileName))
-                {
-                    Assert.Inconclusive("Cannot locate required test file at {0}. Test will not run.",
-                        BrightstarDB.Configuration.StoreLocation + "\\import\\"+fileName);
-                    return;
-                }
-                var storeId = Guid.NewGuid().ToString();
-                _storeManager.CreateStore(BrightstarDB.Configuration.StoreLocation + "\\" + storeId);
-                var timer = new Stopwatch();
-                var storeWorker = new StoreWorker(BrightstarDB.Configuration.StoreLocation, storeId);
-                storeWorker.Start();
-                timer.Start();
-                var jobId = storeWorker.Import(fileName, Constants.DefaultGraphUri).ToString();
-                JobExecutionStatus jobStatus = storeWorker.GetJobStatus(jobId);
-                while (jobStatus.JobStatus == JobStatus.Pending || jobStatus.JobStatus == JobStatus.Started)
-                {
-                    Thread.Sleep(100);
-                    jobStatus = storeWorker.GetJobStatus(jobId);
-                }
-                timer.Stop();
-                Console.WriteLine("Time to import test file '" + fileName + "': " + timer.ElapsedMilliseconds);
+                Assert.Fail("Validator failed to match {0} triples:\n",
+                    validator.UnmatchedTriples.Count,
+                    String.Join("\n", validator.UnmatchedTriples)
+                    );
             }
+        }
+
+        [Test]
+        public void TestImportPerformance25M()
+        {
+            const string fileName = "bsbm_25m.nt";
+            if (!File.Exists(BrightstarDB.Configuration.StoreLocation + "\\import\\" + fileName))
+            {
+                Assert.Inconclusive("Cannot locate required test file at {0}. Test will not run.",
+                    BrightstarDB.Configuration.StoreLocation + "\\import\\" + fileName);
+                return;
+            }
+            var storeId = Guid.NewGuid().ToString();
+            _storeManager.CreateStore(BrightstarDB.Configuration.StoreLocation + "\\" + storeId);
+            var timer = new Stopwatch();
+            var storeWorker = new StoreWorker(BrightstarDB.Configuration.StoreLocation, storeId);
+            storeWorker.Start();
+            timer.Start();
+            var jobId = storeWorker.Import(fileName, Constants.DefaultGraphUri).ToString();
+            JobExecutionStatus jobStatus = storeWorker.GetJobStatus(jobId);
+            while (jobStatus.JobStatus == JobStatus.Pending || jobStatus.JobStatus == JobStatus.Started)
+            {
+                Thread.Sleep(100);
+                jobStatus = storeWorker.GetJobStatus(jobId);
+            }
+            timer.Stop();
+            Console.WriteLine("Time to import test file '" + fileName + "': " + timer.ElapsedMilliseconds);
+        }
 
         [Test]
         public void TestIntersectQueryPerformance()
@@ -562,7 +562,7 @@ namespace BrightstarDB.InternalTests
             var storeId = Guid.NewGuid().ToString();
             var store = _storeManager.CreateStore(BrightstarDB.Configuration.StoreLocation + "\\" + storeId);
             var rand = new Random();
-            for(int i = 0; i < 1000000; i++)
+            for (int i = 0; i < 1000000; i++)
             {
                 store.InsertTriple("http://www.bs.com/doc/" + i,
                     "http://www.bs.com/tag",
@@ -579,7 +579,7 @@ namespace BrightstarDB.InternalTests
             timer.Start();
             var results = store.ExecuteSparqlQuery(sparql, SparqlResultsFormat.Xml);
             timer.Stop();
-            Console.WriteLine("1 query took {0}ms", timer.ElapsedMilliseconds );
+            Console.WriteLine("1 query took {0}ms", timer.ElapsedMilliseconds);
         }
 
         /// <summary>
@@ -627,7 +627,7 @@ namespace BrightstarDB.InternalTests
             /// <param name="graphUri">The graph URI for the statement</param>
             public void Triple(string subject, bool subjectIsBNode, string predicate, bool predicateIsBNode, string obj, bool objIsBNode, bool objIsLiteral, string dataType, string langCode, string graphUri)
             {
-                if (subjectIsBNode || predicateIsBNode || objIsBNode )
+                if (subjectIsBNode || predicateIsBNode || objIsBNode)
                 {
                     return;
                 }

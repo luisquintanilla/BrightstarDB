@@ -95,8 +95,8 @@ namespace BrightstarDB.EntityFramework.Query
             return sourceVarName;
         }
 
-        
-        
+
+
 
         public string MakeResourceAddress(PropertyInfo identifierProperty, string topicId)
         {

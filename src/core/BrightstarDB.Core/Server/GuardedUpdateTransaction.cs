@@ -13,7 +13,7 @@ namespace BrightstarDB.Server
         /// </summary>
         private string _defaultGraphUri;
 
-        public GuardedUpdateTransaction(Guid jobId, string label, StoreWorker storeWorker, string existsPreconditions, string notExistsPreconditions, string deletePatterns, string insertData, string defaultGraphUri) : 
+        public GuardedUpdateTransaction(Guid jobId, string label, StoreWorker storeWorker, string existsPreconditions, string notExistsPreconditions, string deletePatterns, string insertData, string defaultGraphUri) :
             base(jobId, label, storeWorker)
         {
             _defaultGraphUri = defaultGraphUri ?? Constants.DefaultGraphUri;
@@ -23,7 +23,7 @@ namespace BrightstarDB.Server
             NotExistsPreconditions = notExistsPreconditions ?? String.Empty;
         }
 
-        public GuardedUpdateTransaction(Guid jobId, string label, StoreWorker storeWorker) : base(jobId, label, storeWorker) {}
+        public GuardedUpdateTransaction(Guid jobId, string label, StoreWorker storeWorker) : base(jobId, label, storeWorker) { }
 
         public string DeletePatterns { get; private set; }
 
@@ -50,7 +50,7 @@ namespace BrightstarDB.Server
                     parser.Parse(new StringReader(ExistsPreconditions), existsSink, _defaultGraphUri);
                     var notExistsSink = new PreconditionSink(writeStore,
                                                              PreconditionSink.PreconditionType.NotExistsPrecondition);
-                    parser.Parse(new StringReader(NotExistsPreconditions), notExistsSink, _defaultGraphUri );
+                    parser.Parse(new StringReader(NotExistsPreconditions), notExistsSink, _defaultGraphUri);
                     if (existsSink.FailedPreconditionCount > 0 || notExistsSink.FailedPreconditionCount > 0)
                     {
                         throw new PreconditionFailedException(existsSink.FailedPreconditionCount,
@@ -125,7 +125,7 @@ namespace BrightstarDB.Server
             {
                 StoreWorker.TransactionLog.LogEndFailedTransaction(this);
                 Logging.LogError(BrightstarEventId.TransactionServerError,
-                                 "Unexpected exception caught in GuardedUpdateTransaction ({0}): {1}",JobId, ex);
+                                 "Unexpected exception caught in GuardedUpdateTransaction ({0}): {1}", JobId, ex);
                 throw;
             }
         }

@@ -6,14 +6,14 @@ namespace BrightstarDB.EntityFramework.Tests.ContextObjects
     public interface ICompany
     {
         [Identifier]
-        string Id { get;  }
-        
+        string Id { get; }
+
         [PropertyType("dc:title")]
         string Name { get; set; }
 
         [PropertyType("ticker")]
         string TickerSymbol { get; set; }
-        
+
         [InversePropertyType("listing")]
         IMarket ListedOn { get; set; }
 
@@ -33,7 +33,8 @@ namespace BrightstarDB.EntityFramework.Tests.ContextObjects
         bool IsBlueChip { get; set; }
     }
 
-    public class Company : MockEntityObject, ICompany{
+    public class Company : MockEntityObject, ICompany
+    {
         #region Implementation of ICompany
 
         public string Id

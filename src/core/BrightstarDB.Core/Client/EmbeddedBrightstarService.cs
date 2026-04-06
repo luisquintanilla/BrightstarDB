@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 #if !PORTABLE && !WINDOWS_PHONE
 #endif
@@ -15,9 +16,16 @@ namespace BrightstarDB.Client
     /// <summary>
     /// An implementation of the Brightstar Service that uses the local filestore.
     /// </summary>
-    public class EmbeddedBrightstarService : IBrightstarService
+    public partial class EmbeddedBrightstarService : IBrightstarService
     {
         private readonly ServerCore _serverCore;
+
+#if NET7_0_OR_GREATER
+        [GeneratedRegex(@"^[a-zA-Z0-9-_\.\+,\(\)]{1,1024}$")]
+        private static partial Regex StoreNameValidationRegex();
+#else
+        private static readonly Regex StoreNameValidationRegex = new Regex(@"^[a-zA-Z0-9-_\.\+,\(\)]{1,1024}$", RegexOptions.Compiled);
+#endif
 
         /// <summary>
         /// For an embedded service connection, this property is always null.
@@ -36,9 +44,9 @@ namespace BrightstarDB.Client
         public EmbeddedBrightstarService(string baseLocation)
             : this(baseLocation, Configuration.EmbeddedServiceConfiguration)
         {
-            
+
         }
-        
+
         /// <summary>
         /// Create a new instance of the service that attaches to the specified directory location
         /// </summary>
@@ -49,10 +57,7 @@ namespace BrightstarDB.Client
         /// at a given time.</remarks>
         public EmbeddedBrightstarService(string baseLocation, EmbeddedServiceConfiguration serviceConfigurationOptions)
         {
-            if (baseLocation == null)
-            {
-                throw new ArgumentNullException(nameof(baseLocation));
-            }
+            ThrowIfNull(baseLocation);
 
             _serverCore = ServerCoreManager.GetServerCore(
                 baseLocation,
@@ -105,7 +110,11 @@ namespace BrightstarDB.Client
             if (String.IsNullOrEmpty(storeName))
                 throw new ArgumentException(Strings.BrightstarServiceClient_StoreNameMustNotBeEmptyString,
                                             "storeName");
-            if (!System.Text.RegularExpressions.Regex.IsMatch(storeName, Constants.StoreNameRegex))
+#if NET7_0_OR_GREATER
+            if (!StoreNameValidationRegex().IsMatch(storeName))
+#else
+            if (!StoreNameValidationRegex.IsMatch(storeName))
+#endif
             {
                 throw new ArgumentException(Strings.BrightstarServiceClient_InvalidStoreName, "storeName");
             }
@@ -250,11 +259,11 @@ namespace BrightstarDB.Client
         /// <param name="graphFormat">Specifies the serialization format for the RDF graph returned by the query. May be NULL to indicate that a SPARQL results set is the expected result.</param>
         /// <param name="streamFormat">Specifies the serialization format used in the returned <see cref="Stream"/>.</param>
         /// <returns>A stream containing the results of executing the query</returns>
-        public Stream ExecuteQuery(string storeName, string queryExpression, IEnumerable<string> defaultGraphUris, DateTime? ifNotModifiedSince, 
+        public Stream ExecuteQuery(string storeName, string queryExpression, IEnumerable<string> defaultGraphUris, DateTime? ifNotModifiedSince,
             SparqlResultsFormat resultsFormat, RdfFormat graphFormat, out ISerializationFormat streamFormat)
         {
-            if (storeName == null) throw new ArgumentNullException("storeName");
-            if (queryExpression == null) throw new ArgumentNullException("queryExpression");
+            ThrowIfNull(storeName);
+            ThrowIfNull(queryExpression);
             if (resultsFormat == null && graphFormat == null) throw new ArgumentException("Either resultsFormat or graphFormat must be non-NULL");
 
             if (!_serverCore.DoesStoreExist(storeName)) throw new NoSuchStoreException(storeName);
@@ -262,7 +271,7 @@ namespace BrightstarDB.Client
             {
                 var pStream = new MemoryStream();
                 streamFormat = _serverCore.Query(storeName, queryExpression,
-                    defaultGraphUris == null ? null : defaultGraphUris.Where(x => !string.IsNullOrEmpty(x)), 
+                    defaultGraphUris == null ? null : defaultGraphUris.Where(x => !string.IsNullOrEmpty(x)),
                     ifNotModifiedSince, resultsFormat,
                     graphFormat, pStream);
                 return new MemoryStream(pStream.ToArray());
@@ -337,10 +346,10 @@ namespace BrightstarDB.Client
         /// <param name="graphFormat">Specifies the serialization format for the RDF graph returned by the query. May be NULL to indicate that a SPARQL results set is the expected result.</param>
         /// <param name="streamFormat">Specifies the serialization format used in the returned <see cref="Stream"/>.</param>
         /// <returns>A stream containing the results of executing the query</returns>
-        public Stream ExecuteQuery(ICommitPointInfo commitPoint, string queryExpression, IEnumerable<string> defaultGraphUris, 
+        public Stream ExecuteQuery(ICommitPointInfo commitPoint, string queryExpression, IEnumerable<string> defaultGraphUris,
             SparqlResultsFormat resultsFormat, RdfFormat graphFormat, out ISerializationFormat streamFormat)
         {
-            if (queryExpression == null) throw new ArgumentNullException("queryExpression");
+            ThrowIfNull(queryExpression);
             if (resultsFormat == null) resultsFormat = SparqlResultsFormat.Xml;
             if (graphFormat == null) graphFormat = RdfFormat.RdfXml;
 
@@ -454,13 +463,13 @@ namespace BrightstarDB.Client
         {
             return ExecuteTransaction(storeName,
                                       new UpdateTransactionData
-                                          {
-                                              ExistencePreconditions = preconditions,
-                                              NonexistencePreconditions = String.Empty,
-                                              DeletePatterns = deletePatterns,
-                                              InsertData = insertData,
-                                              DefaultGraphUri = defaultGraphUri
-                                          },
+                                      {
+                                          ExistencePreconditions = preconditions,
+                                          NonexistencePreconditions = String.Empty,
+                                          DeletePatterns = deletePatterns,
+                                          InsertData = insertData,
+                                          DefaultGraphUri = defaultGraphUri
+                                      },
                                       waitForCompletion, label);
         }
 
@@ -540,7 +549,8 @@ namespace BrightstarDB.Client
                 {
                     var jobId = _serverCore.ExecuteUpdate(storeName, updateExpression, label);
                     return GetJobInfo(storeName, jobId.ToString());
-                } else
+                }
+                else
                 {
                     var jobId = _serverCore.ExecuteUpdate(storeName, updateExpression);
                     var status = _serverCore.GetJobStatus(storeName, jobId.ToString());
@@ -692,10 +702,10 @@ namespace BrightstarDB.Client
             {
                 if (take > 100) take = 100;
                 var commitPoints = _serverCore.GetCommitPoints(storeName).Skip(skip).Take(take);
-// ReSharper disable RedundantEnumerableCastCall
-// not redundant for SILVERLIGHT build
-                return commitPoints.Select(c => new CommitPointInfoObject {Id = c.LocationOffset, CommitTime = c.CommitTime, JobId = c.JobId, StoreName = storeName}).Cast<ICommitPointInfo>();
-// ReSharper restore RedundantEnumerableCastCall
+                // ReSharper disable RedundantEnumerableCastCall
+                // not redundant for SILVERLIGHT build
+                return commitPoints.Select(c => new CommitPointInfoObject { Id = c.LocationOffset, CommitTime = c.CommitTime, JobId = c.JobId, StoreName = storeName }).Cast<ICommitPointInfo>();
+                // ReSharper restore RedundantEnumerableCastCall
             }
             catch (Exception ex)
             {
@@ -724,10 +734,10 @@ namespace BrightstarDB.Client
                 var commitPoints =
                     _serverCore.GetCommitPoints(storeName).SkipWhile(x => x.CommitTime > latestUtc).TakeWhile(
                         x => x.CommitTime > earliestUtc).Skip(skip).Take(take);
-// ReSharper disable RedundantEnumerableCastCall
-// not redundant for SILVERLIGHT build
-                return commitPoints.Select(c => new CommitPointInfoObject {Id = c.LocationOffset, CommitTime = c.CommitTime, JobId = c.JobId, StoreName = storeName}).Cast<ICommitPointInfo>();
-// ReSharper restore RedundantEnumerableCastCall
+                // ReSharper disable RedundantEnumerableCastCall
+                // not redundant for SILVERLIGHT build
+                return commitPoints.Select(c => new CommitPointInfoObject { Id = c.LocationOffset, CommitTime = c.CommitTime, JobId = c.JobId, StoreName = storeName }).Cast<ICommitPointInfo>();
+                // ReSharper restore RedundantEnumerableCastCall
             }
             catch (Exception ex)
             {
@@ -749,12 +759,12 @@ namespace BrightstarDB.Client
                 return _serverCore.GetStatistics(storeName).Select(
                     s =>
                     new StoreStatisticsObject
-                        {
-                            CommitId = s.CommitNumber,
-                            CommitTimestamp = s.CommitTime,
-                            TotalTripleCount = s.TripleCount,
-                            PredicateTripleCounts = s.PredicateTripleCounts
-                        }
+                    {
+                        CommitId = s.CommitNumber,
+                        CommitTimestamp = s.CommitTime,
+                        TotalTripleCount = s.TripleCount,
+                        PredicateTripleCounts = s.PredicateTripleCounts
+                    }
                     ).FirstOrDefault();
             }
             catch (Exception ex)
@@ -777,7 +787,7 @@ namespace BrightstarDB.Client
         public IEnumerable<IStoreStatistics> GetStatistics(string storeName, DateTime latest, DateTime earlierst,
                                                            int skip, int take)
         {
-            if (skip <0) throw new ArgumentOutOfRangeException("skip", Strings.BrightstarServiceClient_SkipMustNotBeNegative);
+            if (skip < 0) throw new ArgumentOutOfRangeException("skip", Strings.BrightstarServiceClient_SkipMustNotBeNegative);
             if (take > 100) throw new ArgumentOutOfRangeException("take", Strings.BrightstarServiceClient_GetStatistics_TakeTooLarge);
             try
             {
@@ -788,12 +798,12 @@ namespace BrightstarDB.Client
                                   .Skip(skip)
                                   .Take(take)
                                   .Select(s => new StoreStatisticsObject
-                                      {
-                                          CommitId = s.CommitNumber,
-                                          CommitTimestamp = s.CommitTime,
-                                          TotalTripleCount = s.TripleCount,
-                                          PredicateTripleCounts = s.PredicateTripleCounts
-                                      }).Cast<IStoreStatistics>();
+                                  {
+                                      CommitId = s.CommitNumber,
+                                      CommitTimestamp = s.CommitTime,
+                                      TotalTripleCount = s.TripleCount,
+                                      PredicateTripleCounts = s.PredicateTripleCounts
+                                  }).Cast<IStoreStatistics>();
                 // ReSharper restore RedundantEnumerableCastCall
             }
             catch (Exception ex)
@@ -872,12 +882,12 @@ namespace BrightstarDB.Client
                 var commitPoint = _serverCore.GetCommitPoint(storeName, commitId);
                 if (commitPoint == null) return null;
                 return new CommitPointInfoObject
-                    {
-                        StoreName = storeName,
-                        Id = commitPoint.LocationOffset,
-                        CommitTime = commitPoint.CommitTime,
-                        JobId = commitPoint.JobId
-                    };
+                {
+                    StoreName = storeName,
+                    Id = commitPoint.LocationOffset,
+                    CommitTime = commitPoint.CommitTime,
+                    JobId = commitPoint.JobId
+                };
             }
             catch (Exception ex)
             {
@@ -905,12 +915,12 @@ namespace BrightstarDB.Client
                 var commitPoint = _serverCore.GetCommitPoint(storeName, timestamp);
                 if (commitPoint == null) return null;
                 return new CommitPointInfoObject
-                                                      {
-                                                          StoreName = storeName,
-                                                          Id=commitPoint.LocationOffset,
-                                                          CommitTime = commitPoint.CommitTime,
-                                                          JobId = commitPoint.JobId
-                                                      };
+                {
+                    StoreName = storeName,
+                    Id = commitPoint.LocationOffset,
+                    CommitTime = commitPoint.CommitTime,
+                    JobId = commitPoint.JobId
+                };
             }
             catch (Exception ex)
             {
@@ -935,11 +945,11 @@ namespace BrightstarDB.Client
             }
             catch (Exception ex)
             {
-                Logging.LogError(BrightstarEventId.ServerCoreException, "Error reverting to commit point {0} for store {1}",commitPoint.Id, storeName);
+                Logging.LogError(BrightstarEventId.ServerCoreException, "Error reverting to commit point {0} for store {1}", commitPoint.Id, storeName);
                 throw new BrightstarClientException(
                     String.Format("Error reverting to commit point {0} for store {1}. {2}", commitPoint.Id, storeName,
                                   ex.Message), ex);
-            }   
+            }
         }
 
         /// <summary>
@@ -966,19 +976,19 @@ namespace BrightstarDB.Client
         private static Client.ITransactionInfo MakeTransactionInfoWrapper(string storeName, Storage.ITransactionInfo t)
         {
             return new TransactionInfoObject
-                    {
-                        Id = t.DataStartPosition,
-                        JobId = t.JobId,
-                        StartTime = t.TransactionStartTime,
-                        StoreName = storeName,
+            {
+                Id = t.DataStartPosition,
+                JobId = t.JobId,
+                StartTime = t.TransactionStartTime,
+                StoreName = storeName,
 #if SILVERLIGHT || PORTABLE
                                              Status = (TransactionStatus)((int)t.TransactionStatus),
                                              TransactionType = (TransactionType)((int)t.TransactionType)
 #else
-                        Status = (TransactionStatus) ((int) t.TransactionStatus),
-                        TransactionType = (TransactionType) ((int) t.TransactionType)
+                Status = (TransactionStatus)((int)t.TransactionStatus),
+                TransactionType = (TransactionType)((int)t.TransactionType)
 #endif
-                    };
+            };
         }
 
         /// <summary>
@@ -1001,8 +1011,8 @@ namespace BrightstarDB.Client
         /// <param name="label">Optional user-friendly label for the job.</param>
         public IJobInfo ReExecuteTransaction(string storeName, ITransactionInfo transactionInfo, string label = null)
         {
-            if (storeName == null) throw new ArgumentNullException("storeName");
-            if (transactionInfo == null) throw new ArgumentNullException("transactionInfo");
+            ThrowIfNull(storeName);
+            ThrowIfNull(transactionInfo);
             try
             {
                 var jobId = _serverCore.ReExecuteTransaction(storeName, transactionInfo.Id,

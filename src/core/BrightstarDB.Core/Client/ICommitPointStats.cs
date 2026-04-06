@@ -17,6 +17,6 @@ namespace BrightstarDB.Client
         /// A dictionary mapping the unique predicate URLs to the count of the number
         /// of triples using that predicate in the store at this commit point.
         /// </summary>
-        Dictionary<string, long> PredicateTripleCount { get; } 
+        Dictionary<string, long> PredicateTripleCount { get; }
     }
 }

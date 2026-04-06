@@ -20,7 +20,7 @@ namespace BrightstarDB.EntityFramework.Query
             {
                 var selectId = resultExpression as SelectIdentifierVariableNameExpression;
                 var selectVar = queryBuilder.NextVariable();
-                queryBuilder.AddBindExpression("STRAFTER(STR(?" + selectId.Name + "), " +  SparqlQueryBuilder.QuoteLiteralString(selectId.IdentifierPrefix) + ")", selectVar);
+                queryBuilder.AddBindExpression("STRAFTER(STR(?" + selectId.Name + "), " + SparqlQueryBuilder.QuoteLiteralString(selectId.IdentifierPrefix) + ")", selectVar);
                 queryBuilder.AddSelectVariable(selectVar);
             }
             else if (resultExpression is SelectVariableNameExpression)
@@ -110,7 +110,7 @@ namespace BrightstarDB.EntityFramework.Query
                                             GraphNode.Iri, propertyHint.SchemaTypeUri,
                                             GraphNode.Variable, memberVarName);
                                     }
-                                    return new SelectVariableNameExpression(memberVarName, VariableBindingType.Resource, propertyInfo.PropertyType );
+                                    return new SelectVariableNameExpression(memberVarName, VariableBindingType.Resource, propertyInfo.PropertyType);
                                 }
                             case PropertyMappingType.InverseArc:
                                 {
@@ -149,7 +149,7 @@ namespace BrightstarDB.EntityFramework.Query
                                 {
                                     return new SelectVariableNameExpression(sourceVarName, VariableBindingType.Resource, propertyInfo.PropertyType);
                                 }
-                                case PropertyMappingType.Id:
+                            case PropertyMappingType.Id:
                                 {
                                     var prefix = EntityMappingStore.GetIdentifierPrefix(propertyInfo.DeclaringType);
                                     return new SelectIdentifierVariableNameExpression(sourceVarName, prefix);
@@ -166,7 +166,7 @@ namespace BrightstarDB.EntityFramework.Query
         {
             _queryBuilder.MemberInitExpression = expression;
             _queryBuilder.Constructor = expression.NewExpression.Constructor;
-            foreach(var a in expression.NewExpression.Arguments)
+            foreach (var a in expression.NewExpression.Arguments)
             {
                 var mappedExpression = Visit(a);
                 if (mappedExpression is SelectVariableNameExpression)
@@ -184,14 +184,14 @@ namespace BrightstarDB.EntityFramework.Query
             }
 
             var updatedBindings = new List<MemberBinding>();
-            foreach(var b in expression.Bindings)
+            foreach (var b in expression.Bindings)
             {
                 updatedBindings.Add(VisitMemberBinding(b));
             }
 #if WINDOWS_PHONE || PORTABLE
             var updatedExpression = Expression.MemberInit(expression.NewExpression, updatedBindings);
 #else
-            var updatedExpression =  expression.Update(expression.NewExpression, updatedBindings);
+            var updatedExpression = expression.Update(expression.NewExpression, updatedBindings);
 #endif
             _queryBuilder.MemberInitExpression = updatedExpression;
             return updatedExpression;

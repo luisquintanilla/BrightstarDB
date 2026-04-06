@@ -16,22 +16,22 @@ namespace BrightstarDB.Tests.EntityFramework
             {
                 // Put in data
                 context.Companies.Add(new Company
-                    {
-                        Name = "NetworkedPlanet",
-                        TickerSymbol = "NP",
-                        HeadCount = 4,
-                        CurrentSharePrice = 1.0m
-                    });
+                {
+                    Name = "NetworkedPlanet",
+                    TickerSymbol = "NP",
+                    HeadCount = 4,
+                    CurrentSharePrice = 1.0m
+                });
                 var ftse = context.Markets.Create();
                 ftse.Name = "FTSE";
                 var cac = new Company
-                    {
-                        Name = "CAC Limited",
-                        TickerSymbol = "CAC",
-                        ListedOn = ftse,
-                        HeadCount = 200,
-                        CurrentSharePrice = 1.0m
-                    };
+                {
+                    Name = "CAC Limited",
+                    TickerSymbol = "CAC",
+                    ListedOn = ftse,
+                    HeadCount = 200,
+                    CurrentSharePrice = 1.0m
+                };
                 context.Companies.Add(cac);
                 context.SaveChanges();
             }
@@ -39,7 +39,7 @@ namespace BrightstarDB.Tests.EntityFramework
 
         private MyEntityContext GetContext()
         {
-            return new MyEntityContext("type=embedded;storesDirectory=c:\\brightstar;storeName=" + _storeName);            
+            return new MyEntityContext("type=embedded;storesDirectory=c:\\brightstar;storeName=" + _storeName);
         }
 
         [Test]
@@ -60,13 +60,13 @@ namespace BrightstarDB.Tests.EntityFramework
         {
             using (var context = GetContext())
             {
-                var q = from x in context.Companies select new {x.Name, x.TickerSymbol};
+                var q = from x in context.Companies select new { x.Name, x.TickerSymbol };
                 var results = q.ToList();
                 Assert.AreEqual(2, results.Count);
                 Assert.IsTrue(results.Any(x => x.Name.Equals("NetworkedPlanet")));
                 Assert.IsTrue(results.Any(x => x.TickerSymbol.Equals("NP")));
 
-                var p = from x in context.Companies select new {x.Name, x.TickerSymbol, Market = x.ListedOn.Name};
+                var p = from x in context.Companies select new { x.Name, x.TickerSymbol, Market = x.ListedOn.Name };
                 var results2 = p.ToList();
                 Assert.AreEqual(2, results2.Count);
                 var npResult = results2.First(x => x.TickerSymbol.Equals("NP"));
@@ -74,7 +74,7 @@ namespace BrightstarDB.Tests.EntityFramework
                 Assert.AreEqual("FTSE", cacResult.Market);
                 Assert.IsNull(npResult.Market);
 
-                var r = from x in context.Companies select new {x.Name, x.TickerSymbol, Market = x.ListedOn};
+                var r = from x in context.Companies select new { x.Name, x.TickerSymbol, Market = x.ListedOn };
                 var results3 = r.ToList();
                 Assert.AreEqual(2, results3.Count);
                 var npResult2 = results3.First(x => x.TickerSymbol.Equals("NP"));

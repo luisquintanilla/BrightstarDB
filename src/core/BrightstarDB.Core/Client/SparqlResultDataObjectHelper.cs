@@ -23,7 +23,7 @@ namespace BrightstarDB.Client
             _storeContext = storeContext;
         }
 
-        public IEnumerable<IDataObject> BindDataObjects(SparqlResult sparqlResult, IList<OrderingDirection> orderingDirections = null )
+        public IEnumerable<IDataObject> BindDataObjects(SparqlResult sparqlResult, IList<OrderingDirection> orderingDirections = null)
         {
             if (sparqlResult.IsGraphResult)
             {
@@ -49,11 +49,11 @@ namespace BrightstarDB.Client
                     INode uriNode;
                     if (row.TryGetBoundValue("x", out uriNode) && uriNode is IUriNode)
                     {
-                        yield return BindRdfDataObject((IUriNode) uriNode, g);
+                        yield return BindRdfDataObject((IUriNode)uriNode, g);
                     }
                 }
             }
-        } 
+        }
 
         private IDataObject BindRdfDataObject(IUriNode dataObjectResource, IGraph graph)
         {
@@ -96,7 +96,7 @@ namespace BrightstarDB.Client
                 MakeDataObject(s.ToString(),
                     graph.GetTriplesWithSubject(s).Select(t =>
                         MakeTriple(t.Subject, t.Predicate, t.Object))));
-        } 
+        }
 
 
 
@@ -116,7 +116,7 @@ namespace BrightstarDB.Client
                     break;
                 case 3:
                     // Columns are triples, s, p, o in that order
-                    foreach (var t in sparqlResultSet.Select(row=>MakeTriple(row[0], row[1], row[2])))
+                    foreach (var t in sparqlResultSet.Select(row => MakeTriple(row[0], row[1], row[2])))
                     {
                         if (resourceTriples.ContainsKey(t.Subject))
                         {
@@ -124,7 +124,7 @@ namespace BrightstarDB.Client
                         }
                         else
                         {
-                            resourceTriples[t.Subject] = new List<Triple> {t};
+                            resourceTriples[t.Subject] = new List<Triple> { t };
                         }
                         if (resultsAreOrdered && lastLoadedSubject != null && !lastLoadedSubject.Equals(t.Subject))
                         {

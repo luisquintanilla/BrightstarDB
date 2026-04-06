@@ -6,7 +6,7 @@ using System.Text;
 
 namespace BrightstarDB.Profiling
 {
-    internal class BrightstarProfiler 
+    internal class BrightstarProfiler
     {
         public Guid Id { get; private set; }
         public DateTime Started { get; private set; }
@@ -31,23 +31,23 @@ namespace BrightstarDB.Profiling
 
         internal decimal GetRoundedMilliseconds(long stopwatchElapsedTicks)
         {
-            long z = 10000*stopwatchElapsedTicks;
-            decimal msTimesTen = (int) (z/Stopwatch.Frequency);
-            return msTimesTen/10;
+            long z = 10000 * stopwatchElapsedTicks;
+            decimal msTimesTen = (int)(z / Stopwatch.Frequency);
+            return msTimesTen / 10;
         }
 
         internal IDisposable StepImpl(string name)
         {
             if (name == null)
             {
-                throw new ArgumentNullException("name","Step name must not be null");
+                throw new ArgumentNullException("name", "Step name must not be null");
             }
             Timing t;
-            if (Head.Children != null && (t = Head.Children.FirstOrDefault(c=>c.Name.Equals(name))) != null)
+            if (Head.Children != null && (t = Head.Children.FirstOrDefault(c => c.Name.Equals(name))) != null)
             {
                 t.StartRepetition();
                 return t;
-            } 
+            }
             return new Timing(this, Head, name);
         }
 
@@ -57,7 +57,8 @@ namespace BrightstarDB.Profiling
             if (!Counters.TryGetValue(name, out val))
             {
                 Counters.Add(name, 1);
-            } else
+            }
+            else
             {
                 Counters[name] = val + 1;
             }
@@ -73,7 +74,7 @@ namespace BrightstarDB.Profiling
             Root.Log(sb);
             sb.AppendLine();
             sb.AppendLine("Counters:");
-            foreach(var c in Counters.OrderBy(e=>e.Key))
+            foreach (var c in Counters.OrderBy(e => e.Key))
             {
                 sb.AppendFormat("\t{0, -44} : {1,10}\r\n", c.Key, c.Value);
             }
@@ -149,7 +150,7 @@ namespace BrightstarDB.Profiling
             Stop();
         }
 
-        public void Log(StringBuilder sb, string indent="")
+        public void Log(StringBuilder sb, string indent = "")
         {
             sb.AppendFormat("{0,-44} {1,12:F1} {2,10} {3,10:F1}\r\n", indent + Name, DurationMilliseconds, Repetitions, Profiler.GetRoundedMilliseconds(_elapsedTicks / Repetitions));
             if (Children != null)

@@ -21,10 +21,9 @@ triples and the query language SPARQL BrightstarDB provides a code-first
 Entity Framework. The Entity Framework tools take .NET interfaces and 
 generate concrete classes that persist their data in BrightstarDB. As well as 
 the Entity Framework there is a low level :ref:`RDF API <RDF_Client_API>` for 
-working with the underlying data. BrightstarDB (in the Enterprise and Server 
-versions) also provides a management studio called :ref:`Polaris 
-<Using_Polaris>` for running queries and transactions against a BrightstarDB 
-service.
+working with the underlying data. BrightstarDB also provides a RESTful HTTP API and SPARQL endpoint for
+running queries and transactions against a BrightstarDB service. See
+:ref:`Running BrightstarDB <Running_BrightstarDB>`.
 
 
 The following diagram provides an overview of the BrightstarDB architecture.
@@ -102,10 +101,10 @@ to import and export your data as RDF.
 
 BrightstarDB supports a number of different RDF syntaxes for file-based import. 
 This list of supported file formats applies both to import jobs created using 
-the BrightstarDB API (see :ref:`RDF Client API <RDF_Client_API>` for details), 
-and to file import using Polaris (see :ref:`Polaris Management Tool 
-<Using_Polaris>` for details). To determine the parser to be used, BrightstarDB 
-checks the file extension, so it is important to use the correct file extension 
+the BrightstarDB API (see :ref:`RDF Client API <RDF_Client_API>` for details),
+and to file import using the BrightstarDB API (see :ref:`RDF Client API
+<RDF_Client_API>` for details). To determine the parser to be used, BrightstarDB
+checks the file extension, so it is important to use the correct file extension
 for the syntax you are importing. The supported syntaxes and their file 
 extensions are listed in the table below as shown, BrightstarDB also supports 
 reading from files that are compressed with the GZip compression method.

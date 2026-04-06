@@ -58,13 +58,13 @@ namespace BrightstarDB.InternalTests
             Assert.That(PageCache.Instance.Lookup(dataPartitionC, 1ul), Is.Null);
             client = BrightstarService.GetClient("type=embedded;storesDirectory=" + Path.GetFullPath("preload_test"),
                 new EmbeddedServiceConfiguration(
-                    new PageCachePreloadConfiguration {Enabled = true, DefaultCacheRatio = 1.0m}
+                    new PageCachePreloadConfiguration { Enabled = true, DefaultCacheRatio = 1.0m }
                     ));
             // Preload runs in the background so give it a bit of time
             Thread.Sleep(1000);
             Assert.That(PageCache.Instance.Lookup(dataPartitionB, 1ul), Is.Not.Null);
             Assert.That(PageCache.Instance.Lookup(dataPartitionC, 1ul), Is.Not.Null);
-            
+
         }
     }
 }

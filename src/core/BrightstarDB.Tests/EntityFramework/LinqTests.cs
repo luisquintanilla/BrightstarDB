@@ -32,7 +32,7 @@ namespace BrightstarDB.Tests.EntityFramework
         {
             var connectionString = GetConnectionString("TestLinqCount");
             var context = new MyEntityContext(connectionString);
-            for(var i = 0; i<100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 var entity = context.TestEntities.Create();
                 entity.SomeString = "Entity " + i;
@@ -87,22 +87,22 @@ namespace BrightstarDB.Tests.EntityFramework
             e1.SomeInt = 10;
             e1.SomeDecimal = 10;
             e1.SomeDouble = 10;
-            
+
             var e2 = context.TestEntities.Create();
             e2.SomeInt = 12;
             e2.SomeDecimal = 12;
             e2.SomeDouble = 12;
-            
+
             var e3 = context.TestEntities.Create();
             e3.SomeInt = 15;
             e3.SomeDecimal = 15;
             e3.SomeDouble = 15;
-            
+
             var e4 = context.TestEntities.Create();
             e4.SomeInt = 10;
             e4.SomeDecimal = 10;
             e4.SomeDouble = 10;
-            
+
             var e5 = context.TestEntities.Create();
             e5.SomeInt = 11;
             e5.SomeDecimal = 11;
@@ -203,7 +203,7 @@ namespace BrightstarDB.Tests.EntityFramework
             Assert.AreEqual(59.0, sumDbl);
 
         }
-        
+
         [Test]
         public void TestLinqContainsString()
         {
@@ -212,21 +212,21 @@ namespace BrightstarDB.Tests.EntityFramework
 
             var e1 = context.TestEntities.Create();
             e1.SomeString = "Networked Planet";
-            e1.CollectionOfStrings = new List<string> {"Jen", "Kal", "Gra", "Andy"};
+            e1.CollectionOfStrings = new List<string> { "Jen", "Kal", "Gra", "Andy" };
             var e2 = context.TestEntities.Create();
             e2.SomeString = "Samarind";
-            e2.CollectionOfStrings = new List<string> {"Miranda", "Sadik", "Tobey", "Ian"};
-            
+            e2.CollectionOfStrings = new List<string> { "Miranda", "Sadik", "Tobey", "Ian" };
+
             context.SaveChanges();
 
             Assert.AreEqual(2, context.TestEntities.Count());
-            
+
             var containsString = context.TestEntities.Where(e => e.CollectionOfStrings.Contains("Jen")).ToList();
             Assert.IsNotNull(containsString);
             Assert.AreEqual(1, containsString.Count());
             Assert.AreEqual("Networked Planet", containsString.First().SomeString);
 
-            var matchTargets = new List<string> {"Samarind", "IBM", "Microsoft"};
+            var matchTargets = new List<string> { "Samarind", "IBM", "Microsoft" };
             var matchCompanies = context.TestEntities.Where(e => matchTargets.Contains(e.SomeString)).ToList();
             Assert.IsNotNull(matchCompanies);
             Assert.AreEqual(1, matchCompanies.Count);
@@ -245,7 +245,7 @@ namespace BrightstarDB.Tests.EntityFramework
             var e2 = context.TestEntities.Create();
             e2.SomeString = "Samarind";
             e2.CollectionOfInts = new List<int>() { 1, 3, 5, 7, 9 };
-            
+
             context.SaveChanges();
 
             Assert.AreEqual(2, context.TestEntities.Count());
@@ -273,7 +273,7 @@ namespace BrightstarDB.Tests.EntityFramework
             e2.SomeString = "Samarind";
             e2.CollectionOfStrings = new List<string> { "Miranda", "Sadik", "Tobey", "Ian" };
             e2.CollectionOfDateTimes = new List<DateTime>() { now.AddYears(1), now.AddYears(3) };
-            
+
             context.SaveChanges();
 
             Assert.AreEqual(2, context.TestEntities.Count());
@@ -412,8 +412,8 @@ namespace BrightstarDB.Tests.EntityFramework
         {
             var connectionString = GetConnectionString("TestLinqDistinct");
             var context = new MyEntityContext(connectionString);
-            
-             var entity1 = context.TestEntities.Create();
+
+            var entity1 = context.TestEntities.Create();
             entity1.SomeString = "Apples";
             entity1.SomeInt = 2;
 
@@ -490,7 +490,7 @@ namespace BrightstarDB.Tests.EntityFramework
             Assert.That(allProgrammersDistinct.Count(p => p.Name.Equals("Alice")), Is.EqualTo(1));
 
             var allProgrammersOrderedDistinct =
-                context.Skills.Where(x => x.Parent.Id.Equals(programming.Id)).SelectMany(s => s.SkilledPeople).OrderByDescending(p=>p.Name).Distinct().ToList();
+                context.Skills.Where(x => x.Parent.Id.Equals(programming.Id)).SelectMany(s => s.SkilledPeople).OrderByDescending(p => p.Name).Distinct().ToList();
             // Distinct so we will get alice only once
             Assert.That(allProgrammersOrderedDistinct.Count, Is.EqualTo(3));
             Assert.That(allProgrammersOrderedDistinct[0].Name, Is.EqualTo("Carol"));
@@ -603,7 +603,7 @@ namespace BrightstarDB.Tests.EntityFramework
             var pe = context.Persons.Create();
             pe.Name = "Bill";
             pe.Age = 51;
-            
+
             var pb = context.Persons.Create();
             pb.Name = "Bill";
             pb.Age = 51;
@@ -629,16 +629,16 @@ namespace BrightstarDB.Tests.EntityFramework
             Assert.AreEqual(6, context.Persons.Count());
 
             var grpByAge = context.Persons.GroupBy(people => people.Age);
-            foreach(var item in grpByAge)
+            foreach (var item in grpByAge)
             {
                 var age = item.Key;
                 var count = item.Count();
             }
 
             var grpNyName = from p in context.Persons
-                           group p by p.Name into g
-                           orderby g.Key
-                           select new { Name = g.Key, Count = g.Count() };
+                            group p by p.Name into g
+                            orderby g.Key
+                            select new { Name = g.Key, Count = g.Count() };
 
             foreach (var item in grpNyName)
             {
@@ -647,9 +647,9 @@ namespace BrightstarDB.Tests.EntityFramework
             }
 
             var grpByAge2 = from p in context.Persons
-                           group p by p.Age into g
-                           orderby g.Key
-                           select new { Age = g.Key, Count = g.Count() };
+                            group p by p.Age into g
+                            orderby g.Key
+                            select new { Age = g.Key, Count = g.Count() };
 
             foreach (var item in grpByAge2)
             {
@@ -657,7 +657,7 @@ namespace BrightstarDB.Tests.EntityFramework
                 var numInGroup = item.Count;
             }
         }
-        
+
         [Test]
         public void TestLinqMax()
         {
@@ -839,7 +839,7 @@ namespace BrightstarDB.Tests.EntityFramework
         {
             var connectionString = GetConnectionString("TestLinqOrderByDate");
             var context = new MyEntityContext(connectionString);
-            
+
             var pe = context.Persons.Create();
             pe.Name = "Eddie";
             pe.DateOfBirth = new DateTime(1969, 8, 8, 4, 5, 30);
@@ -847,7 +847,7 @@ namespace BrightstarDB.Tests.EntityFramework
             var pb = context.Persons.Create();
             pb.Name = "Bill";
             pb.DateOfBirth = new DateTime(1900, 1, 12);
-            
+
             var pf = context.Persons.Create();
             pf.Name = "Freddie";
             pf.DateOfBirth = new DateTime(1969, 8, 8, 4, 6, 30);
@@ -859,7 +859,7 @@ namespace BrightstarDB.Tests.EntityFramework
             var pc = context.Persons.Create();
             pc.Name = "Carole";
             pc.DateOfBirth = new DateTime(1962, 3, 11);
-            
+
             var pa = context.Persons.Create();
             pa.Name = "Annie";
             pa.DateOfBirth = new DateTime(1950, 2, 2);
@@ -1029,7 +1029,7 @@ namespace BrightstarDB.Tests.EntityFramework
                 }
                 j++;
             }
-            
+
         }
 
         [Test]
@@ -1039,7 +1039,7 @@ namespace BrightstarDB.Tests.EntityFramework
             var connectionString = GetConnectionString("TestLinqSelect");
             var context = new MyEntityContext(connectionString);
 
-            for (var i = 1; i < 11; i++ )
+            for (var i = 1; i < 11; i++)
             {
                 var entity = context.TestEntities.Create();
                 entity.SomeInt = i;
@@ -1057,7 +1057,7 @@ namespace BrightstarDB.Tests.EntityFramework
         {
             var connectionString = GetConnectionString("TestLinqSelectMany");
             var context = new MyEntityContext(connectionString);
-            
+
             var skill1 = context.Skills.Create();
             skill1.Name = "C#";
             var skill2 = context.Skills.Create();
@@ -1084,7 +1084,7 @@ namespace BrightstarDB.Tests.EntityFramework
 
             var skill6 = context.Skills.Create();
             skill6.Name = "CSS";
-            
+
             context.SaveChanges();
 
             Assert.AreEqual(3, context.Persons.Count());
@@ -1092,7 +1092,7 @@ namespace BrightstarDB.Tests.EntityFramework
 
             var daskillz = context.Persons.SelectMany(owners => owners.Skills);
             var i = 0;
-            foreach(var s in daskillz)
+            foreach (var s in daskillz)
             {
                 i++;
                 Assert.IsNotNull(s.Name);
@@ -1106,7 +1106,7 @@ namespace BrightstarDB.Tests.EntityFramework
         {
             var connectionString = GetConnectionString("TestLinqSingle");
             var context = new MyEntityContext(connectionString);
-            
+
             var entity = context.TestEntities.Create();
             entity.SomeString = "An entity";
             context.SaveChanges();
@@ -1488,13 +1488,11 @@ namespace BrightstarDB.Tests.EntityFramework
             var endsWithE = context.Persons.Where(p => p.Name.EndsWith("e"));
             Assert.AreEqual(3, endsWithE.Count());
 
-#if !NETCOREAPP10
             endsWithE = context.Persons.Where(p => p.Name.EndsWith("E", true, CultureInfo.CurrentUICulture));
             Assert.AreEqual(3, endsWithE.Count());
 
             endsWithE = context.Persons.Where(p => p.Name.EndsWith("E", false, CultureInfo.CurrentUICulture));
             Assert.AreEqual(0, endsWithE.Count());
-#endif
 
             endsWithE = context.Persons.Where(p => p.Name.EndsWith("E", StringComparison.CurrentCultureIgnoreCase));
             Assert.AreEqual(3, endsWithE.Count());
@@ -1545,10 +1543,10 @@ namespace BrightstarDB.Tests.EntityFramework
             {
                 var p = context.Persons.Create();
                 p.Name = "Person" + i;
-                var age = (i + 1)*10;
+                var age = (i + 1) * 10;
                 p.Age = age;
                 var s = context.Skills.Create();
-                s.Name = "Skill" +i;
+                s.Name = "Skill" + i;
                 s.Expert = p;
             }
             context.SaveChanges();
@@ -1596,14 +1594,14 @@ namespace BrightstarDB.Tests.EntityFramework
 
             context.SaveChanges();
 
-            var roles = new IJobRole[] {jr1, jr2, jr3, jr4, jr5};
+            var roles = new IJobRole[] { jr1, jr2, jr3, jr4, jr5 };
 
             for (var i = 0; i < 100; i++)
             {
                 var p = context.Persons.Create();
                 p.Name = "Person" + i;
                 p.EmployeeId = i;
-                p.JobRole = roles[i%5];
+                p.JobRole = roles[i % 5];
             }
 
             context.SaveChanges();
@@ -1626,7 +1624,7 @@ namespace BrightstarDB.Tests.EntityFramework
             var connectionString = GetConnectionString("TestLinqJoin1");
             var context = new MyEntityContext(connectionString);
 
-            for(var i = 0; i<3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 var jobrole = context.JobRoles.Create();
                 jobrole.Description = "JobRole " + i;
@@ -1644,8 +1642,8 @@ namespace BrightstarDB.Tests.EntityFramework
             Assert.AreEqual(100, context.Persons.Count());
 
             var rolesThatHavePeople = (from jobrole in context.JobRoles
-                                  join person in context.Persons on jobrole.Id equals person.JobRole.Id
-                                  select jobrole).Distinct().ToList();
+                                       join person in context.Persons on jobrole.Id equals person.JobRole.Id
+                                       select jobrole).Distinct().ToList();
             Assert.AreEqual(2, rolesThatHavePeople.Count);
         }
 
@@ -1687,9 +1685,9 @@ namespace BrightstarDB.Tests.EntityFramework
 
 
             var allPublishersWithArticles = (from person in context.Persons
-                                 join article in context.Articles on person.EmployeeId equals
-                                     article.Publisher.EmployeeId
-                                 select person).ToList();
+                                             join article in context.Articles on person.EmployeeId equals
+                                                 article.Publisher.EmployeeId
+                                             select person).ToList();
             Assert.AreEqual(100, allPublishersWithArticles.Count);
         }
 
@@ -1761,7 +1759,7 @@ namespace BrightstarDB.Tests.EntityFramework
                 var article = context.Articles.Create();
                 article.Title = "Article " + i;
 
-                var publisher = people.Where(p => p.EmployeeId == (i/10)).SingleOrDefault();
+                var publisher = people.Where(p => p.EmployeeId == (i / 10)).SingleOrDefault();
                 Assert.IsNotNull(publisher);
 
                 article.Publisher = publisher;
@@ -1871,32 +1869,32 @@ namespace BrightstarDB.Tests.EntityFramework
 
 
         [Test]
-       public void TestLinqAny()
+        public void TestLinqAny()
         {
             var connectionString = GetConnectionString("TestLinqAny");
-           var context = new MyEntityContext(connectionString);
-           var deptA = context.Departments.Create();
-           deptA.Name = "Department A";
-           var deptB = context.Departments.Create();
-           deptB.Name = "Department B";
-           var alice = context.Persons.Create();
-           alice.Age = 25;
-           var bob = context.Persons.Create();
-           bob.Age = 29;
-           var charlie = context.Persons.Create();
-           charlie.Age = 21;
-           var dave = context.Persons.Create();
-           dave.Age = 35;
-           deptA.Persons.Add(alice);
-           deptA.Persons.Add(bob);
-           deptB.Persons.Add(charlie);
-           deptB.Persons.Add(dave);
-           context.SaveChanges();
+            var context = new MyEntityContext(connectionString);
+            var deptA = context.Departments.Create();
+            deptA.Name = "Department A";
+            var deptB = context.Departments.Create();
+            deptB.Name = "Department B";
+            var alice = context.Persons.Create();
+            alice.Age = 25;
+            var bob = context.Persons.Create();
+            bob.Age = 29;
+            var charlie = context.Persons.Create();
+            charlie.Age = 21;
+            var dave = context.Persons.Create();
+            dave.Age = 35;
+            deptA.Persons.Add(alice);
+            deptA.Persons.Add(bob);
+            deptB.Persons.Add(charlie);
+            deptB.Persons.Add(dave);
+            context.SaveChanges();
 
-           var departmentsWithOldies = context.Departments.Where(d => d.Persons.Any(p => p.Age > 30)).ToList();
-           Assert.AreEqual(1, departmentsWithOldies.Count);
-           Assert.AreEqual(deptB.Id, departmentsWithOldies[0].Id);
-       }
+            var departmentsWithOldies = context.Departments.Where(d => d.Persons.Any(p => p.Age > 30)).ToList();
+            Assert.AreEqual(1, departmentsWithOldies.Count);
+            Assert.AreEqual(deptB.Id, departmentsWithOldies[0].Id);
+        }
 
         [Test]
         public void TestLinqAll()
@@ -1932,13 +1930,13 @@ namespace BrightstarDB.Tests.EntityFramework
             dave.Friends.Add(edith);
             context.SaveChanges();
 
-            var results = context.Persons.Where(p => p.Friends.All(f => f.Age < 21)).Select(f=>f.Name).ToList();
+            var results = context.Persons.Where(p => p.Friends.All(f => f.Age < 21)).Select(f => f.Name).ToList();
             Assert.AreEqual(3, results.Count);
             Assert.IsTrue(results.Contains("Alice"));
             Assert.IsTrue(results.Contains("Bob"));
             Assert.IsTrue(results.Contains("Edith"));
         }
-        
+
         [Test]
         public void TestLinqQueryEnum()
         {
@@ -1953,11 +1951,11 @@ namespace BrightstarDB.Tests.EntityFramework
             entity1.SomeNullableEnumeration = TestEnumeration.Third;
             entity1.SomeNullableFlagsEnumeration = TestFlagsEnumeration.FlagA | TestFlagsEnumeration.FlagB;
             context.SaveChanges();
-            
+
             // Find by single flag
             IList<ITestEntity> results = context.TestEntities.Where(e => e.SomeEnumeration == TestEnumeration.Second).ToList();
             Assert.AreEqual(1, results.Count);
-            Assert.IsTrue(results.Any(x=>x.Id.Equals(entity1.Id)));
+            Assert.IsTrue(results.Any(x => x.Id.Equals(entity1.Id)));
 
 
             // Find by flag combo
@@ -1994,7 +1992,7 @@ namespace BrightstarDB.Tests.EntityFramework
                 ((e.SomeNullableFlagsEnumeration & (TestFlagsEnumeration.FlagA | TestFlagsEnumeration.FlagC)) ==
                  (TestFlagsEnumeration.FlagA | TestFlagsEnumeration.FlagC))).ToList();
             Assert.AreEqual(0, results.Count);
-            
+
 
             // Find by NoFlags
             results =
@@ -2047,13 +2045,13 @@ namespace BrightstarDB.Tests.EntityFramework
             var connectionString = GetConnectionString("TestLinqRetrieveId");
             using (var context = new MyEntityContext(connectionString))
             {
-                var alice = new Person {Id = "alice", Name = "Alice"};
+                var alice = new Person { Id = "alice", Name = "Alice" };
                 context.Persons.Add(alice);
                 context.SaveChanges();
-            
+
                 var entity = context.Persons.First();
                 Assert.That(entity.Id, Is.EqualTo("alice"));
-                var id = context.Persons.Select(x=>x.Id).First();
+                var id = context.Persons.Select(x => x.Id).First();
                 Assert.That(id, Is.EqualTo("alice"));
             }
         }

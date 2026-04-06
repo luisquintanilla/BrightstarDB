@@ -57,7 +57,7 @@ namespace BrightstarDB.Client
         /// <returns>The value of the column or null if no column exists</returns>
         public static object GetColumnValue(this XElement row, int columnIndex)
         {
-            var binding = row.Elements(SparqlResultsNamespace + "binding").ElementAtOrDefault(columnIndex);           
+            var binding = row.Elements(SparqlResultsNamespace + "binding").ElementAtOrDefault(columnIndex);
             return binding == null ? null : GetTypedValue(binding);
         }
 
@@ -132,7 +132,7 @@ namespace BrightstarDB.Client
             var attribute = literal.Attribute("datatype");
             if (attribute == null) return null;
 
-            return attribute.Value;            
+            return attribute.Value;
         }
 
         private static string GetBindingLanguageCode(XElement binding)

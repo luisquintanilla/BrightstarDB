@@ -20,14 +20,14 @@ namespace BrightstarDB.EntityFramework.Query
         /// Create a new queryable context
         /// </summary>
         /// <param name="context">The entity framework context to be queried</param>
-        public EntityFrameworkQueryable(EntityContext context) : base(QueryParser.CreateDefault(), CreateExecutor(context)){}
+        public EntityFrameworkQueryable(EntityContext context) : base(QueryParser.CreateDefault(), CreateExecutor(context)) { }
 
         /// <summary>
         /// Create a new queryable context
         /// </summary>
         /// <param name="provider">The query provider</param>
         /// <param name="expression">The query expression</param>
-        public EntityFrameworkQueryable(IQueryProvider provider, Expression expression) : base(provider, expression){}
+        public EntityFrameworkQueryable(IQueryProvider provider, Expression expression) : base(provider, expression) { }
 
     }
 }

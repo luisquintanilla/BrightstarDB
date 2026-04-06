@@ -12,7 +12,7 @@ namespace BrightstarDB.Storage.Statistics
         public long Reserved1 { get; set; }
         public long Reserved2 { get; set; }
         public long Reserved3 { get; set; }
-        public static int RecordSize {get { return 52; }}
+        public static int RecordSize { get { return 52; } }
 
         public StoreStatisticsHeaderRecord(ulong commitNumber, DateTime timestamp, long startOffset)
         {
@@ -21,7 +21,7 @@ namespace BrightstarDB.Storage.Statistics
             StartOffset = startOffset;
         }
 
-        private StoreStatisticsHeaderRecord() {  }
+        private StoreStatisticsHeaderRecord() { }
         public int Save(BinaryWriter dataStream)
         {
             dataStream.Write(1);

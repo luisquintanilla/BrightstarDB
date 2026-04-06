@@ -119,9 +119,9 @@ namespace BrightstarDB.Storage.BTreeStore
             _graphIndex = new GraphIndex();
             _prefixManager = new PrefixManager();
             _objectLocationManager = new ObjectLocationManager
-                                         {
-                                             StoreFileName = StoreDataFile
-                                         };
+            {
+                StoreFileName = StoreDataFile
+            };
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace BrightstarDB.Storage.BTreeStore
             int count = SerializationUtils.WriteVarint(dataStream, _storeId);
             count += SerializationUtils.WriteVarint(dataStream, _nextObjectId);
             count += SerializationUtils.WriteVarint(dataStream, _resourceIdIndexObjectId);
-            count += _objectLocationManager.Save(dataStream, offset + (ulong) count);
+            count += _objectLocationManager.Save(dataStream, offset + (ulong)count);
             count += _propertyTypeObjectIndex.Save(dataStream, 0);
             count += _propertyTypeSubjectIndex.Save(dataStream, 0);
             count += _graphIndex.Save(dataStream, 0);
@@ -400,8 +400,8 @@ namespace BrightstarDB.Storage.BTreeStore
                 }
 
                 // 3 inserts into the resource index
-                ulong sid = AssertInResourceIndex(subject, false, profiler:profiler);
-                ulong pid = AssertInResourceIndex(predicate, false, profiler:profiler);
+                ulong sid = AssertInResourceIndex(subject, false, profiler: profiler);
+                ulong pid = AssertInResourceIndex(predicate, false, profiler: profiler);
                 ulong oid = AssertInResourceIndex(objValue, isObjectLiteral, dataType, langCode, !isObjectLiteral, profiler);
 
                 // Assert the record of the graph URI
@@ -508,7 +508,7 @@ namespace BrightstarDB.Storage.BTreeStore
             ulong graphId = _graphIndex.LookupGraphId(graphUri);
             if (resourceId == StoreConstants.NullUlong) return new List<Triple>();
 
-            return Bind(resourceId, graphs: new[] {graphId}).Select(MakeTriple);
+            return Bind(resourceId, graphs: new[] { graphId }).Select(MakeTriple);
         }
 
         public IEnumerable<Triple> Match(string subject,
@@ -519,10 +519,10 @@ namespace BrightstarDB.Storage.BTreeStore
                                          string langCode = null,
                                          string graph = null)
         {
-            return Match(subject, predicate, obj, isLiteral, dataType, langCode, new[] {graph});
+            return Match(subject, predicate, obj, isLiteral, dataType, langCode, new[] { graph });
         }
 
-        private static readonly List<ulong> AllGraphs = new List<ulong> {StoreConstants.NullUlong};
+        private static readonly List<ulong> AllGraphs = new List<ulong> { StoreConstants.NullUlong };
 
         private List<ulong> LookupGraphIds(IEnumerable<string> graphs)
         {
@@ -552,14 +552,14 @@ namespace BrightstarDB.Storage.BTreeStore
             ulong oid = FindResourceId(obj, isLiteral, dataType, langCode);
             var gids = LookupGraphIds(graphs);
 
-            if (sid == StoreConstants.NullUlong && !string.IsNullOrEmpty(subject)) return new List<Triple>();
-            if (pid == StoreConstants.NullUlong && !string.IsNullOrEmpty(predicate)) return new List<Triple>();
-            if (oid == StoreConstants.NullUlong && !string.IsNullOrEmpty(obj)) return new List<Triple>();
+            if (sid == StoreConstants.NullUlong && !String.IsNullOrEmpty(subject)) return new List<Triple>();
+            if (pid == StoreConstants.NullUlong && !String.IsNullOrEmpty(predicate)) return new List<Triple>();
+            if (oid == StoreConstants.NullUlong && !String.IsNullOrEmpty(obj)) return new List<Triple>();
 
             if (gids.Count == 0)
             {
                 return new List<Triple>();
-        }
+            }
 
             return Bind(sid, pid, oid, gids).Select(MakeTriple);
         }
@@ -755,8 +755,8 @@ namespace BrightstarDB.Storage.BTreeStore
             }
             else
             {
-            AddToCommitList(resourceList);
-        }
+                AddToCommitList(resourceList);
+            }
         }
 
         private RelatedResourceList MakeNewRelatedResourceList()
@@ -829,7 +829,7 @@ namespace BrightstarDB.Storage.BTreeStore
             }
             else
             {
-            AddToCommitList(resourceList);
+                AddToCommitList(resourceList);
             }
             // AddToCommitList(n);
         }
@@ -885,7 +885,7 @@ namespace BrightstarDB.Storage.BTreeStore
         {
             // see if object is in the cache
             IPersistable obj;
-            if (_loadedObjects.TryGetValue(objectId, out obj)) return (T) obj;
+            if (_loadedObjects.TryGetValue(objectId, out obj)) return (T)obj;
 
             ulong offset = _objectLocationManager.GetObjectOffset(objectId);
             IStoreManager2 storeManager = GetStoreManager();
@@ -895,14 +895,14 @@ namespace BrightstarDB.Storage.BTreeStore
             if (obj.ObjectId != objectId)
             {
                 Logging.LogError(BrightstarEventId.ObjectReadError,
-                    "Invalid object detected in LoadObject({0}). Attempted to load object from offset {1} and read in an object with ObjectId set to {2}.", 
+                    "Invalid object detected in LoadObject({0}). Attempted to load object from offset {1} and read in an object with ObjectId set to {2}.",
                     objectId, offset, obj.ObjectId);
                 throw new BrightstarInternalException(String.Format("Invalid object detected in LoadObject({0}). Attempted to load object from offset {1} and read in an object with ObjectId set to {2}.", objectId, offset, obj.ObjectId));
             }
 
             _loadedObjects.Add(obj);
             obj.Store = this;
-            return (T) obj;
+            return (T)obj;
         }
 
         /// <summary>
@@ -987,9 +987,9 @@ namespace BrightstarDB.Storage.BTreeStore
                         {
                             foreach (var gid in resource.Graph)
                             {
-                            yield return new Tuple<ulong, ulong, ulong, ulong>(
-                                    subjectResourceId, predicateId, resource.Rid, gid);
-                        }
+                                yield return new Tuple<ulong, ulong, ulong, ulong>(
+                                        subjectResourceId, predicateId, resource.Rid, gid);
+                            }
                         }
                         else
                         {
@@ -1018,7 +1018,7 @@ namespace BrightstarDB.Storage.BTreeStore
                 var relatedResourceList = LoadObject<RelatedResourceList>(resourceListRef.ObjectId);
 
                 foreach (var resource in relatedResourceList.Members)
-                    {
+                {
                     if (graphs.Any(g => g == StoreConstants.NullUlong))
                     {
                         foreach (var gid in resource.Graph)
@@ -1031,10 +1031,10 @@ namespace BrightstarDB.Storage.BTreeStore
                         foreach (var gid in resource.Graph.Intersect(graphs))
                         {
                             yield return new Tuple<ulong, ulong, ulong, ulong>(resource.Rid, predicateId, o, gid);
+                        }
                     }
                 }
             }
-        }
         }
 
         private IEnumerable<Tuple<ulong, ulong, ulong, ulong>> BindPredicate(ulong p, IEnumerable<ulong> graphs)
@@ -1061,10 +1061,10 @@ namespace BrightstarDB.Storage.BTreeStore
                         foreach (var gid in resource.Graph.Intersect(graphs))
                         {
                             yield return new Tuple<ulong, ulong, ulong, ulong>(subjectId, p, resource.Rid, gid);
+                        }
                     }
                 }
             }
-        }
         }
 
         private IEnumerable<Tuple<ulong, ulong, ulong, ulong>> BindSubject(ulong s, IEnumerable<ulong> graphs)
@@ -1094,13 +1094,13 @@ namespace BrightstarDB.Storage.BTreeStore
                     {
                         foreach (var gid in resource.Graph.Intersect(graphs))
                         {
-                        yield return
-                                new Tuple<ulong, ulong, ulong, ulong>(s, subjectPredicateIndexEntry.ResourceId,
-                                                                      resource.Rid, gid);
+                            yield return
+                                    new Tuple<ulong, ulong, ulong, ulong>(s, subjectPredicateIndexEntry.ResourceId,
+                                                                          resource.Rid, gid);
+                        }
                     }
                 }
             }
-        }
         }
 
         private IEnumerable<Tuple<ulong, ulong, ulong, ulong>> BindPredicateObject(ulong p, ulong o,
@@ -1126,9 +1126,9 @@ namespace BrightstarDB.Storage.BTreeStore
                     foreach (var gid in resource.Graph.Intersect(graphs))
                     {
                         yield return new Tuple<ulong, ulong, ulong, ulong>(resource.Rid, p, o, gid);
+                    }
                 }
             }
-        }
         }
 
         private IEnumerable<Tuple<ulong, ulong, ulong, ulong>> BindSubjectObject(ulong s, ulong o,
@@ -1160,10 +1160,10 @@ namespace BrightstarDB.Storage.BTreeStore
                         {
                             yield return
                                 new Tuple<ulong, ulong, ulong, ulong>(s, subjectPredicateIndexEntry.ResourceId, o, gid);
+                        }
                     }
                 }
             }
-        }
         }
 
         private IEnumerable<Tuple<ulong, ulong, ulong, ulong>> BindSubjectPredicate(ulong s, ulong p,
@@ -1190,9 +1190,9 @@ namespace BrightstarDB.Storage.BTreeStore
                     foreach (var gid in resource.Graph.Intersect(graphs))
                     {
                         yield return new Tuple<ulong, ulong, ulong, ulong>(s, p, resource.Rid, gid);
+                    }
                 }
             }
-        }
         }
 
         private IEnumerable<Tuple<ulong, ulong, ulong, ulong>> BindSubjectPredicateObject(ulong s, ulong p, ulong o,
@@ -1221,9 +1221,9 @@ namespace BrightstarDB.Storage.BTreeStore
                     foreach (var gid in resource.Graph.Intersect(graphs))
                     {
                         yield return new Tuple<ulong, ulong, ulong, ulong>(s, p, o, gid);
+                    }
                 }
             }
-        }
         }
 
         internal Resource Resolve(ulong resourceId)
@@ -1279,29 +1279,29 @@ namespace BrightstarDB.Storage.BTreeStore
             string subject = _prefixManager.ResolvePrefixedUri(Resolve(data.Item1).LexicalValue);
             string predicate = _prefixManager.ResolvePrefixedUri(Resolve(data.Item2).LexicalValue);
             Resource obj = Resolve(data.Item3);
-            string graph = _graphIndex.GetGraphUri((int) data.Item4);
+            string graph = _graphIndex.GetGraphUri((int)data.Item4);
 
             if (obj.IsLiteral)
             {
                 Resource dataType = Resolve(obj.DataTypeResourceId);
                 return new Triple
-                           {
-                               Subject = subject,
-                               Predicate = predicate,
-                               Object = obj.LexicalValue,
-                               DataType = dataType.LexicalValue,
-                               LangCode = obj.LanguageCode,
-                               IsLiteral = true,
-                               Graph = graph
-                           };
+                {
+                    Subject = subject,
+                    Predicate = predicate,
+                    Object = obj.LexicalValue,
+                    DataType = dataType.LexicalValue,
+                    LangCode = obj.LanguageCode,
+                    IsLiteral = true,
+                    Graph = graph
+                };
             }
             return new Triple
-                       {
-                           Subject = subject,
-                           Predicate = predicate,
-                           Object = _prefixManager.ResolvePrefixedUri(obj.LexicalValue),
-                           Graph = graph
-                       };
+            {
+                Subject = subject,
+                Predicate = predicate,
+                Object = _prefixManager.ResolvePrefixedUri(obj.LexicalValue),
+                Graph = graph
+            };
         }
 
         public void Triple(string subject, string predicate, string obj, bool isLiteral, string dataType,
@@ -1326,7 +1326,7 @@ namespace BrightstarDB.Storage.BTreeStore
             ulong pid = FindResourceId(predicate);
             ulong oid = FindResourceId(obj, isLiteral, dataType, langCode);
             IEnumerable<ulong> gids = graphs == null
-                                          ? new ulong[] {StoreConstants.NullUlong}
+                                          ? new ulong[] { StoreConstants.NullUlong }
                                           : graphs.Select(g => _graphIndex.LookupGraphId(g));
 
 
@@ -1375,7 +1375,7 @@ namespace BrightstarDB.Storage.BTreeStore
                     RelatedResource resource in
                         relatedResourceList.Members.Where(r => r.Graph.Any(g => gids.Contains(g))))
                 {
-                    yield return new[] {subjectId, resource.Rid};
+                    yield return new[] { subjectId, resource.Rid };
                 }
             }
         }
@@ -1398,7 +1398,7 @@ namespace BrightstarDB.Storage.BTreeStore
                 var relatedResourceList = LoadObject<RelatedResourceList>(resourceListId);
                 foreach (var resource in relatedResourceList.Members.Where(r => r.Graph.Any(g => gids.Contains(g))))
                 {
-                    yield return new[] {objectId, resource.Rid};
+                    yield return new[] { objectId, resource.Rid };
                 }
             }
         }
@@ -1517,7 +1517,7 @@ namespace BrightstarDB.Storage.BTreeStore
                     var relatedResourceList = LoadObject<RelatedResourceList>(relatedResourceListRef.ObjectId);
                     foreach (var resource in relatedResourceList.Members.Where(r => r.Graph.Any(g => gids.Contains(g))))
                     {
-                        yield return new[] {predicateResourceId, resource.Rid};
+                        yield return new[] { predicateResourceId, resource.Rid };
                     }
                 }
             }
@@ -1540,7 +1540,7 @@ namespace BrightstarDB.Storage.BTreeStore
                     var relatedResourceList = LoadObject<RelatedResourceList>(relatedResourceListRef.ObjectId);
                     foreach (var resource in relatedResourceList.Members.Where(r => r.Graph.Any(g => gids.Contains(g))))
                     {
-                        yield return new[] {predicateResourceId, resource.Rid};
+                        yield return new[] { predicateResourceId, resource.Rid };
                     }
                 }
             }
@@ -1552,7 +1552,7 @@ namespace BrightstarDB.Storage.BTreeStore
             if (gids.All(g => g == StoreConstants.NullUlong)) yield break;
             foreach (var entry in BindAll(gids))
             {
-                yield return new[] {entry.Item2, entry.Item1, entry.Item3};
+                yield return new[] { entry.Item2, entry.Item1, entry.Item3 };
             }
         }
 
@@ -1572,7 +1572,7 @@ namespace BrightstarDB.Storage.BTreeStore
                             {
                                 resource.Graph.Remove(gid);
                                 modified = true;
-    }
+                            }
                             if (resource.Graph.Count == 0)
                             {
                                 resourceList.Delete(resource.Rid);
@@ -1596,7 +1596,7 @@ namespace BrightstarDB.Storage.BTreeStore
 #if WINDOWS_PHONE || PORTABLE
             var graphUriSet = new VDS.RDF.HashSet<ulong>(graphUris.Select(g => _graphIndex.LookupGraphId(g)));
 #else
-            var graphUriSet = new HashSet<ulong>(graphUris.Select(g=>_graphIndex.LookupGraphId(g)));
+            var graphUriSet = new HashSet<ulong>(graphUris.Select(g => _graphIndex.LookupGraphId(g)));
 #endif
             if (graphUriSet.All(g => g == StoreConstants.NullUlong)) return;
             Func<Entry<ObjectRef>, List<Entry<ObjectRef>>, bool> removeGraphs =
@@ -1620,7 +1620,7 @@ namespace BrightstarDB.Storage.BTreeStore
                         }
                         return modified;
                     };
-            VisitResourceLists(_propertyTypeObjectIndex,removeGraphs);
+            VisitResourceLists(_propertyTypeObjectIndex, removeGraphs);
             VisitResourceLists(_propertyTypeSubjectIndex, removeGraphs);
         }
 

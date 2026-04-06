@@ -77,11 +77,11 @@ namespace BrightstarDB.Storage.BTreeStore
                         // create a new bucket where several resources might exist
                         var resource = MakeNewResource(MakeId(hashCode, 0), resourceValue, isLiteral, dataTypeId,
                                                        langCode);
-                        var resources = new List<Resource> {resource};
+                        var resources = new List<Resource> { resource };
                         var bucket = new Bucket
-                                         {
-                                             Resources = resources,
-                                         };
+                        {
+                            Resources = resources,
+                        };
 
                         // insert into the lexical index
                         _index.Insert(new Entry<Bucket>(hashCode, bucket));
@@ -102,7 +102,7 @@ namespace BrightstarDB.Storage.BTreeStore
 
                         if (matches.Count() == 0)
                         {
-                            resourceId = MakeId(hashCode, (uint) bucket.Resources.Count);
+                            resourceId = MakeId(hashCode, (uint)bucket.Resources.Count);
                             var resource = MakeNewResource(resourceId, resourceValue, isLiteral, dataTypeId, langCode);
                             bucket.Resources.Add(resource);
                             _store.AddToCommitList(node);
@@ -167,7 +167,7 @@ namespace BrightstarDB.Storage.BTreeStore
                         r.LexicalValue.Equals(resourceValue) && r.IsLiteral == isLiteral &&
                         r.DataTypeResourceId == dataTypeId &&
                         r.LanguageCode == langCode);
-                
+
                 if (matches.Count() == 1)
                 {
                     resourceId = matches.Select(r => r.Rid).First();

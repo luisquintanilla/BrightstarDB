@@ -9,6 +9,6 @@ namespace BrightstarDB.Tests.EntityFramework
         string Id { get; }
         string Description { get; set; }
         [InverseProperty("JobRole")]
-        ICollection<IPerson> Persons { get; set; } 
+        ICollection<IPerson> Persons { get; set; }
     }
 }

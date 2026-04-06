@@ -12,7 +12,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
         /// <summary>
         /// Get or set the boolean flag that indicates if this node has been modified since it was loaded
         /// </summary>
-        bool IsDirty { get;}
+        bool IsDirty { get; }
 
         /// <summary>
         /// Get the boolean flag that indicates if this node is a leaf node

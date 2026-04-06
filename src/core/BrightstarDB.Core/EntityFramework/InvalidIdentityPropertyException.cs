@@ -39,7 +39,7 @@ namespace BrightstarDB.EntityFramework
     {
         internal InvalidIdentityPropertyException(PropertyInfo invalidProperty) : base(
             String.Format(Strings.EntityFramework_InvalidPropertyMessage, invalidProperty.Name, invalidProperty.DeclaringType.FullName))
-        {           
+        {
         }
     }
 }

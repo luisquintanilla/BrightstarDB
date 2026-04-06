@@ -12,7 +12,7 @@ using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace BrightstarDB.CodeGeneration
 {
-    public class GenerateEntityContext : Task
+    public class GenerateEntityContext : Microsoft.Build.Utilities.Task
     {
         public override bool Execute()
         {
@@ -39,8 +39,8 @@ namespace BrightstarDB.CodeGeneration
                 EntityContextNamespace,
                 EntityContextClassName,
                 entityAccessibilitySelector: entityAccessibilitySelector,
-                loggerFactory:loggerFactory
-                ).Result;
+                loggerFactory: loggerFactory
+                ).GetAwaiter().GetResult();
             var resultString = result
                 .Aggregate(new StringBuilder(), (sb, next) => sb.AppendLine(next.ToFullString()), x => x.ToString());
 
@@ -57,7 +57,7 @@ namespace BrightstarDB.CodeGeneration
         public string EntityContextFileName { get; set; } = "EntityContext.cs";
         public string EntityContextClassName { get; set; } = "EntityContext";
         public bool EntityClassesInternal { get; set; }
-        
+
 
         private Language GetEntityContextLanguage()
         {
@@ -84,7 +84,7 @@ namespace BrightstarDB.CodeGeneration
 
         public void Dispose()
         {
-            
+
         }
 
         public ILogger CreateLogger(string categoryName)

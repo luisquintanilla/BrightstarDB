@@ -8,6 +8,7 @@ using BrightstarDB.Client;
 using BrightstarDB.EntityFramework.Query;
 using BrightstarDB.EntityFramework.Tests.ContextObjects;
 using VDS.RDF;
+using ISparqlResult = BrightstarDB.Client.ISparqlResult;
 using VDS.RDF.Query;
 
 namespace BrightstarDB.EntityFramework.Tests
@@ -83,7 +84,7 @@ namespace BrightstarDB.EntityFramework.Tests
 
         public override string MapIdToUri(PropertyInfo propertyInfo, string id)
         {
-            return ("id:" + Uri.EscapeUriString(id));
+            return new Uri("id:" + id).AbsoluteUri;
         }
 
         public override void DeleteObject(object o)

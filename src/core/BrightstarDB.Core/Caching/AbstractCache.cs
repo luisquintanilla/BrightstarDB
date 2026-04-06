@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace BrightstarDB.Caching
@@ -19,7 +19,11 @@ namespace BrightstarDB.Caching
         /// The policy for cache eviction
         /// </summary>
         protected readonly ICacheEvictionPolicy CacheEvictionPolicy;
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _cacheLock = new();
+#else
         private readonly object _cacheLock = new object();
+#endif
 
         /// <summary>
         /// Creates a new cache instance
@@ -32,12 +36,12 @@ namespace BrightstarDB.Caching
         {
             CacheSize = 0;
             _cacheMaxSize = cacheMaxSize;
-            _highwaterMark = (long)(highwaterMark > 0 ? highwaterMark : cacheMaxSize*0.9);
+            _highwaterMark = (long)(highwaterMark > 0 ? highwaterMark : cacheMaxSize * 0.9);
             _lowwaterMark =
                 (long)
                 (lowwaterMark > 0
                      ? lowwaterMark
-                     : (highwaterMark > 0 ? highwaterMark - (cacheMaxSize*0.25) : cacheMaxSize*0.65));
+                     : (highwaterMark > 0 ? highwaterMark - (cacheMaxSize * 0.25) : cacheMaxSize * 0.65));
             if (_lowwaterMark <= 0) _lowwaterMark = highwaterMark;
             CacheEvictionPolicy = cacheEvictionPolicy;
         }
@@ -50,8 +54,8 @@ namespace BrightstarDB.Caching
         /// <param name="cachePriority">The priority of the item in the cache</param>
         public void Insert(string key, byte[] data, CachePriority cachePriority)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-            if (data == null) throw new ArgumentNullException(nameof(data));
+            ThrowIfNull(key);
+            ThrowIfNull(data);
             Remove(key);
             if (CacheSize + data.Length > _highwaterMark)
             {
@@ -80,7 +84,7 @@ namespace BrightstarDB.Caching
         /// <returns>The bytes for the cached item or null if the item is not found in the cache</returns>
         public byte[] Lookup(string key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            ThrowIfNull(key);
             var cacheEntry = GetEntry(key);
             if (cacheEntry == null) return null;
             CacheEvictionPolicy.NotifyLookup(key);
@@ -94,9 +98,9 @@ namespace BrightstarDB.Caching
         /// <param name="key">The key of the cache entry to be removed</param>
         public void Remove(string key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            ThrowIfNull(key);
             long entrySize = RemoveEntry(key);
-            lock(_cacheLock)
+            lock (_cacheLock)
             {
                 CacheSize -= entrySize;
             }
@@ -110,7 +114,7 @@ namespace BrightstarDB.Caching
         /// <returns>True if an entry with this key is in the cache, false otherwise</returns>
         public bool ContainsKey(string key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            ThrowIfNull(key);
             return GetEntry(key) != null;
         }
 
@@ -118,7 +122,7 @@ namespace BrightstarDB.Caching
         /// Provides an enumeration over the entries in the cache.
         /// </summary>
         /// <returns></returns>
-        public abstract IEnumerable<AbstractCacheEntry> ListEntries(); 
+        public abstract IEnumerable<AbstractCacheEntry> ListEntries();
 
         /// <summary>
         /// Implemented in derived classes to add a new entry to the cache
@@ -135,7 +139,7 @@ namespace BrightstarDB.Caching
         /// <param name="key">The key to lookup</param>
         /// <returns>The cache entry found or null if there was no match on <paramref name="key"/></returns>
         protected abstract AbstractCacheEntry GetEntry(string key);
-        
+
         /// <summary>
         /// Called by the eviction policy to remove an item from the cache
         /// </summary>
@@ -144,7 +148,7 @@ namespace BrightstarDB.Caching
         /// <remarks>This method calls the protected RemoveEntry method and then updates the local cache size counter</remarks>
         public long EvictEntry(string key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            ThrowIfNull(key);
             long bytesEvicted = RemoveEntry(key);
             lock (_cacheLock)
             {

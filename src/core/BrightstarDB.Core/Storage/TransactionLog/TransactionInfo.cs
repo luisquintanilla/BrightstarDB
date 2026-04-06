@@ -15,7 +15,7 @@ namespace BrightstarDB.Storage.TransactionLog
         public ulong DataStartPosition { get; set; }
         public ulong DataLength { get; set; }
         public DateTime TransactionStartTime { get; set; }
-        
+
         public TransactionInfo(Guid txnJobId, TransactionStatus txnStatus, TransactionType txnType, ulong dataStart, ulong dataLength, DateTime txnStartTime)
         {
             VersionNumber = 1;
@@ -29,7 +29,7 @@ namespace BrightstarDB.Storage.TransactionLog
 
         private TransactionInfo()
         {
-            
+
         }
 
         public int Save(BinaryWriter dataStream, ulong offset = 0u)

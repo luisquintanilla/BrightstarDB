@@ -8,7 +8,7 @@ namespace BrightstarDB.Utils
     /// </summary>
     public static class XmlExtensions
     {
-        
+
 
 #if !PORTABLE && !WINDOWS_PHONE
         /// <summary>

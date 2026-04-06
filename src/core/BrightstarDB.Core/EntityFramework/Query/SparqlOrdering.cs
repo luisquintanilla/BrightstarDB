@@ -6,28 +6,17 @@ namespace BrightstarDB.EntityFramework.Query
     /// <summary>
     /// Represents a single clause in the ORDER BY part of a SPARQL Query
     /// </summary>
-    public class SparqlOrdering
+    public class SparqlOrdering(string selectorExpression, OrderingDirection orderingDirection)
     {
         /// <summary>
         /// Get the expression used for sorting
         /// </summary>
-        public string SelectorExpression { get; private set; }
+        public string SelectorExpression { get; } = selectorExpression;
 
         /// <summary>
         /// Get the direction of the sort
         /// </summary>
-        public OrderingDirection OrderingDirection { get; private set; }
-
-        /// <summary>
-        /// Create a new ordering clause
-        /// </summary>
-        /// <param name="selectorExpression">The expression used for sorting</param>
-        /// <param name="orderingDirection">The sort direction</param>
-        public SparqlOrdering(string selectorExpression, OrderingDirection orderingDirection)
-        {
-            SelectorExpression = selectorExpression;
-            OrderingDirection = orderingDirection;
-        }
+        public OrderingDirection OrderingDirection { get; } = orderingDirection;
 
         /// <summary>
         /// Returns the SPARQL substring for the ordering clause

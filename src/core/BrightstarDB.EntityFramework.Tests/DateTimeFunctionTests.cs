@@ -15,7 +15,7 @@ namespace BrightstarDB.EntityFramework.Tests
         [Test]
         public void TestDay()
         {
-            var q = Context.Dinners.Where(d => d.EventDate.Day == 1).Select(d=>d.Id);
+            var q = Context.Dinners.Where(d => d.EventDate.Day == 1).Select(d => d.Id);
             var result = q.ToList();
             AssertQuerySparql(
                 @"SELECT ?v1 WHERE {
@@ -30,7 +30,7 @@ BIND(STRAFTER(STR(?d), 'http://www.brightstardb.com/.well-known/genid/') AS ?v1)
         [Test]
         public void TestHour()
         {
-            var q = Context.Dinners.Where(d => d.EventDate.Hour == 1).Select(d=>d.Id);
+            var q = Context.Dinners.Where(d => d.EventDate.Hour == 1).Select(d => d.Id);
             var result = q.ToList();
             AssertQuerySparql(
                 @"SELECT ?v1 WHERE {
@@ -45,7 +45,7 @@ BIND(STRAFTER(STR(?d), 'http://www.brightstardb.com/.well-known/genid/') AS ?v1)
         [Test]
         public void TestMinute()
         {
-            var q = Context.Dinners.Where(d => d.EventDate.Minute == 1).Select(d=>d.Id);
+            var q = Context.Dinners.Where(d => d.EventDate.Minute == 1).Select(d => d.Id);
             var result = q.ToList();
             AssertQuerySparql(
                 @"SELECT ?v1 WHERE {
@@ -60,7 +60,7 @@ BIND(STRAFTER(STR(?d), 'http://www.brightstardb.com/.well-known/genid/') AS ?v1)
         [Test]
         public void TestMonth()
         {
-            var q = Context.Dinners.Where(d => d.EventDate.Month == 1).Select(d=>d.Id);
+            var q = Context.Dinners.Where(d => d.EventDate.Month == 1).Select(d => d.Id);
             var result = q.ToList();
             AssertQuerySparql(
                 @"SELECT ?v1 WHERE {
@@ -75,7 +75,7 @@ BIND(STRAFTER(STR(?d), 'http://www.brightstardb.com/.well-known/genid/') AS ?v1)
         [Test]
         public void TestSecond()
         {
-            var q = Context.Dinners.Where(d => d.EventDate.Second == 1).Select(d=>d.Id);
+            var q = Context.Dinners.Where(d => d.EventDate.Second == 1).Select(d => d.Id);
             var result = q.ToList();
             AssertQuerySparql(
                 @"SELECT ?v1 WHERE {
@@ -90,7 +90,7 @@ BIND(STRAFTER(STR(?d), 'http://www.brightstardb.com/.well-known/genid/') AS ?v1)
         [Test]
         public void TestYear()
         {
-            var q = Context.Dinners.Where(d => d.EventDate.Year == 2011).Select(d=>d.Id);
+            var q = Context.Dinners.Where(d => d.EventDate.Year == 2011).Select(d => d.Id);
             var result = q.ToList();
             AssertQuerySparql(
                 @"SELECT ?v1 WHERE {

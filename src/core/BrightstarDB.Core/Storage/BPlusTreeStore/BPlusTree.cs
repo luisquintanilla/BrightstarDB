@@ -23,7 +23,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
         /// <param name="pageStore"></param>
         /// <param name="keySize">The size of the B+ tree's key (in bytes)</param>
         /// <param name="dataSize">The size of the values stored in leaf nodes (in bytes)</param>
-        public BPlusTree(ulong txnId, IPageStore pageStore, int keySize = 8, int dataSize = 64) 
+        public BPlusTree(ulong txnId, IPageStore pageStore, int keySize = 8, int dataSize = 64)
         {
             _config = new BPlusTreeConfiguration(pageStore, keySize, dataSize, pageStore.PageSize);
             _pageStore = pageStore;
@@ -144,21 +144,20 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             using (profiler.Step("BPlusTree.Delete"))
             {
                 var root = GetNode(_rootId, profiler);
-                if (root is ILeafNode)
+                if (root is ILeafNode leafNode)
                 {
-                    (root as ILeafNode).Delete(txnId, key);
+                    leafNode.Delete(txnId, key);
                     MarkDirty(txnId, root, profiler);
                     // Update root page pointer - see note in Insert() method above
                     _rootId = root.PageId;
                 }
-                else
+                else if (root is IInternalNode internalRoot)
                 {
-                    bool underAllocation;
-                    Delete(txnId, root as IInternalNode, key, out underAllocation, profiler);
+                    Delete(txnId, internalRoot, key, out var underAllocation, profiler);
                     if (root.KeyCount == 0)
                     {
                         // Now has only a single child leaf node, which should become the new tree root
-                        root = GetNode((root as IInternalNode).GetChildPointer(0), profiler);
+                        root = GetNode(internalRoot.GetChildPointer(0), profiler);
                         _rootId = root.PageId;
                     }
                     else
@@ -178,7 +177,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
         /// <param name="toKey">The highest key to return in the enumeration</param>
         /// <param name="profiler"></param>
         /// <returns>An enumeration of key-value pairs from the BTree</returns>
-        public IEnumerable<KeyValuePair<byte[], byte[]>> Scan(byte[] fromKey, byte[] toKey, BrightstarProfiler profiler )
+        public IEnumerable<KeyValuePair<byte[], byte[]>> Scan(byte[] fromKey, byte[] toKey, BrightstarProfiler profiler)
         {
             using (profiler.Step("Scan BTree Range"))
             {
@@ -190,7 +189,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             }
         }
 
-        public IEnumerable<KeyValuePair<byte[], byte []>> Scan(BrightstarProfiler profiler)
+        public IEnumerable<KeyValuePair<byte[], byte[]>> Scan(BrightstarProfiler profiler)
         {
             using (profiler.Step("Scan Entire BTree"))
             {
@@ -203,9 +202,9 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             if (node is IInternalNode)
             {
                 var internalNode = node as IInternalNode;
-                foreach(var childNodeId in internalNode.Scan())
+                foreach (var childNodeId in internalNode.Scan())
                 {
-                    foreach(var entry in Scan(GetNode(childNodeId, profiler), profiler))
+                    foreach (var entry in Scan(GetNode(childNodeId, profiler), profiler))
                     {
                         yield return entry;
                     }
@@ -214,7 +213,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             if (node is ILeafNode)
             {
                 var leaf = node as ILeafNode;
-                foreach(var entry in leaf.Scan())
+                foreach (var entry in leaf.Scan())
                 {
                     yield return entry;
                 }
@@ -226,9 +225,9 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             if (node is IInternalNode)
             {
                 var internalNode = node as IInternalNode;
-                foreach(var childNodeId in internalNode.Scan(fromKey, toKey))
+                foreach (var childNodeId in internalNode.Scan(fromKey, toKey))
                 {
-                    foreach(var entry in Scan(GetNode(childNodeId, profiler), fromKey, toKey, profiler))
+                    foreach (var entry in Scan(GetNode(childNodeId, profiler), fromKey, toKey, profiler))
                     {
                         yield return entry;
                     }
@@ -237,7 +236,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             else if (node is ILeafNode)
             {
                 var leaf = node as ILeafNode;
-                foreach(var entry in leaf.Scan(fromKey, toKey))
+                foreach (var entry in leaf.Scan(fromKey, toKey))
                 {
                     yield return entry;
                 }
@@ -297,8 +296,8 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                         }
                     }
                     bool hasRightSibling = parentInternalNode.GetRightSiblingId(childNodeId, out rightSiblingId);
-                    
-                        
+
+
                     if (hasRightSibling)
                     {
                         rightSibling = GetNode(rightSiblingId, profiler) as ILeafNode;
@@ -514,13 +513,10 @@ namespace BrightstarDB.Storage.BPlusTreeStore
 #if DEBUG_BTREE
                 _config.BTreeDebug("BPlusTree.Insert Key={0} into INTERNAL node {1}", key.Dump(), node.PageId);
 #endif
-                var internalNode = node as IInternalNode;
+                var internalNode = (IInternalNode)node;
                 var childNodeId = internalNode.GetChildNodeId(key);
                 var childNode = GetNode(childNodeId, profiler);
-                bool childSplit;
-                INode rightChild;
-                byte[] childSplitKey;
-                var newChildNodeId = Insert(txnId, childNode, key, value, out childSplit, out rightChild, out childSplitKey, overwrite, profiler);
+                var newChildNodeId = Insert(txnId, childNode, key, value, out var childSplit, out var rightChild, out var childSplitKey, overwrite, profiler);
                 if (childSplit)
                 {
                     if (internalNode.IsFull)
@@ -534,19 +530,20 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                             rightNode = internalNode.Split(txnId, _pageStore.Create(txnId), out splitKey);
                             MarkDirty(txnId, rightNode, profiler);
                             split = true;
+                            var rightInternal = (IInternalNode)rightNode;
                             if (childSplitKey.Compare(splitKey) < 0)
                             {
                                 internalNode.Insert(txnId, childSplitKey, rightChild.PageId);
                             }
                             else
                             {
-                                (rightNode as IInternalNode).Insert(txnId, childSplitKey, rightChild.PageId);
+                                rightInternal.Insert(txnId, childSplitKey, rightChild.PageId);
                             }
                             // update child pointers if required (need to check both internalNode and rightNode as we don't know which side the modified child node ended up on)
                             if (newChildNodeId != childNodeId)
                             {
                                 internalNode.UpdateChildPointer(txnId, childNodeId, newChildNodeId);
-                                (rightNode as IInternalNode).UpdateChildPointer(txnId, childNodeId, newChildNodeId);
+                                rightInternal.UpdateChildPointer(txnId, childNodeId, newChildNodeId);
                             }
                         }
                     }
@@ -656,7 +653,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             return numLoaded;
         }
 
-        
+
 
         #region Node factory methods
 

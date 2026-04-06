@@ -39,7 +39,7 @@ namespace BrightstarDB.Rdf
 
         public void Triple(string subject, bool subjectIsBNode,
             string predicate, bool predicateIsBNode,
-            string obj, bool objIsBNode, 
+            string obj, bool objIsBNode,
             bool isLiteral, string dataType, string langCode, string graphUri)
         {
 #if DEBUG_INSERTS
@@ -63,7 +63,7 @@ namespace BrightstarDB.Rdf
             _store.InsertTriple(subject, predicate, obj, isLiteral, dataType, langCode, graphUri, _profiler);
             _total++;
 
-            if (_total % _batchSize == 0 )
+            if (_total % _batchSize == 0)
             {
                 if (_commitEachBatch)
                 {

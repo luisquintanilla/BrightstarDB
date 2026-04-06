@@ -95,7 +95,7 @@
                     Predicate != null && Predicate.Equals(other.Predicate)) &&
                    IsLiteral.Equals(other.IsLiteral) &&
                    (Object == null && other.Object == null || Object != null && Object.Equals(other.Object)) &&
-                   (Graph == null && other.Graph == null || Graph != null && Graph.Equals(other.Graph)) && 
+                   (Graph == null && other.Graph == null || Graph != null && Graph.Equals(other.Graph)) &&
                    (DataType == null && other.DataType == null ||
                     DataType != null && DataType.Equals(other.DataType)) &&
                    (LangCode == null && other.LangCode == null ||

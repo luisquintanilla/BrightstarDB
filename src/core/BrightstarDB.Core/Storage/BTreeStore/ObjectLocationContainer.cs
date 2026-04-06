@@ -28,7 +28,8 @@ namespace BrightstarDB.Storage.BTreeStore
             {
                 // doesn't exist
                 _objectIdOffsetIndex.Insert(~loc, entry);
-            } else
+            }
+            else
             {
                 _objectIdOffsetIndex[loc] = entry;
             }
@@ -52,7 +53,7 @@ namespace BrightstarDB.Storage.BTreeStore
             public ulong Offset;
             public ulong Type;
             public ulong Version;
-            
+
             public ObjectIdOffsetEntry(ulong objectId, ulong offset, ulong type, ulong version)
             {
                 ObjectId = objectId;
@@ -63,13 +64,13 @@ namespace BrightstarDB.Storage.BTreeStore
 
             public int CompareTo(object obj)
             {
-                var entry = (ObjectIdOffsetEntry) obj;
+                var entry = (ObjectIdOffsetEntry)obj;
                 return ObjectId.CompareTo(entry.ObjectId);
             }
 
             public override bool Equals(object obj)
             {
-                var entry = (ObjectIdOffsetEntry) obj;
+                var entry = (ObjectIdOffsetEntry)obj;
                 return ObjectId == entry.ObjectId;
             }
 
@@ -96,7 +97,7 @@ namespace BrightstarDB.Storage.BTreeStore
         public void Read(BinaryReader dataStream)
         {
             var count = (int)SerializationUtils.ReadVarint(dataStream);
-            for (int i=0;i < count; i++)
+            for (int i = 0; i < count; i++)
             {
                 var objectId = SerializationUtils.ReadVarint(dataStream);
                 var offset = SerializationUtils.ReadVarint(dataStream);

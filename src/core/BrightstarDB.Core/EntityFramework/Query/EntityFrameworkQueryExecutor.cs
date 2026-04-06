@@ -55,7 +55,7 @@ namespace BrightstarDB.EntityFramework.Query
         /// </remarks>
         public T ExecuteSingle<T>(QueryModel queryModel, bool returnDefaultWhenEmpty)
         {
-            if (queryModel.ResultOperators.Any(x=>x is Remotion.Linq.Clauses.ResultOperators.FirstResultOperator))
+            if (queryModel.ResultOperators.Any(x => x is Remotion.Linq.Clauses.ResultOperators.FirstResultOperator))
             {
                 return returnDefaultWhenEmpty
                            ? ExecuteCollection<T>(queryModel).FirstOrDefault()

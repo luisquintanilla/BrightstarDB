@@ -27,7 +27,7 @@ namespace BrightstarDB.Client
             string authHeader = request.Headers["Authorization"];
             if (!String.IsNullOrEmpty(authHeader))
             {
-                var tokens = authHeader.Split(new char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+                var tokens = authHeader.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 if (tokens.Length == 2)
                 {
                     if (tokens[0].Equals("SharedKey"))
@@ -65,7 +65,7 @@ namespace BrightstarDB.Client
         /// <returns></returns>
         public static string GenerateSignature(HttpWebRequest request, SignatureType signatureType, string secret)
         {
-            if(signatureType == SignatureType.Unknown) throw new ArgumentException("Invalid signature type", "signatureType");
+            if (signatureType == SignatureType.Unknown) throw new ArgumentException("Invalid signature type", "signatureType");
             if (signatureType == SignatureType.PlainText)
             {
                 // Just passes back the shared secret key in plain text
@@ -85,7 +85,7 @@ namespace BrightstarDB.Client
                 .AppendLine(request.Headers[HttpRequestHeader.IfUnmodifiedSince])
                 .AppendLine(request.Headers[HttpRequestHeader.Range])
                 .Append(CanonicalizedResource(request.RequestUri));
-            
+
             var key = Convert.FromBase64String(secret);
 
             var hmac = new HMACSHA256(key);
@@ -151,7 +151,7 @@ namespace BrightstarDB.Client
                     }
                     else
                     {
-                        queryParams[k] = new List<string> {tmp[1]};
+                        queryParams[k] = new List<string> { tmp[1] };
                     }
                 }
                 foreach (var k in queryParams.Keys.OrderBy(k => k))

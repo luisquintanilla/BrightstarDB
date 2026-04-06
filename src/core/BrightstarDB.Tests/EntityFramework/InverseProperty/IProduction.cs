@@ -17,6 +17,6 @@ namespace BrightstarDB.Tests.EntityFramework.InverseProperty
         ICollection<IProductionMember> ProductionTeam { get; set; }
 
         [InverseProperty("Production")]
-        ICollection<IPhoto> Photos { get; set; } 
+        ICollection<IPhoto> Photos { get; set; }
     }
 }

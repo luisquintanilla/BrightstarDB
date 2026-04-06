@@ -24,7 +24,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
         {
             _pageStore = pageStore;
             _segmentSize = CalculateSegmentSize(_pageStore.PageSize);
-            _pointerSegment = (byte) ((_pageStore.PageSize - 8)/_segmentSize);
+            _pointerSegment = (byte)((_pageStore.PageSize - 8) / _segmentSize);
             _writeLock = new object();
             _nextSegment = _pointerSegment;
             _currentPage = 0;
@@ -61,11 +61,11 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             using (profiler.Step("ResourceTable.GetResource"))
             {
                 var currentPage = _pageStore.Retrieve(pageId, profiler);
-                int resourceLength = BitConverter.ToInt32(currentPage.Data, segment*_segmentSize);
+                int resourceLength = BitConverter.ToInt32(currentPage.Data, segment * _segmentSize);
                 int totalLength = resourceLength + 4;
-                int segmentsToLoad = totalLength/_segmentSize;
-                if (totalLength%_segmentSize > 0) segmentsToLoad++;
-                var buffer = new byte[segmentsToLoad*_segmentSize];
+                int segmentsToLoad = totalLength / _segmentSize;
+                if (totalLength % _segmentSize > 0) segmentsToLoad++;
+                var buffer = new byte[segmentsToLoad * _segmentSize];
                 byte segmentIndex = segment;
                 for (int i = 0; i < segmentsToLoad; i++)
                 {
@@ -75,14 +75,14 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                         currentPage = _pageStore.Retrieve(nextPageId, profiler);
                         segmentIndex = 0;
                     }
-                    Array.Copy(currentPage.Data, segmentIndex*_segmentSize, buffer, i*_segmentSize, _segmentSize);
+                    Array.Copy(currentPage.Data, segmentIndex * _segmentSize, buffer, i * _segmentSize, _segmentSize);
                     segmentIndex++;
                 }
                 return Encoding.UTF8.GetString(buffer, 4, resourceLength);
             }
         }
 
-       
+
         public void Insert(ulong transactionId, string resource, out ulong pageId, out byte segmentId, BrightstarProfiler profiler)
         {
             using (profiler.Step("ResourceTable.Insert"))
@@ -101,7 +101,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                     segmentId = _nextSegment;
                     for (int i = 0; i < (byteCount + 4); i += _segmentSize)
                     {
-                        _pageStore.Write(transactionId, _currentPage, resourceBytes, i, _nextSegment*_segmentSize,
+                        _pageStore.Write(transactionId, _currentPage, resourceBytes, i, _nextSegment * _segmentSize,
                                          _segmentSize < (byteCount + 4 - i) ? _segmentSize : (byteCount + 4 - i),
                                          profiler);
                         _nextSegment++;
@@ -139,7 +139,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
             IPage nextPage = _pageStore.Create(transactionId);
             if (_currentPage > 0)
             {
-                _pageStore.Write(transactionId, _currentPage, BitConverter.GetBytes(nextPage.Id), 0, _pageStore.PageSize-8, 8, profiler);
+                _pageStore.Write(transactionId, _currentPage, BitConverter.GetBytes(nextPage.Id), 0, _pageStore.PageSize - 8, 8, profiler);
             }
             _currentPage = nextPage.Id;
             _nextSegment = 0;

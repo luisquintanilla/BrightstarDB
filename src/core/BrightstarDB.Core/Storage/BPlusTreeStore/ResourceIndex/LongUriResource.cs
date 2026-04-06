@@ -25,10 +25,10 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
             _valueSegment = valueSegment;
         }
 
-        public LongUriResource(IResourceTable resourceTable, byte[]data)
+        public LongUriResource(IResourceTable resourceTable, byte[] data)
         {
             _resourceTable = resourceTable;
-            var prefixLength = (int) data[1];
+            var prefixLength = (int)data[1];
             _valuePage = BitConverter.ToUInt64(data, 2);
             _valueSegment = data[10];
             _prefix = Encoding.UTF8.GetString(data, 11, prefixLength);
@@ -41,7 +41,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
             var buff = new byte[64];
             buff[0] = 0;
             var prefixBytes = Encoding.UTF8.GetBytes(_prefix);
-            buff[1] = (byte) prefixBytes.Length;
+            buff[1] = (byte)prefixBytes.Length;
             BitConverter.GetBytes(_valuePage).CopyTo(buff, 2);
             buff[10] = _valueSegment;
             prefixBytes.CopyTo(buff, 11);

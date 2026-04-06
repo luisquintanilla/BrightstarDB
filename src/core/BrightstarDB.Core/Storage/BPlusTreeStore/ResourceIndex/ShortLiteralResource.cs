@@ -29,11 +29,11 @@ namespace BrightstarDB.Storage.BPlusTreeStore.ResourceIndex
         public byte[] GetData()
         {
             var buff = new byte[64];
-            buff[0] = (byte) (ResourceHeaderFlags.IsLiteral | ResourceHeaderFlags.IsShort);
+            buff[0] = (byte)(ResourceHeaderFlags.IsLiteral | ResourceHeaderFlags.IsShort);
             BitConverter.GetBytes(_langCodeId).CopyTo(buff, 1);
             BitConverter.GetBytes(_dataTypeId).CopyTo(buff, 9);
             var valueBytes = Encoding.UTF8.GetBytes(_value);
-            buff[17] = (byte) valueBytes.Length;
+            buff[17] = (byte)valueBytes.Length;
             valueBytes.CopyTo(buff, 18);
             return buff;
         }

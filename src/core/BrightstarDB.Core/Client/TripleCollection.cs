@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BrightstarDB.Model;
@@ -16,19 +16,19 @@ namespace BrightstarDB.Client
 
         public void Add(ITriple triple)
         {
-            if (triple == null) throw new ArgumentNullException("triple");
+            ThrowIfNull(triple);
             Dictionary<string, HashSet<ITriple>> subjIndex;
             if (!_tripleIndex.TryGetValue(triple.Subject, out subjIndex))
             {
                 _tripleIndex.Add(triple.Subject,
-                    new Dictionary<string, HashSet<ITriple>> {{triple.Predicate, new HashSet<ITriple> {triple}}});
+                    new Dictionary<string, HashSet<ITriple>> { { triple.Predicate, new HashSet<ITriple> { triple } } });
             }
             else
             {
                 HashSet<ITriple> predTriples;
                 if (!subjIndex.TryGetValue(triple.Predicate, out predTriples))
                 {
-                    subjIndex.Add(triple.Predicate, new HashSet<ITriple> {triple});
+                    subjIndex.Add(triple.Predicate, new HashSet<ITriple> { triple });
                 }
                 else
                 {
@@ -39,7 +39,7 @@ namespace BrightstarDB.Client
 
         public void AddRange(IEnumerable<ITriple> triples)
         {
-            if (triples == null) throw new ArgumentNullException("triples");
+            ThrowIfNull(triples);
             foreach (ITriple t in triples) Add(t);
         }
 
@@ -67,14 +67,14 @@ namespace BrightstarDB.Client
 
         public void RemoveBySubject(string subject)
         {
-            if (subject == null) throw new ArgumentNullException("subject");
+            ThrowIfNull(subject);
             _tripleIndex.Remove(subject);
         }
 
         public void RemoveBySubjectPredicate(string subject, string predicate)
         {
-            if (subject == null) throw new ArgumentNullException("subject");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            ThrowIfNull(subject);
+            ThrowIfNull(predicate);
             Dictionary<string, HashSet<ITriple>> predicateIndex;
             if (_tripleIndex.TryGetValue(subject, out predicateIndex))
             {
@@ -84,9 +84,9 @@ namespace BrightstarDB.Client
 
         public void RemoveBySubjectPredicateObject(string subject, string predicate, string obj)
         {
-            if (subject == null) throw new ArgumentNullException("subject");
-            if (predicate == null) throw new ArgumentNullException("predicate");
-            if (obj == null) throw new ArgumentNullException("obj");
+            ThrowIfNull(subject);
+            ThrowIfNull(predicate);
+            ThrowIfNull(obj);
 
             Dictionary<string, HashSet<ITriple>> predicateIndex;
             if (_tripleIndex.TryGetValue(subject, out predicateIndex))
@@ -102,10 +102,10 @@ namespace BrightstarDB.Client
         public void RemoveBySubjectPredicateLiteral(string subject, string predicate, string literal, string dataType,
             string langCode)
         {
-            if (subject == null) throw new ArgumentNullException("subject");
-            if (predicate == null) throw new ArgumentNullException("predicate");
-            if (literal == null) throw new ArgumentNullException("literal");
-            if (dataType == null) throw new ArgumentNullException("dataType");
+            ThrowIfNull(subject);
+            ThrowIfNull(predicate);
+            ThrowIfNull(literal);
+            ThrowIfNull(dataType);
 
             Dictionary<string, HashSet<ITriple>> predicateIndex;
             if (_tripleIndex.TryGetValue(subject, out predicateIndex))
@@ -123,8 +123,8 @@ namespace BrightstarDB.Client
 
         public void RemoveByPredicateObject(string predicate, string obj)
         {
-            if (predicate == null) throw new ArgumentNullException("predicate");
-            if (obj == null) throw new ArgumentNullException("obj");
+            ThrowIfNull(predicate);
+            ThrowIfNull(obj);
             foreach (var subjectIndex in _tripleIndex.Values)
             {
                 HashSet<ITriple> triples;
@@ -137,7 +137,7 @@ namespace BrightstarDB.Client
 
         public void RemoveByObject(string obj)
         {
-            if (obj == null) throw new ArgumentNullException("obj");
+            ThrowIfNull(obj);
             foreach (var tripleSet in _tripleIndex.Values.SelectMany(x => x.Values))
             {
                 tripleSet.RemoveWhere(x => !x.IsLiteral && x.Object.Equals(obj));
@@ -154,7 +154,7 @@ namespace BrightstarDB.Client
         /// <returns></returns>
         public IEnumerable<ITriple> GetMatches(ITriple matchPattern)
         {
-            if (matchPattern == null) throw new ArgumentNullException("matchPattern");
+            ThrowIfNull(matchPattern);
             if (matchPattern.Subject == null)
             {
                 foreach (ITriple t in _tripleIndex.Values.SelectMany(subjIndex => GetMatches(subjIndex, matchPattern)))
@@ -179,7 +179,7 @@ namespace BrightstarDB.Client
         /// <returns>An enumeration of <see cref="BrightstarDB.Model.ITriple" /> instances</returns>
         public IEnumerable<ITriple> GetMatches(string subject)
         {
-            if (subject == null) throw new ArgumentNullException("subject");
+            ThrowIfNull(subject);
             Dictionary<string, HashSet<ITriple>> si;
             if (_tripleIndex.TryGetValue(subject, out si))
             {
@@ -192,8 +192,8 @@ namespace BrightstarDB.Client
 
         public IEnumerable<ITriple> GetMatches(string subject, string predicate)
         {
-            if (subject == null) throw new ArgumentNullException("subject");
-            if (predicate == null) throw new ArgumentNullException("predicate");
+            ThrowIfNull(subject);
+            ThrowIfNull(predicate);
             Dictionary<string, HashSet<ITriple>> si;
             if (_tripleIndex.TryGetValue(subject, out si))
             {
@@ -207,9 +207,9 @@ namespace BrightstarDB.Client
 
         public IEnumerable<ITriple> GetMatches(string subject, string predicate, string obj)
         {
-            if (subject == null) throw new ArgumentNullException("subject");
-            if (predicate == null) throw new ArgumentNullException("predicate");
-            if (obj == null) throw new ArgumentNullException("obj");
+            ThrowIfNull(subject);
+            ThrowIfNull(predicate);
+            ThrowIfNull(obj);
             return GetMatches(subject, predicate).Where(t => !t.IsLiteral && t.Object.Equals(obj));
         }
 
@@ -230,7 +230,7 @@ namespace BrightstarDB.Client
 
         public bool ContainsSubject(string subject)
         {
-            if (subject == null) throw new ArgumentNullException("subject");
+            ThrowIfNull(subject);
             return _tripleIndex.ContainsKey(subject);
         }
 

@@ -21,7 +21,7 @@ namespace BrightstarDB.Tests
 #else
         public static string StoreLocation => "BrightstarDB";
 
-        public  static string DataLocation => "..\\..\\..\\Data\\";
+        public static string DataLocation => "..\\..\\..\\Data\\";
 #endif
     }
 }

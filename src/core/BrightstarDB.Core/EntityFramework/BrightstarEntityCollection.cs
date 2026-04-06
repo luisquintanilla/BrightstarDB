@@ -20,7 +20,7 @@ namespace BrightstarDB.EntityFramework
     /// A generic, dynamically loaded collection of Brightstar EntityFramework objects
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public sealed class BrightstarEntityCollection<T> : QueryableBase<T>, IBrightstarEntityCollection, IEntityCollection<T>, INotifyCollectionChanged where T:class
+    public sealed class BrightstarEntityCollection<T> : QueryableBase<T>, IBrightstarEntityCollection, IEntityCollection<T>, INotifyCollectionChanged where T : class
     {
         private readonly BrightstarEntityContext _context;
         private readonly BrightstarEntityObject _parent;
@@ -58,7 +58,7 @@ namespace BrightstarDB.EntityFramework
             _parent = parent;
             _propertyTypeUri = propertyType;
             _propertyType = _context.GetDataObject(new Uri(propertyType), false);
-            _itemTypeUri = context.MapTypeToUri(typeof (T));
+            _itemTypeUri = context.MapTypeToUri(typeof(T));
             _isInverse = isInverse;
         }
 
@@ -69,10 +69,10 @@ namespace BrightstarDB.EntityFramework
         /// <param name="expression"></param>
         public BrightstarEntityCollection(IQueryProvider queryProvider, Expression expression) : base(queryProvider, expression)
         {
-            
+
         }
 
-#region Implementation of IEntityCollection<T>
+        #region Implementation of IEntityCollection<T>
         /// <summary>
         /// Updates this collection to only contain the specified items
         /// </summary>
@@ -85,7 +85,7 @@ namespace BrightstarDB.EntityFramework
                 {
                     Add(item as T);
                 }
-                foreach(var item in LoadedObjects.Except(items.Cast<BrightstarEntityObject>(), new BrightstarEntityObjectComparer()).ToList())
+                foreach (var item in LoadedObjects.Except(items.Cast<BrightstarEntityObject>(), new BrightstarEntityObjectComparer()).ToList())
                 {
                     Remove(item as T);
                 }
@@ -114,8 +114,8 @@ namespace BrightstarDB.EntityFramework
         }
 
 
-#endregion
-#region Implementation of IEnumerable
+        #endregion
+        #region Implementation of IEnumerable
 
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
@@ -142,9 +142,9 @@ namespace BrightstarDB.EntityFramework
             return GetEnumerator();
         }
 
-#endregion
+        #endregion
 
-#region Implementation of ICollection<T>
+        #region Implementation of ICollection<T>
 
         /// <summary>
         /// Adds an item to the <see cref="T:System.Collections.Generic.ICollection`1"/>.
@@ -201,7 +201,7 @@ namespace BrightstarDB.EntityFramework
         public void CopyTo(T[] array, int arrayIndex)
         {
             AssertLoaded();
-            foreach(var o in LoadedObjects.Cast<T>())
+            foreach (var o in LoadedObjects.Cast<T>())
             {
                 array[arrayIndex++] = o;
             }
@@ -259,7 +259,7 @@ namespace BrightstarDB.EntityFramework
             get { return false; }
         }
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Adds all items in the enumeration to this collection
@@ -268,10 +268,10 @@ namespace BrightstarDB.EntityFramework
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="items"/> or one of its members is null.</exception>
         public void AddRange(IEnumerable<T> items)
         {
-            foreach(var item in items) Add(item);
+            foreach (var item in items) Add(item);
         }
 
-#region Implementation of IEntityCollection
+        #region Implementation of IEntityCollection
 
         /// <summary>
         /// Loads the entity collection from the store
@@ -321,7 +321,7 @@ namespace BrightstarDB.EntityFramework
             }
         }
 
-#endregion
+        #endregion
 
         private void AssertLoaded()
         {
@@ -333,7 +333,7 @@ namespace BrightstarDB.EntityFramework
             var beo = o as BrightstarEntityObject;
             if (beo == null)
             {
-                throw new ArgumentException( String.Format(Strings.InvalidEntityType, typeof(BrightstarEntityObject).FullName), argumentName);
+                throw new ArgumentException(String.Format(Strings.InvalidEntityType, typeof(BrightstarEntityObject).FullName), argumentName);
             }
             beo.AssertIdentity();
             if (!beo.Context.Equals(_context))
@@ -343,7 +343,7 @@ namespace BrightstarDB.EntityFramework
             return beo;
         }
 
-#region Implementation of IBrightstarEntityCollection
+        #region Implementation of IBrightstarEntityCollection
         private List<BrightstarEntityObject> _loadedObjects;
 
         /// <summary>
@@ -428,9 +428,9 @@ namespace BrightstarDB.EntityFramework
         /// Returns a flag indicating if the object collection is currently loaded
         /// </summary>
         public bool IsLoaded { get { return _loadedObjects != null; } }
-#endregion
+        #endregion
 
-#region Implementation of INotifyCollectionChanged
+        #region Implementation of INotifyCollectionChanged
 
         /// <summary>
         /// Occurs when items are added to or removed from the collection or the collection is reset
@@ -444,7 +444,7 @@ namespace BrightstarDB.EntityFramework
                 CollectionChanged(this, e);
             }
         }
-#endregion
+        #endregion
     }
 
 }

@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Extract version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Restore
+        run: dotnet restore src/core/core.slnx
+
+      - name: Build
+        run: dotnet build src/core/core.slnx -c Release --no-restore --nologo
+
+      - name: Test
+        run: dotnet test src/core/core.slnx -c Release --no-build --nologo --verbosity minimal
+
+      - name: Pack
+        run: |
+          dotnet pack src/core/BrightstarDB.Core -c Release --no-build -o artifacts/ -p:PackageVersion=${{ steps.version.outputs.VERSION }}
+          dotnet pack src/core/BrightstarDB -c Release --no-build -o artifacts/ -p:PackageVersion=${{ steps.version.outputs.VERSION }}
+          dotnet pack src/core/BrightstarDB.CodeGeneration -c Release --no-build -o artifacts/ -p:PackageVersion=${{ steps.version.outputs.VERSION }}
+          dotnet pack src/core/BrightstarDB.CodeGeneration.Console -c Release --no-build -o artifacts/ -p:PackageVersion=${{ steps.version.outputs.VERSION }}
+          dotnet pack src/core/BrightstarDB.CodeGeneration.T4 -c Release --no-build -o artifacts/ -p:PackageVersion=${{ steps.version.outputs.VERSION }}
+
+      - name: Publish to NuGet.org
+        run: dotnet nuget push artifacts/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*.nupkg
+          generate_release_notes: true

@@ -19,7 +19,7 @@ namespace BrightstarDB.Storage.BTreeStore
 
             public override bool Equals(object obj)
             {
-                var e = (Entry) obj;
+                var e = (Entry)obj;
                 return ResourceId.Equals(e.ResourceId);
             }
 
@@ -39,7 +39,7 @@ namespace BrightstarDB.Storage.BTreeStore
             /// <param name="obj">An object to compare with this instance. </param><exception cref="T:System.ArgumentException"><paramref name="obj"/> is not the same type as this instance. </exception><filterpriority>2</filterpriority>
             public int CompareTo(object obj)
             {
-                var e = (Entry) obj;
+                var e = (Entry)obj;
                 return ResourceId.CompareTo(e.ResourceId);
             }
 
@@ -78,7 +78,7 @@ namespace BrightstarDB.Storage.BTreeStore
                 return _entries[loc].IndexObjectId;
             }
 
-            throw new BrightstarInternalException("Key not in index");                        
+            throw new BrightstarInternalException("Key not in index");
         }
 
         public IEnumerable<Entry> Entries
@@ -97,7 +97,7 @@ namespace BrightstarDB.Storage.BTreeStore
             }
             objectId = StoreConstants.NullUlong;
             return false;
-        } 
+        }
 
         #region Implementation of IStorable
 
@@ -110,13 +110,13 @@ namespace BrightstarDB.Storage.BTreeStore
         public int Save(BinaryWriter dataStream, ulong offset)
         {
             // output the count
-            var count = SerializationUtils.WriteVarint(dataStream, (ulong) _entries.Count);
+            var count = SerializationUtils.WriteVarint(dataStream, (ulong)_entries.Count);
 
             // output all the entries
             foreach (var entry in _entries)
             {
                 count += SerializationUtils.WriteVarint(dataStream, entry.ResourceId);
-                count += SerializationUtils.WriteVarint(dataStream, entry.IndexObjectId);                
+                count += SerializationUtils.WriteVarint(dataStream, entry.IndexObjectId);
             }
 
             return count;
@@ -132,7 +132,7 @@ namespace BrightstarDB.Storage.BTreeStore
 
             _entries = new List<Entry>();
 
-            for (ulong i=0;i< count;i++)            
+            for (ulong i = 0; i < count; i++)
             {
                 var resourceId = SerializationUtils.ReadVarint(dataStream);
                 var objectId = SerializationUtils.ReadVarint(dataStream);

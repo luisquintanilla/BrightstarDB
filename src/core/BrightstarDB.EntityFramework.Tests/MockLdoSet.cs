@@ -4,7 +4,8 @@ using BrightstarDB.EntityFramework.Query;
 
 namespace BrightstarDB.EntityFramework.Tests
 {
-    public class MockLdoSet<T> : EntityFrameworkQueryable<T>{
+    public class MockLdoSet<T> : EntityFrameworkQueryable<T>
+    {
         public MockLdoSet(EntityContext context) : base(context)
         {
         }

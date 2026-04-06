@@ -32,7 +32,7 @@ namespace BrightstarDB.EntityFramework
 #if NETSTANDARD16
             return _assembly.GetCustomAttributes(typeof(NamespaceDeclarationAttribute)).Cast<NamespaceDeclarationAttribute>().GetEnumerator();
 #else
-            return _assembly.GetCustomAttributes(typeof (NamespaceDeclarationAttribute), false).Cast<NamespaceDeclarationAttribute>().GetEnumerator();
+            return _assembly.GetCustomAttributes(typeof(NamespaceDeclarationAttribute), false).Cast<NamespaceDeclarationAttribute>().GetEnumerator();
 #endif
         }
 
@@ -130,6 +130,6 @@ namespace BrightstarDB.EntityFramework
         public Dictionary<string, string> AsDictionary()
         {
             return this.ToDictionary(x => x.Prefix, x => x.Reference);
-        } 
+        }
     }
 }

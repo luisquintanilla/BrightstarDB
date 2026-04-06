@@ -46,12 +46,12 @@ namespace BrightstarDB.Storage.TransactionLog
             if (!IsEnabled) return;
 
             // get the start position
-            _currentTransactionDataStartPosition = (ulong) _persistenceManager.GetFileLength(GetTransactionLogFile());
+            _currentTransactionDataStartPosition = (ulong)_persistenceManager.GetFileLength(GetTransactionLogFile());
 
             // now write the transaction data
             using (var stream = _persistenceManager.GetOutputStream(GetTransactionLogFile(), FileMode.Append))
             {
-                itemToLog.LogTransactionDataToStream(stream);                
+                itemToLog.LogTransactionDataToStream(stream);
             }
         }
 
@@ -63,7 +63,7 @@ namespace BrightstarDB.Storage.TransactionLog
         {
             if (!IsEnabled) return;
 
-            var endPosition = (ulong) _persistenceManager.GetFileLength(GetTransactionLogFile());
+            var endPosition = (ulong)_persistenceManager.GetFileLength(GetTransactionLogFile());
             var contentLength = endPosition - _currentTransactionDataStartPosition;
 
             using (var stream = _persistenceManager.GetOutputStream(GetTransactionLogHeaderFile(), FileMode.Append))
@@ -72,7 +72,7 @@ namespace BrightstarDB.Storage.TransactionLog
                                                             itemToLog.TransactionType,
                                                             _currentTransactionDataStartPosition, contentLength,
                                                             DateTime.UtcNow);
-                using(var binaryWriter = new BinaryWriter(stream))
+                using (var binaryWriter = new BinaryWriter(stream))
                 {
                     transactionHeader.Save(binaryWriter);
                 }
@@ -82,7 +82,7 @@ namespace BrightstarDB.Storage.TransactionLog
         public void LogEndFailedTransaction(ILoggable itemToLog)
         {
             if (!IsEnabled) return;
-            var endPosition = (ulong) _persistenceManager.GetFileLength(GetTransactionLogFile());
+            var endPosition = (ulong)_persistenceManager.GetFileLength(GetTransactionLogFile());
             var contentLength = endPosition - _currentTransactionDataStartPosition;
 
             using (var stream = _persistenceManager.GetOutputStream(GetTransactionLogHeaderFile(), FileMode.Append))
@@ -93,7 +93,7 @@ namespace BrightstarDB.Storage.TransactionLog
                     _currentTransactionDataStartPosition,
                     contentLength,
                     DateTime.UtcNow);
-                using(var binaryWriter = new BinaryWriter(stream))
+                using (var binaryWriter = new BinaryWriter(stream))
                 {
                     transactionHeader.Save(binaryWriter);
                 }
@@ -153,9 +153,9 @@ namespace BrightstarDB.Storage.TransactionLog
                 return new List<ITransactionInfo>();
             }
 
-            using(var stream = _persistenceManager.GetInputStream(GetTransactionLogHeaderFile()))
+            using (var stream = _persistenceManager.GetInputStream(GetTransactionLogHeaderFile()))
             {
-                long firstRecordOffset = maxCount*TransactionInfo.TransactionInfoRecordSize;
+                long firstRecordOffset = maxCount * TransactionInfo.TransactionInfoRecordSize;
                 if (firstRecordOffset > stream.Length)
                 {
                     stream.Seek(0, SeekOrigin.Begin);

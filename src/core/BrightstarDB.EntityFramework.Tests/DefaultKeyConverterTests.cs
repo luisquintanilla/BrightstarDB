@@ -56,7 +56,7 @@ namespace BrightstarDB.EntityFramework.Tests
         public void TestConvertBrightstarEntityObject()
         {
             var converter = new DefaultKeyConverter();
-            var mock = new MockEntityObject{Key="foo"};
+            var mock = new MockEntityObject { Key = "foo" };
             Assert.That(converter.Convert(mock), Is.EqualTo("foo"));
         }
 
@@ -64,9 +64,9 @@ namespace BrightstarDB.EntityFramework.Tests
         public void TestConvertMultipleValues()
         {
             var converter = new DefaultKeyConverter();
-            var objectValue = new MockEntityObject {Key = "foo"};
+            var objectValue = new MockEntityObject { Key = "foo" };
             const int intValue = 42;
-            Assert.That(converter.GenerateKey(new object[]{objectValue, intValue},"/", typeof(MockEntityObject)),
+            Assert.That(converter.GenerateKey(new object[] { objectValue, intValue }, "/", typeof(MockEntityObject)),
                 Is.EqualTo("foo/42"));
         }
 
@@ -74,7 +74,7 @@ namespace BrightstarDB.EntityFramework.Tests
         public void TestConvertMultipleValuesIgnoresNulls()
         {
             var converter = new DefaultKeyConverter();
-            Assert.That(converter.GenerateKey(new object[]{null, 42}, "/", typeof(MockEntityObject)), 
+            Assert.That(converter.GenerateKey(new object[] { null, 42 }, "/", typeof(MockEntityObject)),
                 Is.EqualTo("42"));
         }
 
@@ -82,10 +82,10 @@ namespace BrightstarDB.EntityFramework.Tests
         public void TestUriEscapingOfValues()
         {
             var converter = new DefaultKeyConverter();
-            Assert.That(converter.Convert("foo/bar"), Is.EqualTo("foo/bar")); // Can still include path separators
-            Assert.That(converter.Convert("foo#bar"), Is.EqualTo("foo#bar")); // Can still include fragment separators
-            Assert.That(converter.Convert("foo?bar&bletch=1"), Is.EqualTo("foo?bar&bletch=1")); // Can still include query
-            Assert.That(converter.Convert("foo bar"), Is.EqualTo("foo%20bar")); // unreserver characters get escaped
+            Assert.That(converter.Convert("foo/bar"), Is.EqualTo("foo%2Fbar")); // '/' is the key separator, must be escaped in segments
+            Assert.That(converter.Convert("foo#bar"), Is.EqualTo("foo%23bar")); // Reserved characters are escaped
+            Assert.That(converter.Convert("foo?bar&bletch=1"), Is.EqualTo("foo%3Fbar%26bletch%3D1")); // Reserved characters are escaped
+            Assert.That(converter.Convert("foo bar"), Is.EqualTo("foo%20bar")); // Spaces get escaped
         }
     }
 }

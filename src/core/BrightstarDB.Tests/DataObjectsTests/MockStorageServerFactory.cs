@@ -10,11 +10,11 @@ using VDS.RDF.Storage.Management.Provisioning;
 
 namespace BrightstarDB.Tests.DataObjectsTests
 {
-    public class MockStorageServerFactory : IObjectFactory 
+    public class MockStorageServerFactory : IObjectFactory
     {
         public bool TryLoadObject(IGraph g, INode objNode, Type targetType, out object obj)
         {
-            if (targetType == typeof (MockStorageServer))
+            if (targetType == typeof(MockStorageServer))
             {
                 var server = new MockStorageServer();
                 var storeIdNode = g.CreateUriNode("http://www.dotnetrdf.org/configuration#storeId");
@@ -35,7 +35,7 @@ namespace BrightstarDB.Tests.DataObjectsTests
 
         public bool CanLoadObject(Type t)
         {
-            return (t == typeof (MockStorageServer));
+            return (t == typeof(MockStorageServer));
         }
     }
 
@@ -51,7 +51,7 @@ namespace BrightstarDB.Tests.DataObjectsTests
 
         public void Dispose()
         {
-            
+
         }
 
         public IEnumerable<string> ListStores()
@@ -150,6 +150,16 @@ namespace BrightstarDB.Tests.DataObjectsTests
         }
 
         public IEnumerable<Uri> ListGraphs()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<string> ListGraphNames()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateGraph(IRefNode graphName, IEnumerable<Triple> additions, IEnumerable<Triple> removals)
         {
             throw new NotImplementedException();
         }

@@ -8,7 +8,11 @@ namespace BrightstarDB.Utils
         private readonly Dictionary<TKey, int> _index;
         private readonly CircularBuffer<TValue> _values;
         private readonly CircularBuffer<TKey> _keys;
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _lock = new();
+#else
         private readonly object _lock = new object();
+#endif
 
         public IndexedCircularBuffer(int capacity)
         {
@@ -38,7 +42,7 @@ namespace BrightstarDB.Utils
                     _index.Remove(_keys.ItemAt(insertIndex));
                 }
                 var keyInsertIndex = _keys.Insert(key);
-                if (keyInsertIndex!=insertIndex)
+                if (keyInsertIndex != insertIndex)
                 {
                     Logging.LogError(BrightstarEventId.Undefined, "Key and value buffers got out of sync. Resetting IndexedCircularBuffer");
                     this.Clear();
@@ -74,7 +78,7 @@ namespace BrightstarDB.Utils
 
         public void Remove(TKey key)
         {
-            lock(_lock)
+            lock (_lock)
             {
                 _index.Remove(key);
             }

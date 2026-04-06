@@ -4,16 +4,16 @@ using System.IO;
 
 namespace BrightstarDB.Storage.BTreeStore
 {
-    internal class Entry<T> : IComparer<Entry<T>>, IStorable  where T : class, IStorable
+    internal class Entry<T> : IComparer<Entry<T>>, IStorable where T : class, IStorable
     {
-        private ulong _key;        
+        private ulong _key;
         private T _value;
 
         public int Save(BinaryWriter dataStream, ulong offset = 0ul)
         {
             // dataStream.Write(_key);
-            var count = SerializationUtils.WriteVarint(dataStream, _key); 
-    
+            var count = SerializationUtils.WriteVarint(dataStream, _key);
+
             // val could be null so write a status bool
             dataStream.Write(_value != null);
 
@@ -77,7 +77,7 @@ namespace BrightstarDB.Storage.BTreeStore
             return x._key.CompareTo(y._key);
         }
 
-        
+
         public override bool Equals(object obj)
         {
             if (obj == this)
@@ -107,5 +107,5 @@ namespace BrightstarDB.Storage.BTreeStore
             }
         }
 
-     }
+    }
 }

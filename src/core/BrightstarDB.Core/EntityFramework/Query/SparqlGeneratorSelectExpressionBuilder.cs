@@ -14,7 +14,7 @@ namespace BrightstarDB.EntityFramework.Query
     internal class SparqlGeneratorSelectExpressionBuilder : ExpressionVisitor
     {
         private readonly Dictionary<string, object> _values;
-        private readonly Func<string, string, Type, object> _converter; 
+        private readonly Func<string, string, Type, object> _converter;
         public SparqlGeneratorSelectExpressionBuilder(Dictionary<string, object> values, Func<string, string, Type, object> converter)
         {
             _values = values;
@@ -24,7 +24,7 @@ namespace BrightstarDB.EntityFramework.Query
 #if WINDOWS_PHONE || PORTABLE
         protected internal override Expression VisitExtensionExpression(ExtensionExpression expression)
 #else
-        protected override Expression  VisitExtension(Expression expression)
+        protected override Expression VisitExtension(Expression expression)
 #endif
         {
             if (expression is SelectIdentifierVariableNameExpression)
@@ -75,7 +75,7 @@ namespace BrightstarDB.EntityFramework.Query
 
         protected override MemberBinding VisitMemberBinding(MemberBinding memberBinding)
         {
-            if(memberBinding.BindingType == MemberBindingType.Assignment)
+            if (memberBinding.BindingType == MemberBindingType.Assignment)
             {
 #if PORTABLE
                 var propertyInfo = memberBinding.Member as PropertyInfo;

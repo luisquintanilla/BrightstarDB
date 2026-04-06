@@ -68,8 +68,8 @@ namespace BrightstarDB.CodeGeneration.Tests
                         solution,
                         "BrightstarDB.CodeGeneration.Tests",
                         interfacePredicate: x => true,
-                        entityAccessibilitySelector: internalEntityClasses ? (Func<INamedTypeSymbol, Accessibility>) Generator.InteralyEntityAccessibilitySelector : Generator.DefaultEntityAccessibilitySelector,
-                        brightstarAssemblyPath:brightstarAssemblyPath);
+                        entityAccessibilitySelector: internalEntityClasses ? (Func<INamedTypeSymbol, Accessibility>)Generator.InteralyEntityAccessibilitySelector : Generator.DefaultEntityAccessibilitySelector,
+                        brightstarAssemblyPath: brightstarAssemblyPath);
                 var result = results
                     .Aggregate(
                         new StringBuilder(),
@@ -138,7 +138,7 @@ namespace BrightstarDB.CodeGeneration.Tests
                             solution,
                             "BrightstarDB.CodeGeneration.Tests",
                             interfacePredicate: x => true,
-                            brightstarAssemblyPath:brightstarAssemblyPath);
+                            brightstarAssemblyPath: brightstarAssemblyPath);
 
                     Assert.Fail("No exception was thrown during code generation.");
                 }

@@ -31,7 +31,7 @@ namespace BrightstarDB.InternalTests
             var cache = new LruPageCache(10);
             for (int i = 1; i < 10; i++)
             {
-                cache.InsertOrUpdate("test", new TestCacheItem((ulong) i, 1));
+                cache.InsertOrUpdate("test", new TestCacheItem((ulong)i, 1));
             }
             for (int i = 1; i < 10; i++)
             {

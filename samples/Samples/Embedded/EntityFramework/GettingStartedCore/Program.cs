@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.ServiceModel;
 using BrightstarDB.Client;
 
 namespace BrightstarDB.Samples.EntityFramework.GettingStartedCore

@@ -47,7 +47,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
         /// Get the flag that indicates if the prefix collection has been modified
         /// </summary>
         public bool IsDirty { get; private set; }
-        
+
         #region Implementation of IPrefixManager
 
         public string MakePrefixedUri(string uri)

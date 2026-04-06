@@ -5,7 +5,7 @@ namespace BrightstarDB.Analysis
     /// <summary>
     /// Container for the results of crawling a Brightstar internal BTree index
     /// </summary>
-    public class BTreeReport 
+    public class BTreeReport
     {
         /// <summary>
         /// Get or set the index name
@@ -42,8 +42,8 @@ namespace BrightstarDB.Analysis
         /// <summary>
         /// Creates an empty BTreeReport
         /// </summary>
-        public BTreeReport(){}
-        
+        public BTreeReport() { }
+
         /// <summary>
         /// Creates an initialized BTreeReport
         /// </summary>

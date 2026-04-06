@@ -29,7 +29,6 @@ namespace BrightstarDB.Tests
 
     }
 
-#if !NETCOREAPP10
     [TestFixture("en-US")]
     [TestFixture("de")]
     [TestFixture("ja-JP")]
@@ -135,7 +134,7 @@ namespace BrightstarDB.Tests
             var bsString = RdfDatatypes.GetLiteralString(v);
             var bsParsed = (float)RdfDatatypes.ParseLiteralString(bsString, RdfDatatypes.Float, null);
             Assert.That(bsParsed, Is.EqualTo(v));
-            
+
         }
 
         [Test]
@@ -222,5 +221,4 @@ namespace BrightstarDB.Tests
             Assert.That(p, Is.EqualTo(v));
         }
     }
-#endif
 }

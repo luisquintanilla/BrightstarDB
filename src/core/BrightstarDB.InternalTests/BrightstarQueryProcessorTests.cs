@@ -57,7 +57,7 @@ namespace BrightstarDB.InternalTests
             var results = _docTagStore.ExecuteSparqlQuery(sparql, SparqlResultsFormat.Xml);
             timer.Stop();
             XDocument resultsDoc = XDocument.Parse(results);
-            Console.WriteLine("Returned {0} rows in {1}ms",resultsDoc.SparqlResultRows().Count(), timer.ElapsedMilliseconds);
+            Console.WriteLine("Returned {0} rows in {1}ms", resultsDoc.SparqlResultRows().Count(), timer.ElapsedMilliseconds);
 
             results =
                 _docTagStore.ExecuteSparqlQuery(

@@ -18,8 +18,8 @@ namespace BrightstarDB.Tests
 
         private static void RunCacheTests(ICache cache)
         {
-            cache.Insert("ByteArray", new byte[] {0, 1, 2, 3}, CachePriority.Normal);
-            cache.Insert("Object", new byte[] {3,2,1,0}, CachePriority.Normal);
+            cache.Insert("ByteArray", new byte[] { 0, 1, 2, 3 }, CachePriority.Normal);
+            cache.Insert("Object", new byte[] { 3, 2, 1, 0 }, CachePriority.Normal);
 
             var byteArray = cache.Lookup("ByteArray");
             Assert.IsNotNull(byteArray);
@@ -45,8 +45,8 @@ namespace BrightstarDB.Tests
             Assert.AreEqual(4, byteArray.Length);
             for (int i = 0; i < 4; i++) Assert.AreEqual(i, byteArray[i]);
 
-            Assert.IsFalse(reopenedCache.ContainsKey("Object"));   
-            Assert.IsNull(reopenedCache.Lookup("Object"));        
+            Assert.IsFalse(reopenedCache.ContainsKey("Object"));
+            Assert.IsNull(reopenedCache.Lookup("Object"));
             Assert.IsFalse(reopenedCache.ContainsKey("NeverInserted"));
             Assert.IsNull(reopenedCache.Lookup("NeverInserted"));
         }
@@ -58,7 +58,7 @@ namespace BrightstarDB.Tests
         {
             var hundredBytes = new byte[100];
             ICache cache = new MemoryCache(1000, new LruCacheEvictionPolicy(), 900, 700);
-            for(int i = 0; i < 9;i++)
+            for (int i = 0; i < 9; i++)
             {
                 cache.Insert("Entry " + i, hundredBytes, CachePriority.Normal);
                 Thread.Sleep(20);
@@ -70,7 +70,7 @@ namespace BrightstarDB.Tests
             Assert.IsFalse(cache.ContainsKey("Entry 1"));
             Assert.IsTrue(cache.ContainsKey("Entry 2"));
             Assert.IsTrue(cache.ContainsKey("Entry 10"));
-            
+
             // Cache size should now be 800 bytes
             cache.Lookup("Entry 2");
             cache.Insert("Entry 11", hundredBytes, CachePriority.Normal);
@@ -93,7 +93,7 @@ namespace BrightstarDB.Tests
             ICache cache = new MemoryCache(1000, new LruCacheEvictionPolicy(), 900, 700);
             for (int i = 0; i < 9; i++)
             {
-                cache.Insert("Entry " + i, hundredBytes, i%2 == 0 ? CachePriority.High : CachePriority.Normal);
+                cache.Insert("Entry " + i, hundredBytes, i % 2 == 0 ? CachePriority.High : CachePriority.Normal);
                 Thread.Sleep(20);
             }
             // Cache size is now 900 bytes
@@ -117,7 +117,7 @@ namespace BrightstarDB.Tests
             cache.Insert("Entry 14", hundredBytes, CachePriority.High);
             Assert.IsFalse(cache.ContainsKey("Entry 0")); // Should now start evicting high priority items
             Assert.IsTrue(cache.ContainsKey("Entry 2"), "Expected Entry 2 to remain after third eviction due to recent access");
-            Assert.IsFalse(cache.ContainsKey("Entry 4"), "Expected Entry 4 to be removed after third eviction"); 
+            Assert.IsFalse(cache.ContainsKey("Entry 4"), "Expected Entry 4 to be removed after third eviction");
         }
 
         [Test]
@@ -134,7 +134,7 @@ namespace BrightstarDB.Tests
                 Thread.Sleep(20);
             }
 
-            for(int i = 0; i < 9; i++)
+            for (int i = 0; i < 9; i++)
             {
                 Assert.IsTrue(secondary.ContainsKey("Entry " + i), "Expected secondary cache to contain Entry {0} after initialization");
                 if (i < 5) Assert.IsFalse(primary.ContainsKey("Entry " + i), "Expected primary cache to NOT contain Entry {0} after initialization", i);
@@ -159,7 +159,7 @@ namespace BrightstarDB.Tests
     {
         public string StringValue { get; set; }
         public long LongValue { get; set; }
-        public TestObject() {}
+        public TestObject() { }
         public TestObject(string stringValue, long longValue)
         {
             StringValue = stringValue;

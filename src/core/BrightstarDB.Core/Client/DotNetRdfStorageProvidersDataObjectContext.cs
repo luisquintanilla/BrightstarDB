@@ -16,7 +16,7 @@ namespace BrightstarDB.Client
     public class DotNetRdfStorageProvidersDataObjectContext : DotNetRdfDataObjectContextBase
     {
         private readonly IGraph _configurationGraph;
-        private readonly Dictionary<string, IStorageProvider> _storageProviders; 
+        private readonly Dictionary<string, IStorageProvider> _storageProviders;
 
         /// <summary>
         /// Creates a new data object context that provides access to one or more
@@ -42,7 +42,7 @@ namespace BrightstarDB.Client
         public DotNetRdfStorageProvidersDataObjectContext(string storeName, IStorageProvider storageProvider, bool optimisticLockingEnabled = false)
         {
             _configurationGraph = null;
-            _storageProviders = new Dictionary<string, IStorageProvider> {{storeName, storageProvider}};
+            _storageProviders = new Dictionary<string, IStorageProvider> { { storeName, storageProvider } };
             OptimisticLockingEnabled = optimisticLockingEnabled;
         }
 

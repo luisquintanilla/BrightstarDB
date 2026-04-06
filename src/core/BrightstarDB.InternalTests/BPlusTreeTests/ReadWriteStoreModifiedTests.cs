@@ -19,8 +19,8 @@ namespace BrightstarDB.InternalTests.BPlusTreeTests
             {
                 ulong pageId;
                 IPage page;
-                byte[] buffer1 = new byte[] {1, 1, 1, 1};
-                byte[] buffer2 = new byte[] {2, 2, 2, 2};
+                byte[] buffer1 = new byte[] { 1, 1, 1, 1 };
+                byte[] buffer2 = new byte[] { 2, 2, 2, 2 };
                 using (
                     var pageStore = TestUtils.CreateEmptyPageStore("TestStoreModifiedExceptionThrown.data",
                         PersistenceType.Rewrite))
@@ -87,9 +87,9 @@ namespace BrightstarDB.InternalTests.BPlusTreeTests
         public void TestReopenAfterReadWriteStoreModifiedException()
         {
             ulong pageId;
-            var buffer1 = new byte[] {1, 1, 1, 1};
-            var buffer2 = new byte[] {2, 2, 2, 2};
-            var buffer3 = new byte[] {3, 3, 3, 3};
+            var buffer1 = new byte[] { 1, 1, 1, 1 };
+            var buffer2 = new byte[] { 2, 2, 2, 2 };
+            var buffer3 = new byte[] { 3, 3, 3, 3 };
 
             using (
                 var pageStore = TestUtils.CreateEmptyPageStore("TestStoreModifiedExceptionThrown.data",
@@ -107,7 +107,7 @@ namespace BrightstarDB.InternalTests.BPlusTreeTests
                                                     BPlusTreeStoreManager.PageSize, true, 2, 3, false);
             try
             {
-        
+
                 using (
                     var writeStore = new BinaryFilePageStore(TestUtils.PersistenceManager,
                                                              "TestStoreModifiedExceptionThrown.data",

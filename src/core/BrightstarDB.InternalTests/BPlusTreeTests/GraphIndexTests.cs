@@ -9,7 +9,7 @@ namespace BrightstarDB.InternalTests.BPlusTreeTests
         [Test]
         public void TestGraphIndexCrud()
         {
-            using(var pageStore = TestUtils.CreateEmptyPageStore("TestGraphIndexCrud.data"))
+            using (var pageStore = TestUtils.CreateEmptyPageStore("TestGraphIndexCrud.data"))
             {
                 var graphIndex = new ConcurrentGraphIndex(pageStore);
                 var graphId1 = graphIndex.AssertGraphId("http://example.org/graph/1");

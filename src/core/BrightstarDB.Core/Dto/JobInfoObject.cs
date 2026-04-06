@@ -36,7 +36,7 @@ namespace BrightstarDB.Dto
         }
 
         public bool JobPending { get { return JobStatus == JobStatus.Pending; } }
-        public bool JobStarted { get {return JobStatus == JobStatus.Started; } }
+        public bool JobStarted { get { return JobStatus == JobStatus.Started; } }
 
         public bool JobCompletedWithErrors
         {

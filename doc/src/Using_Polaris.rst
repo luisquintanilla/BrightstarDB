@@ -4,6 +4,12 @@
  Polaris Management Tool
 ########################
 
+.. warning::
+
+   **This page is archived.** It describes features from BrightstarDB 1.x that are
+   no longer part of the actively maintained codebase as of BrightstarDB 2.0 (.NET 10).
+   See :ref:`Archived Documentation <Archived_Docs>` for context.
+
 .. _SPARQL 1.1 Update: http://www.w3.org/TR/sparql11-update/
 
 

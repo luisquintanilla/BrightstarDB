@@ -23,7 +23,7 @@ namespace BrightstarDB.InternalTests
             for (ulong i = 0; i < 511; i++)
             {
                 BitConverter.GetBytes(i).CopyTo(_testBuffer1, (int)i * 8);
-                BitConverter.GetBytes(i*2).CopyTo(_testBuffer2, (int) i*8);
+                BitConverter.GetBytes(i * 2).CopyTo(_testBuffer2, (int)i * 8);
             }
         }
 
@@ -83,7 +83,7 @@ namespace BrightstarDB.InternalTests
 
         private byte[] MakeTestPage(ulong firstTxnId, ulong firstData, ulong secondTxnId, ulong secondData)
         {
-            byte[]pageData = new byte[32];
+            byte[] pageData = new byte[32];
             Array.Copy(BitConverter.GetBytes(firstTxnId), 0, pageData, 0, 8);
             Array.Copy(BitConverter.GetBytes(firstData), 0, pageData, 8, 8);
             Array.Copy(BitConverter.GetBytes(secondTxnId), 0, pageData, 16, 8);

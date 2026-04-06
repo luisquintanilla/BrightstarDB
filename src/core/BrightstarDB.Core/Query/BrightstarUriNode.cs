@@ -8,7 +8,7 @@ namespace BrightstarDB.Query
 #endif
     internal class BrightstarUriNode : UriNode
     {
-        public BrightstarUriNode(Uri resource) : base(null, resource)
+        public BrightstarUriNode(Uri resource) : base(resource)
         {
         }
 

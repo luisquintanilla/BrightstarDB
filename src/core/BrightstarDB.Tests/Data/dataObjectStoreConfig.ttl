@@ -17,12 +17,14 @@ bst:empty a dnr:StorageProvider;
 bst:peopleGraph a dnr:Graph ;
 	dnr:type "VDS.RDF.Graph" ;
 	dnr:fromFile "people.ttl" ;
+	dnr:withName <http://example.org/people> ;
 	dnr:assignUri <http://example.org/people> .
 
 bst:addGraph a dnr:Graph ;
 	dnr:type "VDS.RDF.Graph" ;
+	dnr:withName <http://example.org/addGraph> ;
 	dnr:assignUri <http://example.org/addGraph> .
 
 bst:fuseki a dnr:StorageProvider ;
-	dnr:type "VDS.RDF.Storage.FusekiConnector" ;
+	dnr:type "VDS.RDF.Storage.FusekiConnector, dotNetRdf.Client" ;
 	dnr:server "http://localhost:3030/ds/data" .
