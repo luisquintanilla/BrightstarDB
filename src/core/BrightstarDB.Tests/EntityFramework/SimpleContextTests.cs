@@ -432,8 +432,9 @@ where {
 
             using (var context = CreateEntityContext(storeName))
             {
+                IEnumerable<string> lookupIds = new[] {"alice", "bob", "carol", "david"};
                 var results =
-                    context.Persons.Where(x => new string[] {"alice", "bob", "carol", "david"}.Contains(x.Id)).ToList();
+                    context.Persons.Where(x => lookupIds.Contains(x.Id)).ToList();
                 Assert.AreEqual(3, results.Count);
                 Assert.IsTrue(results.Any(x=>x.Id.Equals("alice") && x.Name.Equals("Alice")));
                 Assert.IsTrue(results.Any(x => x.Id.Equals("bob") && x.Name.Equals("Bob")));

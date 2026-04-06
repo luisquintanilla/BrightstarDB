@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using BrightstarDB.EntityFramework.Tests.ContextObjects;
 using NUnit.Framework;
@@ -78,7 +79,8 @@ namespace BrightstarDB.EntityFramework.Tests
         [Test]
         public void TestGetDinnersByIds()
         {
-            var q = from x in Context.Dinners where new string[] {"1", "2", "3"}.Contains(x.Id) select x;
+            IEnumerable<string> ids = new[] {"1", "2", "3"};
+            var q = from x in Context.Dinners where ids.Contains(x.Id) select x;
             var results = q.ToList();
             var lastSparql = Context.LastSparqlQuery;
             Assert.AreEqual(
