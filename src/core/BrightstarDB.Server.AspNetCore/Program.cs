@@ -7,6 +7,8 @@ using BrightstarDB.Server.AspNetCore.Configuration;
 using BrightstarDB.Server.AspNetCore.Endpoints;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -40,6 +42,27 @@ builder.Services
 builder.Services.AddAuthorization();
 builder.Services.AddBrightstarCors();
 builder.Services.AddOpenApi();
+builder.Services.AddOutputCache(options =>
+{
+    options.AddBasePolicy(policy => policy.NoCache());
+    options.AddPolicy("store-reads", policy =>
+        policy.Expire(TimeSpan.FromSeconds(10)).Tag("stores"));
+});
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddFixedWindowLimiter("sparql", limiter =>
+    {
+        limiter.PermitLimit = 100;
+        limiter.Window = TimeSpan.FromMinutes(1);
+        limiter.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+        limiter.QueueLimit = 10;
+    });
+});
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.TypeInfoResolverChain.Insert(0, BrightstarDB.Server.AspNetCore.BrightstarJsonContext.Default);
+});
 
 // Permission providers (fallback to full access when no auth configured)
 builder.Services.AddSingleton<AbstractStorePermissionsProvider>(
@@ -52,6 +75,8 @@ var app = builder.Build();
 app.UseBrightstarCors();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
+app.UseOutputCache();
 app.MapOpenApi();
 
 // Map all API endpoints

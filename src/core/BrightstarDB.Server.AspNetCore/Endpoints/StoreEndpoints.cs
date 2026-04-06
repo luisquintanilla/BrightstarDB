@@ -20,7 +20,8 @@ public static class StoreEndpoints
             .WithName("GetStore")
             .WithTags("Store")
             .WithSummary("Get store details")
-            .AddStorePermissionFilter(StorePermissions.Read);
+            .AddStorePermissionFilter(StorePermissions.Read)
+            .CacheOutput("store-reads");
         group.MapMethods(string.Empty, [HttpMethods.Head], HandleHead)
             .WithName("HeadStore")
             .WithTags("Store")

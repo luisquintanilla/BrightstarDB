@@ -27,7 +27,8 @@ public static class SparqlUpdateEndpoints
         endpoints.MapPost("/{storeName}/update", HandleUpdate)
             .WithName("SparqlUpdate")
             .WithTags("SPARQL")
-            .WithSummary("Execute a SPARQL Update operation");
+            .WithSummary("Execute a SPARQL Update operation")
+            .RequireRateLimiting("sparql");
         return endpoints;
     }
 

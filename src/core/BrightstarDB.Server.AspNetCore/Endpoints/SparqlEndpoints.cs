@@ -27,19 +27,23 @@ public static class SparqlEndpoints
         endpoints.MapGet("/{storeName}/sparql", HandleStoreQuery)
             .WithName("SparqlQueryGet")
             .WithTags("SPARQL")
-            .WithSummary("Execute a SPARQL query via GET");
+            .WithSummary("Execute a SPARQL query via GET")
+            .RequireRateLimiting("sparql");
         endpoints.MapPost("/{storeName}/sparql", HandleStoreQuery)
             .WithName("SparqlQueryPost")
             .WithTags("SPARQL")
-            .WithSummary("Execute a SPARQL query via POST");
+            .WithSummary("Execute a SPARQL query via POST")
+            .RequireRateLimiting("sparql");
         endpoints.MapGet("/{storeName}/commits/{commitId}/sparql", HandleCommitQuery)
             .WithName("SparqlCommitQueryGet")
             .WithTags("SPARQL")
-            .WithSummary("Execute a SPARQL query against a specific commit via GET");
+            .WithSummary("Execute a SPARQL query against a specific commit via GET")
+            .RequireRateLimiting("sparql");
         endpoints.MapPost("/{storeName}/commits/{commitId}/sparql", HandleCommitQuery)
             .WithName("SparqlCommitQueryPost")
             .WithTags("SPARQL")
-            .WithSummary("Execute a SPARQL query against a specific commit via POST");
+            .WithSummary("Execute a SPARQL query against a specific commit via POST")
+            .RequireRateLimiting("sparql");
         return endpoints;
     }
 

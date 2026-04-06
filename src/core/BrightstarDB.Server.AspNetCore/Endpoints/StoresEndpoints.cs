@@ -20,7 +20,8 @@ public static class StoresEndpoints
             .WithName("ListStores")
             .WithTags("Stores")
             .WithSummary("List all stores")
-            .AddSystemPermissionFilter(SystemPermissions.ListStores);
+            .AddSystemPermissionFilter(SystemPermissions.ListStores)
+            .CacheOutput("store-reads");
         group.MapPost("/", HandlePost)
             .WithName("CreateStore")
             .WithTags("Stores")

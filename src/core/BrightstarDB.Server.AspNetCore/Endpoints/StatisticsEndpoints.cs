@@ -27,7 +27,8 @@ public static class StatisticsEndpoints
             .WithName("GetLatestStatistics")
             .WithTags("Statistics")
             .WithSummary("Get latest store statistics")
-            .AddStorePermissionFilter(StorePermissions.Read);
+            .AddStorePermissionFilter(StorePermissions.Read)
+            .CacheOutput("store-reads");
         return group;
     }
 

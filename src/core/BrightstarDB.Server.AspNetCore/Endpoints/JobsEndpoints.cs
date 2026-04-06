@@ -20,7 +20,7 @@ namespace BrightstarDB.Server.AspNetCore.Endpoints;
 public static class JobsEndpoints
 {
     private const int DefaultPageSize = 10;
-    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+    private static readonly JsonSerializerOptions JsonOptions = BrightstarJsonContext.Default.Options;
 
     public static IEndpointRouteBuilder MapJobsEndpoints(this IEndpointRouteBuilder endpoints)
     {
