@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if NET8_0_OR_GREATER
+using System.Collections.Frozen;
+#endif
 using System.Globalization;
 using System.Linq;
 
@@ -309,6 +312,62 @@ namespace BrightstarDB.Rdf
 #endif
 
 
+#if NET8_0_OR_GREATER
+        private static readonly FrozenDictionary<Type, RdfDatatype> SystemTypeToRdfType =
+            new Dictionary<Type, RdfDatatype>
+                {
+                    {typeof (String), RdfString},
+                    {typeof (PlainLiteral), RdfPlainLiteral},
+                    {typeof (Boolean), RdfBoolean},
+                    {typeof (DateTime), RdfDateTime},
+                    {typeof (double), RdfDouble},
+                    {typeof (Int32), RdfInteger},
+                    {typeof (float), RdfFloat},
+                    {typeof (long), RdfLong},
+                    {typeof (sbyte), RdfByte},
+                    {typeof (decimal), RdfDecimal},
+                    {typeof (short), RdfShort},
+                    {typeof (ulong), RdfUnsignedLong},
+                    {typeof (uint), RdfUnsignedInt},
+                    {typeof (ushort), RdfUnsignedShort},
+                    {typeof (byte), RdfUnsignedByte},
+                    {typeof (char), RdfChar},
+                    {typeof (byte[]), RdfByteArray},
+                    {typeof (Guid), RdfGuid}
+                }.ToFrozenDictionary();
+
+        private static readonly FrozenDictionary<string, RdfDatatype> DatatypeUriToRdfType =
+            new Dictionary<string, RdfDatatype>
+                {
+                    {PlainLiteral, RdfPlainLiteral},
+                    {String, RdfString},
+                    {NormalizedString, RdfNormalizedString },
+                    {Token, RdfToken },
+                    {Language, RdfLanguage },
+                    {Boolean, RdfBoolean},
+                    {DateTime, RdfDateTime},
+                    {Date, RdfDate},
+                    {Double, RdfDouble},
+                    {Integer, RdfInteger},
+                    {NonNegativeInteger, RdfNonNegativeInteger },
+                    {PositiveInteger, RdfPositiveInteger },
+                    {NonPositiveInteger, RdfNonPositiveInteger },
+                    {NegativeInteger, RdfNegativeInteger },
+                    {Int, RdfInt },
+                    {Float, RdfFloat},
+                    {Long, RdfLong},
+                    {Byte, RdfByte},
+                    {Decimal, RdfDecimal},
+                    {Short, RdfShort},
+                    {UnsignedLong, RdfUnsignedLong},
+                    {UnsignedInteger, RdfUnsignedInt},
+                    {UnsignedShort, RdfUnsignedShort},
+                    {UnsignedByte, RdfUnsignedByte},
+                    {Char, RdfChar},
+                    {Base64Binary, RdfByteArray},
+                    {Guid, RdfGuid}
+                }.ToFrozenDictionary();
+#else
         private static readonly Dictionary<Type, RdfDatatype> SystemTypeToRdfType =
             new Dictionary<Type, RdfDatatype>
                 {
@@ -363,6 +422,7 @@ namespace BrightstarDB.Rdf
                     {Base64Binary, RdfByteArray},
                     {Guid, RdfGuid}
                 };
+#endif
 
         #endregion
 

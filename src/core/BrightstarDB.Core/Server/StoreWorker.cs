@@ -256,7 +256,11 @@ namespace BrightstarDB.Server
         /// This is used to ensure there is no race condition when returning
         /// the readstore when commits are occurring.
         /// </summary>
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _readStoreLock = new();
+#else
         private readonly object _readStoreLock = new object();
+#endif
 
         private readonly IStoreManager _storeManager;
 
@@ -290,7 +294,11 @@ namespace BrightstarDB.Server
             }
         }
 
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _writeStoreLock = new();
+#else
         private readonly object _writeStoreLock = new object();
+#endif
         internal IStore WriteStore
         {
             get

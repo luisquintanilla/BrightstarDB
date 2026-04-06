@@ -19,7 +19,11 @@ namespace BrightstarDB.Caching
         /// The policy for cache eviction
         /// </summary>
         protected readonly ICacheEvictionPolicy CacheEvictionPolicy;
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _cacheLock = new();
+#else
         private readonly object _cacheLock = new object();
+#endif
 
         /// <summary>
         /// Creates a new cache instance

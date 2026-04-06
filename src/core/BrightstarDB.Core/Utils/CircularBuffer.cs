@@ -6,7 +6,11 @@
         private int _index;
         public int Count { get; private set; }
         public int Capacity { get; private set; }
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _lock = new();
+#else
         private readonly object _lock = new object();
+#endif
 
         public CircularBuffer(int capacity)
         {

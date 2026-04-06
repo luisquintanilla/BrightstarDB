@@ -67,7 +67,11 @@ namespace BrightstarDB.Storage.Persistence
         private bool _disposed;
 
 
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _restartLock = new();
+#else
         private readonly object _restartLock = new object();
+#endif
 
         public BinaryFilePageStore(IPersistenceManager persistenceManager, string filePath, int pageSize, bool readOnly,
             ulong transactionId, ulong nextTransactionId, bool disableBackgroundWrites)

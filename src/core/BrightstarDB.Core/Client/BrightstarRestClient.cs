@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using BrightstarDB.Caching;
@@ -19,7 +20,7 @@ namespace BrightstarDB.Client
     /// <summary>
     /// .NET wrapper for the Brightstar REST API
     /// </summary>
-    public class BrightstarRestClient : IBrightstarService
+    public partial class BrightstarRestClient : IBrightstarService
     {
         private const string JsonContentType = "application/json";
         private const string UrlEncodedFormContentType = "application/x-www-form-urlencoded";
@@ -151,11 +152,22 @@ namespace BrightstarDB.Client
             }
         }
 
+#if NET7_0_OR_GREATER
+        [GeneratedRegex(@"^[a-zA-Z0-9-_\.\+,\(\)]{1,1024}$")]
+        private static partial Regex StoreNameValidationRegex();
+#else
+        private static readonly Regex StoreNameValidationRegex = new Regex(@"^[a-zA-Z0-9-_\.\+,\(\)]{1,1024}$", RegexOptions.Compiled);
+#endif
+
         private static void ValidateStoreName(string storeName, string argName = "storeName")
         {
             if (storeName == null) throw new ArgumentNullException(argName, Strings.BrightstarServiceClient_StoreNameMustNotBeNull);
             if (String.IsNullOrEmpty(storeName)) throw new ArgumentException(Strings.BrightstarServiceClient_StoreNameMustNotBeEmptyString, argName);
-            if (!System.Text.RegularExpressions.Regex.IsMatch(storeName, Constants.StoreNameRegex))
+#if NET7_0_OR_GREATER
+            if (!StoreNameValidationRegex().IsMatch(storeName))
+#else
+            if (!StoreNameValidationRegex.IsMatch(storeName))
+#endif
             {
                 throw new ArgumentException(Strings.BrightstarServiceClient_InvalidStoreName, argName);
             }

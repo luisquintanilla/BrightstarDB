@@ -9,7 +9,11 @@ namespace BrightstarDB.Storage.Persistence
 {
     internal class LruPageCache : IPageCache
     {
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _updateLock = new();
+#else
         private readonly object _updateLock = new object();
+#endif
         private int _count;
         private readonly int _highWaterMark;
         private readonly int _lowWaterMark;

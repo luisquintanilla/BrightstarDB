@@ -7,14 +7,22 @@ namespace BrightstarDB.Server
 {
     internal class ServerCoreManager
     {
+#if NET9_0_OR_GREATER
+        private static readonly System.Threading.Lock UpdateLock;
+#else
         private static readonly object UpdateLock;
+#endif
         private static readonly Dictionary<string, ServerCore> ServerCores;
         private static readonly ICache QueryCache;
         private static readonly PersistenceType PersistenceType;
 
         static ServerCoreManager()
         {
+#if NET9_0_OR_GREATER
+            UpdateLock = new System.Threading.Lock();
+#else
             UpdateLock = new object();
+#endif
             ServerCores = new Dictionary<string, ServerCore>();
             QueryCache = Configuration.QueryCache;
             PersistenceType = Configuration.PersistenceType;

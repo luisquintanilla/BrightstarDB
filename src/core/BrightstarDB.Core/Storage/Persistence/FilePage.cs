@@ -13,7 +13,11 @@ namespace BrightstarDB.Storage.Persistence
         private readonly ulong _writeOffset;
         private readonly int _pageSize;
         private readonly byte[] _data;
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _writeLock = new();
+#else
         private readonly object _writeLock = new object();
+#endif
 #if DEBUG_PAGESTORE
         private readonly MD5 _md5 = MD5.Create();
 #endif

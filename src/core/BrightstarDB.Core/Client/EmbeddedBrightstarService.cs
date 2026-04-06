@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 #if !PORTABLE && !WINDOWS_PHONE
 #endif
@@ -15,9 +16,16 @@ namespace BrightstarDB.Client
     /// <summary>
     /// An implementation of the Brightstar Service that uses the local filestore.
     /// </summary>
-    public class EmbeddedBrightstarService : IBrightstarService
+    public partial class EmbeddedBrightstarService : IBrightstarService
     {
         private readonly ServerCore _serverCore;
+
+#if NET7_0_OR_GREATER
+        [GeneratedRegex(@"^[a-zA-Z0-9-_\.\+,\(\)]{1,1024}$")]
+        private static partial Regex StoreNameValidationRegex();
+#else
+        private static readonly Regex StoreNameValidationRegex = new Regex(@"^[a-zA-Z0-9-_\.\+,\(\)]{1,1024}$", RegexOptions.Compiled);
+#endif
 
         /// <summary>
         /// For an embedded service connection, this property is always null.
@@ -102,7 +110,11 @@ namespace BrightstarDB.Client
             if (String.IsNullOrEmpty(storeName))
                 throw new ArgumentException(Strings.BrightstarServiceClient_StoreNameMustNotBeEmptyString,
                                             "storeName");
-            if (!System.Text.RegularExpressions.Regex.IsMatch(storeName, Constants.StoreNameRegex))
+#if NET7_0_OR_GREATER
+            if (!StoreNameValidationRegex().IsMatch(storeName))
+#else
+            if (!StoreNameValidationRegex.IsMatch(storeName))
+#endif
             {
                 throw new ArgumentException(Strings.BrightstarServiceClient_InvalidStoreName, "storeName");
             }

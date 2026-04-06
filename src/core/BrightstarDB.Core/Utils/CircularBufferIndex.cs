@@ -8,7 +8,11 @@ namespace BrightstarDB.Utils
         private readonly Dictionary<TKey, int> _index;
         private readonly CircularBuffer<TValue> _values;
         private readonly CircularBuffer<TKey> _keys;
+#if NET9_0_OR_GREATER
+        private readonly System.Threading.Lock _lock = new();
+#else
         private readonly object _lock = new object();
+#endif
 
         public IndexedCircularBuffer(int capacity)
         {
