@@ -1,14 +1,13 @@
 #nullable enable
 using System;
 
-namespace BrightstarDB.Server.AspNetCore.Models
+namespace BrightstarDB.Server.AspNetCore.Models;
+
+public record StatisticsRequestObject
 {
-    public class StatisticsRequestObject
-    {
-        public string StoreName { get; set; } = null!;
-        public DateTime? Earliest { get; set; }
-        public DateTime? Latest { get; set; }
-        public int Skip { get; set; }
-        public int Take { get; set; }
-    }
+    public string StoreName { get; init; } = null!;
+    public DateTime? Earliest { get; init; }
+    public DateTime? Latest { get; init; }
+    public int Skip { get; init; }
+    public int Take { get; init; }
 }

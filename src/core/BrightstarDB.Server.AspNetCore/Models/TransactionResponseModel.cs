@@ -5,37 +5,14 @@ using BrightstarDB.Client;
 
 namespace BrightstarDB.Server.AspNetCore.Models;
 
-public class TransactionResponseModel
+public record TransactionResponseModel
 {
-    /// <summary>
-    /// Get the name of the store that this transaction applies to
-    /// </summary>
-    public string StoreName { get; set; } = null!;
-
-    /// <summary>
-    /// Get the store-unique identifier for this transaction
-    /// </summary>
-    public ulong Id { get; set; }
-
-    /// <summary>
-    /// Get the type of transaction
-    /// </summary>
-    public string TransactionType { get; set; } = null!;
-
-    /// <summary>
-    /// Get the status of the transaction
-    /// </summary>
-    public string Status { get; set; } = null!;
-
-    /// <summary>
-    /// Get the unique identifier of the job that processed this transaction
-    /// </summary>
-    public Guid JobId { get; set; }
-
-    /// <summary>
-    /// Get the date/time when processing started on the transaction
-    /// </summary>
-    public DateTime StartTime { get; set; }
+    public string StoreName { get; init; } = null!;
+    public ulong Id { get; init; }
+    public string TransactionType { get; init; } = null!;
+    public string Status { get; init; } = null!;
+    public Guid JobId { get; init; }
+    public DateTime StartTime { get; init; }
 
     public static TransactionResponseModel From(ITransactionInfo transactionInfo)
     {

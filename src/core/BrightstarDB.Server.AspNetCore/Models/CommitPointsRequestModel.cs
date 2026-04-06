@@ -1,15 +1,14 @@
 #nullable enable
 using System;
 
-namespace BrightstarDB.Server.AspNetCore.Models
+namespace BrightstarDB.Server.AspNetCore.Models;
+
+public record CommitPointsRequestModel
 {
-    public class CommitPointsRequestModel
-    {
-        public string StoreName { get; set; } = null!;
-        public int Skip { get; set; }
-        public int Take { get; set; }
-        public DateTime? Timestamp { get; set; }
-        public DateTime? Earliest { get; set; }
-        public DateTime? Latest { get; set; }
-    }
+    public string StoreName { get; init; } = null!;
+    public int Skip { get; init; }
+    public int Take { get; init; }
+    public DateTime? Timestamp { get; init; }
+    public DateTime? Earliest { get; init; }
+    public DateTime? Latest { get; init; }
 }

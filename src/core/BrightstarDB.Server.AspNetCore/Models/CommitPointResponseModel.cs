@@ -5,12 +5,12 @@ using BrightstarDB.Client;
 
 namespace BrightstarDB.Server.AspNetCore.Models;
 
-public class CommitPointResponseModel
+public record CommitPointResponseModel
 {
-    public ulong Id { get; set; }
-    public string StoreName { get; set; } = null!;
-    public DateTime CommitTime { get; set; }
-    public Guid JobId { get; set; }
+    public ulong Id { get; init; }
+    public string StoreName { get; init; } = null!;
+    public DateTime CommitTime { get; init; }
+    public Guid JobId { get; init; }
 
     public static CommitPointResponseModel From(ICommitPointInfo commitPointInfo)
     {

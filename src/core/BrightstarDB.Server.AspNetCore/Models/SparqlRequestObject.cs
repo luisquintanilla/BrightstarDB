@@ -1,14 +1,12 @@
 #nullable enable
-using System;
 
-namespace BrightstarDB.Server.AspNetCore.Models
+namespace BrightstarDB.Server.AspNetCore.Models;
+
+public record SparqlRequestObject
 {
-    public class SparqlRequestObject
-    {
-        public string Query { get; set; } = null!;
-        public string CommitId { get; set; } = null!;
-        public string[] DefaultGraphUri { get; set; } = Array.Empty<string>();
-        public string[] NamedGraphUri { get; set; } = Array.Empty<string>();
-        public string[] Format { get; set; } = Array.Empty<string>();
-    }
+    public string Query { get; init; } = null!;
+    public string CommitId { get; init; } = null!;
+    public string[] DefaultGraphUri { get; init; } = [];
+    public string[] NamedGraphUri { get; init; } = [];
+    public string[] Format { get; init; } = [];
 }

@@ -1,13 +1,11 @@
 #nullable enable
-using System;
 
-namespace BrightstarDB.Server.AspNetCore.Models
+namespace BrightstarDB.Server.AspNetCore.Models;
+
+public record SparqlUpdateRequestObject
 {
-    public class SparqlUpdateRequestObject
-    {
-        public string StoreName { get; set; } = null!;
-        public string Update { get; set; } = null!;
-        public string[] UsingGraphUri { get; set; } = Array.Empty<string>();
-        public string[] UsingNamedGraphUri { get; set; } = Array.Empty<string>();
-    }
+    public string StoreName { get; init; } = null!;
+    public string Update { get; init; } = null!;
+    public string[] UsingGraphUri { get; init; } = [];
+    public string[] UsingNamedGraphUri { get; init; } = [];
 }

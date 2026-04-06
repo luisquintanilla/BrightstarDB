@@ -1,11 +1,10 @@
 #nullable enable
 
-namespace BrightstarDB.Server.AspNetCore.Models
+namespace BrightstarDB.Server.AspNetCore.Models;
+
+public record JobsRequestModel
 {
-    public class JobsRequestModel
-    {
-        public string StoreName { get; set; } = null!;
-        public int Skip { get; set; }
-        public int Take { get; set; }
-    }
+    public string StoreName { get; init; } = null!;
+    public int Skip { get; init; }
+    public int Take { get; init; }
 }

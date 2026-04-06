@@ -1,9 +1,8 @@
 #nullable enable
 
-namespace BrightstarDB.Server.AspNetCore.Models
+namespace BrightstarDB.Server.AspNetCore.Models;
+
+public record StoreDeletedModel
 {
-    public class StoreDeletedModel
-    {
-        public string StoreName { get; set; } = null!;
-    }
+    public string StoreName { get; init; } = null!;
 }

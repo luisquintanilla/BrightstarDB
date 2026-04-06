@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace BrightstarDB.Server.AspNetCore.Models;
 
-public class StoresResponseModel
+public record StoresResponseModel
 {
-    public List<string> Stores { get; set; } = new();
+    public List<string> Stores { get; init; } = [];
 
     public static StoresResponseModel FromStoreNames(IEnumerable<string> storeNames)
     {
