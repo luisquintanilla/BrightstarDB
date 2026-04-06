@@ -36,7 +36,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
         private IEnumerable<KeyValuePair<byte[], ulong>> MakeInternalNodes(ulong txnId, IEnumerable<KeyValuePair<byte[], ulong>> children, BrightstarProfiler profiler)
         {
             var enumerator = children.GetEnumerator();
-            var childList = enumerator.Next(_internalBranchFactor).ToList();
+            var childList = enumerator.Next(_internalBranchFactor);
             if (childList.Count == 1)
             {
                 yield return childList[0];
@@ -45,7 +45,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
 
             byte[] prevNodeKey = childList[0].Key;
             IInternalNode prevNode = MakeInternalNode(txnId, childList);
-            childList = enumerator.Next(_internalBranchFactor).ToList();
+            childList = enumerator.Next(_internalBranchFactor);
             while (childList.Count > 0)
             {
                 IInternalNode nextNode = MakeInternalNode(txnId, childList);
@@ -58,7 +58,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                 yield return WriteNode(txnId, prevNode, prevNodeKey, profiler);
                 prevNode = nextNode;
                 prevNodeKey = nextNodeKey;
-                childList = enumerator.Next(_internalBranchFactor).ToList();
+                childList = enumerator.Next(_internalBranchFactor);
             }
 
             yield return WriteNode(txnId, prevNode, prevNodeKey, profiler);
@@ -110,7 +110,7 @@ namespace BrightstarDB.Storage.BPlusTreeStore
                     yield return WriteNode(txnId, prevNode, profiler);
                 }
                 prevNode = nextNode;
-                var nextKeys = orderedValues.Next(_leafLoadFactor).ToList();
+                var nextKeys = orderedValues.Next(_leafLoadFactor);
                 nextNode = nextKeys.Count > 0 ? MakeLeafNode(txnId, nextKeys) : null;
             } while (nextNode != null);
 

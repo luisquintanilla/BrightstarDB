@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace BrightstarDB.Utils
 {
@@ -15,14 +12,14 @@ namespace BrightstarDB.Utils
         /// <param name="enumerator"></param>
         /// <param name="max"></param>
         /// <returns></returns>
-        public static IEnumerable<T> Next<T>(this IEnumerator<T> enumerator, int max)
+        public static List<T> Next<T>(this IEnumerator<T> enumerator, int max)
         {
-            int count = 0;
-            while (count < max && enumerator.MoveNext())
+            var result = new List<T>(max);
+            while (result.Count < max && enumerator.MoveNext())
             {
-                yield return enumerator.Current;
-                count++;
+                result.Add(enumerator.Current);
             }
+            return result;
         }
     }
 }
