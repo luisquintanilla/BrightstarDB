@@ -200,28 +200,16 @@ namespace BrightstarDB.EntityFramework.Query
                         }
                         else if (typeof(DateTime) == propertyInfo.DeclaringType)
                         {
-                            string fnName = null;
-                            switch (propertyInfo.Name)
+                            var fnName = propertyInfo.Name switch
                             {
-                                case "Day":
-                                    fnName = "DAY";
-                                    break;
-                                case "Hour":
-                                    fnName = "HOURS";
-                                    break;
-                                case "Minute":
-                                    fnName = "MINUTES";
-                                    break;
-                                case "Month":
-                                    fnName = "MONTH";
-                                    break;
-                                case "Second":
-                                    fnName = "SECONDS";
-                                    break;
-                                case "Year":
-                                    fnName = "YEAR";
-                                    break;
-                            }
+                                "Day" => "DAY",
+                                "Hour" => "HOURS",
+                                "Minute" => "MINUTES",
+                                "Month" => "MONTH",
+                                "Second" => "SECONDS",
+                                "Year" => "YEAR",
+                                _ => (string)null
+                            };
                             if (fnName != null)
                             {
                                 WriteFunction(fnName, expression.Expression);
@@ -491,19 +479,13 @@ namespace BrightstarDB.EntityFramework.Query
                 }
                 if (typeof(Math) == expression.Method.DeclaringType)
                 {
-                    string fnName = null;
-                    switch (expression.Method.Name)
+                    var fnName = expression.Method.Name switch
                     {
-                        case "Round":
-                            fnName = "ROUND";
-                            break;
-                        case "Floor":
-                            fnName = "FLOOR";
-                            break;
-                        case "Ceiling":
-                            fnName = "CEIL";
-                            break;
-                    }
+                        "Round" => "ROUND",
+                        "Floor" => "FLOOR",
+                        "Ceiling" => "CEIL",
+                        _ => (string)null
+                    };
                     if (fnName != null)
                     {
                         WriteFunction(fnName, expression.Arguments[0]);

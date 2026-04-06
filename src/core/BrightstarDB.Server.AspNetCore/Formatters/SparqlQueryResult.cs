@@ -8,67 +8,48 @@ using Microsoft.AspNetCore.Http;
 
 namespace BrightstarDB.Server.AspNetCore.Formatters;
 
-public sealed class SparqlQueryResult : IResult
+public sealed class SparqlQueryResult(
+    IBrightstarService brightstarService,
+    string storeName,
+    ulong? commitId,
+    string query,
+    IReadOnlyList<string>? defaultGraphUris,
+    SparqlResultsFormat? resultsFormat,
+    RdfFormat? graphFormat) : IResult
 {
-    private readonly IBrightstarService _brightstarService;
-    private readonly string _storeName;
-    private readonly ulong? _commitId;
-    private readonly string _query;
-    private readonly IReadOnlyList<string>? _defaultGraphUris;
-    private readonly SparqlResultsFormat? _resultsFormat;
-    private readonly RdfFormat? _graphFormat;
-
-    public SparqlQueryResult(
-        IBrightstarService brightstarService,
-        string storeName,
-        ulong? commitId,
-        string query,
-        IReadOnlyList<string>? defaultGraphUris,
-        SparqlResultsFormat? resultsFormat,
-        RdfFormat? graphFormat)
-    {
-        _brightstarService = brightstarService;
-        _storeName = storeName;
-        _commitId = commitId;
-        _query = query;
-        _defaultGraphUris = defaultGraphUris;
-        _resultsFormat = resultsFormat;
-        _graphFormat = graphFormat;
-    }
-
     public async Task ExecuteAsync(HttpContext httpContext)
     {
         try
         {
             Stream resultStream;
             ISerializationFormat streamFormat;
-            if (_commitId.HasValue)
+            if (commitId.HasValue)
             {
-                var commitPoint = _brightstarService.GetCommitPoint(_storeName, _commitId.Value);
+                var commitPoint = brightstarService.GetCommitPoint(storeName, commitId.Value);
                 if (commitPoint == null)
                 {
                     httpContext.Response.StatusCode = StatusCodes.Status404NotFound;
                     return;
                 }
 
-                resultStream = _brightstarService.ExecuteQuery(
+                resultStream = brightstarService.ExecuteQuery(
                     commitPoint,
-                    _query,
-                    _defaultGraphUris,
-                    _resultsFormat,
-                    _graphFormat,
+                    query,
+                    defaultGraphUris,
+                    resultsFormat,
+                    graphFormat,
                     out streamFormat);
             }
             else
             {
                 var ifModifiedSince = httpContext.Request.GetTypedHeaders().IfModifiedSince?.UtcDateTime;
-                resultStream = _brightstarService.ExecuteQuery(
-                    _storeName,
-                    _query,
-                    _defaultGraphUris,
+                resultStream = brightstarService.ExecuteQuery(
+                    storeName,
+                    query,
+                    defaultGraphUris,
                     ifModifiedSince,
-                    _resultsFormat,
-                    _graphFormat,
+                    resultsFormat,
+                    graphFormat,
                     out streamFormat);
             }
 

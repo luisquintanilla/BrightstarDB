@@ -118,25 +118,14 @@ namespace BrightstarDB
 
             // Persistence Type
             var persistenceTypeSetting = GetApplicationSetting(appSettings, PersistenceTypeName);
-            if (!String.IsNullOrEmpty(persistenceTypeSetting))
-            {
-                switch (persistenceTypeSetting.ToLowerInvariant())
+            PersistenceType = !String.IsNullOrEmpty(persistenceTypeSetting)
+                ? persistenceTypeSetting.ToLowerInvariant() switch
                 {
-                    case PersistenceTypeAppendOnly:
-                        PersistenceType = PersistenceType.AppendOnly;
-                        break;
-                    case PersistenceTypeRewrite:
-                        PersistenceType = PersistenceType.Rewrite;
-                        break;
-                    default:
-                        PersistenceType = DefaultPersistenceType;
-                        break;
+                    PersistenceTypeAppendOnly => PersistenceType.AppendOnly,
+                    PersistenceTypeRewrite => PersistenceType.Rewrite,
+                    _ => DefaultPersistenceType
                 }
-            }
-            else
-            {
-                PersistenceType = DefaultPersistenceType;
-            }
+                : DefaultPersistenceType;
 
             // Page Cache Size
             var pageCacheSizeSetting = GetApplicationSetting(appSettings, PageCacheSizeName);

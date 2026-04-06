@@ -12,21 +12,12 @@ using VDS.RDF; // Pulls in the extension methods for Close() on streams
 
 namespace BrightstarDB.Client
 {
-    internal class BrightstarRestUpdatableStore : IUpdateableStore
+    internal class BrightstarRestUpdatableStore(IBrightstarService client, string storeName) : IUpdateableStore
     {
-        private readonly IBrightstarService _client;
-        private readonly string _storeName;
-
-        public BrightstarRestUpdatableStore(IBrightstarService client, string storeName)
-        {
-            _client = client;
-            _storeName = storeName;
-        }
-
         public SparqlResult ExecuteQuery(SparqlQueryContext queryContext, IList<string> datasetGraphUris)
         {
             ISerializationFormat resultFormat;
-            var resultStream = _client.ExecuteQuery(_storeName, queryContext.SparqlQuery, datasetGraphUris, null, queryContext.SparqlResultsFormat,
+            var resultStream = client.ExecuteQuery(storeName, queryContext.SparqlQuery, datasetGraphUris, null, queryContext.SparqlResultsFormat,
                 queryContext.GraphResultsFormat, out resultFormat);
             return new SparqlResult(resultStream, resultFormat, queryContext);
         }
@@ -62,7 +53,7 @@ namespace BrightstarDB.Client
 
         private void PostTransaction(string existencePreconditions, string nonexistencePreconditions, string patternsToDelete, string triplesToAdd, string defaultGraphUri)
         {
-            var jobInfo = _client.ExecuteTransaction(_storeName,
+            var jobInfo = client.ExecuteTransaction(storeName,
                                                      new UpdateTransactionData
                                                      {
                                                          ExistencePreconditions = existencePreconditions,
@@ -81,7 +72,7 @@ namespace BrightstarDB.Client
 #else
                 Thread.Sleep(20);
 #endif
-                jobInfo = _client.GetJobInfo(_storeName, jobInfo.JobId);
+                jobInfo = client.GetJobInfo(storeName, jobInfo.JobId);
             }
 
             if (jobInfo.JobCompletedWithErrors)
