@@ -7,10 +7,10 @@ namespace BrightstarDB.Server.AspNetCore.Models;
 
 public record TransactionResponseModel
 {
-    public string StoreName { get; init; } = null!;
+    public required string StoreName { get; init; }
     public ulong Id { get; init; }
-    public string TransactionType { get; init; } = null!;
-    public string Status { get; init; } = null!;
+    public required string TransactionType { get; init; }
+    public required string Status { get; init; }
     public Guid JobId { get; init; }
     public DateTime StartTime { get; init; }
 

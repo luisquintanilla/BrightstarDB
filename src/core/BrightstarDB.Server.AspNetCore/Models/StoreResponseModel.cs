@@ -9,13 +9,13 @@ namespace BrightstarDB.Server.AspNetCore.Models;
 
 public record StoreResponseModel
 {
-    public string Name { get; init; } = null!;
-    public string Commits { get; init; } = null!;
-    public string Jobs { get; init; } = null!;
-    public string Transactions { get; init; } = null!;
-    public string Statistics { get; init; } = null!;
-    public string SparqlQuery { get; init; } = null!;
-    public string SparqlUpdate { get; init; } = null!;
+    public required string Name { get; init; }
+    public required string Commits { get; init; }
+    public required string Jobs { get; init; }
+    public required string Transactions { get; init; }
+    public required string Statistics { get; init; }
+    public required string SparqlQuery { get; init; }
+    public required string SparqlUpdate { get; init; }
     public List<CommitPointResponseModel> CommitPoints { get; init; } = [];
 
     public static StoreResponseModel FromStore(string storeName, IEnumerable<ICommitPointInfo>? commitPoints = null)

@@ -8,7 +8,7 @@ namespace BrightstarDB.Server.AspNetCore.Models;
 public record CommitPointResponseModel
 {
     public ulong Id { get; init; }
-    public string StoreName { get; init; } = null!;
+    public required string StoreName { get; init; }
     public DateTime CommitTime { get; init; }
     public Guid JobId { get; init; }
 

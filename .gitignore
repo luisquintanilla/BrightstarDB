@@ -147,3 +147,4 @@ tools/NUnit.Runners.*/
 installer/VSIX/BrightstarEntityContext/MyEntityContext.tt
 installer/VSIX/BrightstarDB.EntityFramework/Properties/AssemblyInfo.cs
 src/portable/Test/BrightstarDB.Portable.Android.Tests/BrightstarDB.Portable.Android.Tests.csproj.bak
+out.txt
