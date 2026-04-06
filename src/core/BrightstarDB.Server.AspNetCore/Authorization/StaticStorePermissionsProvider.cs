@@ -53,13 +53,12 @@ public class StaticStorePermissionsProvider : AbstractStorePermissionsProvider
         }
 
         var storeName = storePermissionsElement.GetAttribute(NameAttr);
-        Dictionary<string, StorePermissions> storeUsers, storeClaims;
-        if (!_storeUsers.TryGetValue(storeName, out storeUsers))
+        if (!_storeUsers.TryGetValue(storeName, out var storeUsers))
         {
             storeUsers = new Dictionary<string, StorePermissions>();
             _storeUsers[storeName] = storeUsers;
         }
-        if (!_storeClaims.TryGetValue(storeName, out storeClaims))
+        if (!_storeClaims.TryGetValue(storeName, out var storeClaims))
         {
             storeClaims = new Dictionary<string, StorePermissions>();
             _storeClaims[storeName] = storeClaims;
@@ -79,9 +78,8 @@ public class StaticStorePermissionsProvider : AbstractStorePermissionsProvider
 
     private static void ProcessPermissionsElement(XmlElement permissionsElement, IDictionary<string, StorePermissions> permissonsDict)
     {
-        StorePermissions permissions;
         if (permissionsElement.HasAttribute(NameAttr) && permissionsElement.HasAttribute(PermissionsAttr) &&
-            Enum.TryParse(permissionsElement.GetAttribute(PermissionsAttr), out permissions))
+            Enum.TryParse(permissionsElement.GetAttribute(PermissionsAttr), out StorePermissions permissions))
         {
             permissonsDict[permissionsElement.GetAttribute(NameAttr)] = permissions;
         }
@@ -99,24 +97,20 @@ public class StaticStorePermissionsProvider : AbstractStorePermissionsProvider
         if (!String.IsNullOrEmpty(userName))
         {
             // See if there are user-specific permissions
-            Dictionary<string, StorePermissions> storeUserPermissions;
-            if (_storeUsers.TryGetValue(storeName, out storeUserPermissions))
+            if (_storeUsers.TryGetValue(storeName, out var storeUserPermissions))
             {
-                StorePermissions userPermissions;
-                if (storeUserPermissions.TryGetValue(userName, out userPermissions))
+                if (storeUserPermissions.TryGetValue(userName, out var userPermissions))
                 {
                     calculatedPermissions |= userPermissions;
                 }
             }
         }
 
-        Dictionary<string, StorePermissions> storeClaimPermissions;
-        if (_storeClaims.TryGetValue(storeName, out storeClaimPermissions))
+        if (_storeClaims.TryGetValue(storeName, out var storeClaimPermissions))
         {
             foreach (var claim in currentUser.Claims)
             {
-                StorePermissions claimPermissions;
-                if (storeClaimPermissions.TryGetValue(claim.Value, out claimPermissions))
+                if (storeClaimPermissions.TryGetValue(claim.Value, out var claimPermissions))
                 {
                     calculatedPermissions |= claimPermissions;
                 }

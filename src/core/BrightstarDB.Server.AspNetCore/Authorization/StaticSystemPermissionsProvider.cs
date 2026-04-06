@@ -57,9 +57,8 @@ public class StaticSystemPermissionsProvider : AbstractSystemPermissionsProvider
 
     private static void ProcessPermissionsElement(XmlElement permissionsElement, IDictionary<string, SystemPermissions> permissonsDict)
     {
-        SystemPermissions permissions;
         if (permissionsElement.HasAttribute(NameAttr) && permissionsElement.HasAttribute(PermissionsAttr) &&
-            Enum.TryParse(permissionsElement.GetAttribute(PermissionsAttr), out permissions))
+            Enum.TryParse(permissionsElement.GetAttribute(PermissionsAttr), out SystemPermissions permissions))
         {
             permissonsDict[permissionsElement.GetAttribute(NameAttr)] = permissions;
         }
@@ -67,7 +66,6 @@ public class StaticSystemPermissionsProvider : AbstractSystemPermissionsProvider
 
     public override SystemPermissions GetPermissionsForUser(ClaimsPrincipal? user)
     {
-
         if (user?.Identity?.IsAuthenticated != true)
         {
             return SystemPermissions.None;
@@ -78,8 +76,7 @@ public class StaticSystemPermissionsProvider : AbstractSystemPermissionsProvider
         if (!String.IsNullOrEmpty(userName))
         {
             // See if there are user-specific permissions
-            SystemPermissions userPermissions;
-            if (_userPermissions.TryGetValue(userName, out userPermissions))
+            if (_userPermissions.TryGetValue(userName, out var userPermissions))
             {
                 calculatedPermissions |= userPermissions;
             }
@@ -87,8 +84,7 @@ public class StaticSystemPermissionsProvider : AbstractSystemPermissionsProvider
 
         foreach (var claim in user.Claims)
         {
-            SystemPermissions claimPermissions;
-            if (_claimPermissions.TryGetValue(claim.Value, out claimPermissions))
+            if (_claimPermissions.TryGetValue(claim.Value, out var claimPermissions))
             {
                 calculatedPermissions |= claimPermissions;
             }
