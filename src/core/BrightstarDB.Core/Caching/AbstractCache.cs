@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace BrightstarDB.Caching
@@ -50,8 +50,8 @@ namespace BrightstarDB.Caching
         /// <param name="cachePriority">The priority of the item in the cache</param>
         public void Insert(string key, byte[] data, CachePriority cachePriority)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-            if (data == null) throw new ArgumentNullException(nameof(data));
+            ThrowIfNull(key);
+            ThrowIfNull(data);
             Remove(key);
             if (CacheSize + data.Length > _highwaterMark)
             {
@@ -80,7 +80,7 @@ namespace BrightstarDB.Caching
         /// <returns>The bytes for the cached item or null if the item is not found in the cache</returns>
         public byte[] Lookup(string key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            ThrowIfNull(key);
             var cacheEntry = GetEntry(key);
             if (cacheEntry == null) return null;
             CacheEvictionPolicy.NotifyLookup(key);
@@ -94,7 +94,7 @@ namespace BrightstarDB.Caching
         /// <param name="key">The key of the cache entry to be removed</param>
         public void Remove(string key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            ThrowIfNull(key);
             long entrySize = RemoveEntry(key);
             lock (_cacheLock)
             {
@@ -110,7 +110,7 @@ namespace BrightstarDB.Caching
         /// <returns>True if an entry with this key is in the cache, false otherwise</returns>
         public bool ContainsKey(string key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            ThrowIfNull(key);
             return GetEntry(key) != null;
         }
 
@@ -144,7 +144,7 @@ namespace BrightstarDB.Caching
         /// <remarks>This method calls the protected RemoveEntry method and then updates the local cache size counter</remarks>
         public long EvictEntry(string key)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            ThrowIfNull(key);
             long bytesEvicted = RemoveEntry(key);
             lock (_cacheLock)
             {

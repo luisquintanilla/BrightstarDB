@@ -84,7 +84,7 @@ namespace BrightstarDB.CodeGeneration
                 entityNamespaceSelector,
                 entityNameSelector,
                 entityAccessibiltySelector,
-                interfacePredicate).Result;
+                interfacePredicate).GetAwaiter().GetResult();
 
             return nodes
                 .Aggregate(

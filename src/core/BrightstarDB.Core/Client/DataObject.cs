@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BrightstarDB.EntityFramework;
@@ -183,8 +183,8 @@ namespace BrightstarDB.Client
                 return SetRelatedObject(type, _store.MakeDataObject(uri.Uri.ToString()));
             }
             if (value is Uri) return SetRelatedObject(type, _store.MakeDataObject(value.ToString()));
-            if (type == null) throw new ArgumentNullException("type");
-            if (value == null) throw new ArgumentNullException("value");
+            ThrowIfNull(type);
+            ThrowIfNull(value);
             string dataType = RdfDatatypes.GetRdfDatatype(value.GetType());
             string litString = RdfDatatypes.GetLiteralString(value);
             SetPropertyLiteral(type, litString, dataType, langCode);
@@ -224,8 +224,8 @@ namespace BrightstarDB.Client
             }
             else
             {
-                if (type == null) throw new ArgumentNullException("type");
-                if (value == null) throw new ArgumentNullException("value");
+                ThrowIfNull(type);
+                ThrowIfNull(value);
                 string dataType = RdfDatatypes.GetRdfDatatype(value.GetType());
                 string litString = RdfDatatypes.GetLiteralString(value);
                 AddLiteralProperty(type, litString, dataType, lang ?? RdfDatatypes.GetLiteralLanguageTag(value));
@@ -280,8 +280,8 @@ namespace BrightstarDB.Client
             }
             else
             {
-                if (type == null) throw new ArgumentNullException("type");
-                if (value == null) throw new ArgumentNullException("value");
+                ThrowIfNull(type);
+                ThrowIfNull(value);
                 string dataType = RdfDatatypes.GetRdfDatatype(value.GetType());
                 string litString = RdfDatatypes.GetLiteralString(value);
                 RemoveLiteralProperty(type, litString, dataType, lang);

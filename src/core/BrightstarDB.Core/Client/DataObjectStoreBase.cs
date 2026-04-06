@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -187,7 +187,7 @@ namespace BrightstarDB.Client
 
         public IDataObject MakeListDataObject(IEnumerable<object> listItems)
         {
-            if (listItems == null) throw new ArgumentNullException("listItems");
+            ThrowIfNull(listItems);
             if (listItems.Count() == 0) throw new ArgumentException("List must contain at least 1 item");
 
             return BuildList(listItems);
@@ -213,7 +213,7 @@ namespace BrightstarDB.Client
         /// <returns></returns>
         public IDataObject MakeDataObject(string identity)
         {
-            if (identity == null) throw new ArgumentNullException("identity");
+            ThrowIfNull(identity);
             var curie = new Curie(identity);
             if (curie.IsValidCurie && _namespaceMappings.ContainsKey(curie.Prefix))
             {
@@ -282,7 +282,7 @@ namespace BrightstarDB.Client
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="dataObject"/> is NULL</exception>
         public void DetachDataObject(IDataObject dataObject)
         {
-            if (dataObject == null) throw new ArgumentNullException("dataObject");
+            ThrowIfNull(dataObject);
             DeregisterDataObject(dataObject.Identity);
         }
 
@@ -313,7 +313,7 @@ namespace BrightstarDB.Client
         }
         public void Refresh(RefreshMode mode, IDataObject dataObject)
         {
-            if (dataObject == null) throw new ArgumentNullException("dataObject");
+            ThrowIfNull(dataObject);
             if (_managedProxies[dataObject.Identity] != dataObject)
             {
                 throw new ArgumentException("Data object is not tracked by this store.", "dataObject");

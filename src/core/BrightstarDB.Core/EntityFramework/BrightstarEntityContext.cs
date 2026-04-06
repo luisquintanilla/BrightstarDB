@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -107,7 +107,7 @@ namespace BrightstarDB.EntityFramework
         /// <exception cref="ArgumentNullException">Raised if <paramref name="o"/> is null.</exception>
         public void Add(object o)
         {
-            if (o == null) throw new ArgumentNullException("o");
+            ThrowIfNull(o);
             EnsureEntitySetInfo();
             _Add(o);
         }
@@ -140,7 +140,7 @@ namespace BrightstarDB.EntityFramework
         /// <exception cref="ArgumentNullException">Raised if <paramref name="o"/> is null.</exception>
         public void AddOrUpdate(object o)
         {
-            if (o == null) throw new ArgumentNullException("o");
+            ThrowIfNull(o);
             EnsureEntitySetInfo();
             _AddOrUpdate(o);
         }
@@ -178,7 +178,7 @@ namespace BrightstarDB.EntityFramework
         /// of the exceptions encountered for the individual items that falied.</exception>
         public void AddRange(IEnumerable items)
         {
-            if (items == null) throw new ArgumentNullException("items");
+            ThrowIfNull(items);
             List<Exception> exceptions = null;
             EnsureEntitySetInfo();
             foreach (var item in items)
@@ -213,7 +213,7 @@ namespace BrightstarDB.EntityFramework
         /// of the exceptions encountered for the individual items that falied.</exception>
         public void AddOrUpdateRange(IEnumerable items)
         {
-            if (items == null) throw new ArgumentNullException("items");
+            ThrowIfNull(items);
             List<Exception> exceptions = null;
             EnsureEntitySetInfo();
             foreach (var item in items)
@@ -451,7 +451,7 @@ namespace BrightstarDB.EntityFramework
         /// <param name="entity">The object to be refreshed</param>
         public override void Refresh(RefreshMode mode, object entity)
         {
-            if (entity == null) throw new ArgumentNullException("entity");
+            ThrowIfNull(entity);
             if (!(entity is BrightstarEntityObject)) throw new ArgumentException("Expected entity to extend the BrightstarEntityObject class", "entity");
             var beo = entity as BrightstarEntityObject;
             if (beo.Context != this) throw new ArgumentException("Entity is not attached to this context", "entity");
@@ -886,7 +886,7 @@ namespace BrightstarDB.EntityFramework
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="objectToDelete"/> is NULL.</exception>
         public override void DeleteObject(object objectToDelete)
         {
-            if (objectToDelete == null) throw new ArgumentNullException("objectToDelete");
+            ThrowIfNull(objectToDelete);
             var bsObject = objectToDelete as BrightstarEntityObject;
             if (bsObject == null || !bsObject.IsAttached)
             {

@@ -40,7 +40,7 @@ namespace BrightstarDB.CodeGeneration
                 EntityContextClassName,
                 entityAccessibilitySelector: entityAccessibilitySelector,
                 loggerFactory: loggerFactory
-                ).Result;
+                ).GetAwaiter().GetResult();
             var resultString = result
                 .Aggregate(new StringBuilder(), (sb, next) => sb.AppendLine(next.ToFullString()), x => x.ToString());
 

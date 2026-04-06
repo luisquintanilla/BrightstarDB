@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -21,7 +21,7 @@ namespace BrightstarDB.EntityFramework
         /// <param name="context">The parent context for the entity set. Must be an instance of <see cref="BrightstarEntityContext"/>.</param>
         public BrightstarEntitySet(EntityContext context) : base(context)
         {
-            if (context == null) throw new ArgumentNullException("context");
+            ThrowIfNull(context);
             _context = context as BrightstarEntityContext;
             if (_context == null)
             {
@@ -68,7 +68,7 @@ namespace BrightstarDB.EntityFramework
         /// <exception cref="ArgumentNullException">Thrown if <paramref name="items"/> is null or one of its members is NULL</exception>
         public void AddRange(IEnumerable<T> items)
         {
-            if (items == null) throw new ArgumentNullException("items");
+            ThrowIfNull(items);
             foreach (var t in items) Add(t, null);
         }
 
@@ -79,7 +79,7 @@ namespace BrightstarDB.EntityFramework
         /// <param name="resourceAddress">The resource address that the item is to be attached to</param>
         public void Add(T item, string resourceAddress)
         {
-            if (item == null) throw new ArgumentNullException("item");
+            ThrowIfNull(item);
             var beo = item as BrightstarEntityObject;
             if (beo == null)
             {
@@ -114,7 +114,7 @@ namespace BrightstarDB.EntityFramework
         /// <param name="item">The item to be added or updated</param>
         public void AddOrUpdate(T item)
         {
-            if (item == null) throw new ArgumentNullException("item");
+            ThrowIfNull(item);
             var beo = item as BrightstarEntityObject;
             if (beo == null)
             {
@@ -142,7 +142,7 @@ namespace BrightstarDB.EntityFramework
         /// <param name="items">An enumeration yielding the items to be added or updated.</param>
         public void AddOrUpdateRange(IEnumerable<T> items)
         {
-            if (items == null) throw new ArgumentNullException("items");
+            ThrowIfNull(items);
             foreach (var item in items) AddOrUpdate(item);
         }
     }

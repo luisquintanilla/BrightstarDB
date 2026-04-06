@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -49,10 +49,7 @@ namespace BrightstarDB.Client
         /// at a given time.</remarks>
         public EmbeddedBrightstarService(string baseLocation, EmbeddedServiceConfiguration serviceConfigurationOptions)
         {
-            if (baseLocation == null)
-            {
-                throw new ArgumentNullException(nameof(baseLocation));
-            }
+            ThrowIfNull(baseLocation);
 
             _serverCore = ServerCoreManager.GetServerCore(
                 baseLocation,
@@ -253,8 +250,8 @@ namespace BrightstarDB.Client
         public Stream ExecuteQuery(string storeName, string queryExpression, IEnumerable<string> defaultGraphUris, DateTime? ifNotModifiedSince,
             SparqlResultsFormat resultsFormat, RdfFormat graphFormat, out ISerializationFormat streamFormat)
         {
-            if (storeName == null) throw new ArgumentNullException("storeName");
-            if (queryExpression == null) throw new ArgumentNullException("queryExpression");
+            ThrowIfNull(storeName);
+            ThrowIfNull(queryExpression);
             if (resultsFormat == null && graphFormat == null) throw new ArgumentException("Either resultsFormat or graphFormat must be non-NULL");
 
             if (!_serverCore.DoesStoreExist(storeName)) throw new NoSuchStoreException(storeName);
@@ -340,7 +337,7 @@ namespace BrightstarDB.Client
         public Stream ExecuteQuery(ICommitPointInfo commitPoint, string queryExpression, IEnumerable<string> defaultGraphUris,
             SparqlResultsFormat resultsFormat, RdfFormat graphFormat, out ISerializationFormat streamFormat)
         {
-            if (queryExpression == null) throw new ArgumentNullException("queryExpression");
+            ThrowIfNull(queryExpression);
             if (resultsFormat == null) resultsFormat = SparqlResultsFormat.Xml;
             if (graphFormat == null) graphFormat = RdfFormat.RdfXml;
 
@@ -1002,8 +999,8 @@ namespace BrightstarDB.Client
         /// <param name="label">Optional user-friendly label for the job.</param>
         public IJobInfo ReExecuteTransaction(string storeName, ITransactionInfo transactionInfo, string label = null)
         {
-            if (storeName == null) throw new ArgumentNullException("storeName");
-            if (transactionInfo == null) throw new ArgumentNullException("transactionInfo");
+            ThrowIfNull(storeName);
+            ThrowIfNull(transactionInfo);
             try
             {
                 var jobId = _serverCore.ReExecuteTransaction(storeName, transactionInfo.Id,
