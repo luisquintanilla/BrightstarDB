@@ -29,8 +29,6 @@ namespace BrightstarDB.Client
 
         private readonly Uri _serviceEndpoint;
         private readonly IRequestAuthenticator _requestAuthenticator;
-        private int _pollInterval = DefaultPollInterval;
-        private int _pollTimeout = DefaultPollTimeout;
 
         private ICache _clientCache;
 
@@ -40,13 +38,13 @@ namespace BrightstarDB.Client
         /// </summary>
         public int PollInterval
         {
-            get { return _pollInterval; }
+            get;
             set
             {
                 if (value <= 0) throw new ArgumentException("Poll interval must be greater than 0");
-                _pollInterval = value;
+                field = value;
             }
-        }
+        } = DefaultPollInterval;
 
         /// <summary>
         /// Get or set the amount of time (in milliseconds)
@@ -56,13 +54,13 @@ namespace BrightstarDB.Client
         /// should wait indefinitely for completion.</remarks>
         public int PollTimeout
         {
-            get { return _pollTimeout; }
+            get;
             set
             {
                 if (value < 0) throw new ArgumentException("Poll timeout must be greater than or equal to 0");
-                _pollTimeout = value;
+                field = value;
             }
-        }
+        } = DefaultPollTimeout;
 
         internal BrightstarRestClient(string serviceEndpoint, IRequestAuthenticator requestAuthenticator, ICache clientCache)
         {

@@ -19,5 +19,8 @@
   <Folder Name="/Samples/Embedded/StoreAdmin/">
     <Project Path="Samples/Embedded/StoreAdmin/CommitPointsCore/CommitPointsCore.csproj" />
   </Folder>
+  <Folder Name="/Samples/Embedded/VectorSimilarity/">
+    <Project Path="Samples/Embedded/VectorSimilarity/VectorSimilarity.csproj" />
+  </Folder>
   <Project Path="../src/core/BrightstarDB.Core/BrightstarDB.Core.csproj" />
 </Solution>

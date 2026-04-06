@@ -67,18 +67,13 @@ namespace BrightstarDB.Client
         /// </summary>
         private List<ITriple> _triples;
 
-        /// <summary>
-        /// Indicates if this entity is new
-        /// </summary>
-        private bool _isNew;
-
         internal DataObject(IInternalDataObjectStore store)
         {
             _store = store;
             _identity = Constants.GeneratedUriPrefix + Guid.NewGuid();
             _triples = new List<ITriple>();
             _isLoaded = true;
-            _isNew = true;
+            IsNew = true;
         }
 
         internal DataObject(IInternalDataObjectStore store, string identity, bool isNew = false)
@@ -87,17 +82,13 @@ namespace BrightstarDB.Client
             _triples = new List<ITriple>();
             _identity = identity;
             _isLoaded = isNew;
-            _isNew = isNew;
+            IsNew = isNew;
         }
 
         /// <summary>
         /// Flag indicating if this data object is new or not.
         /// </summary>
-        public bool IsNew
-        {
-            get { return _isNew; }
-            internal set { _isNew = value; }
-        }
+        public bool IsNew { get; internal set; }
 
         /// <summary>
         /// Determines if this data object has one or more changes applied to it
@@ -597,7 +588,7 @@ namespace BrightstarDB.Client
             }
 
             // Because this is a set, we use a wildcard to delete any existing properties with the same predicate
-            if (!_isNew && !_store.DeletePatterns.GetMatches(triple.Subject, triple.Predicate, Constants.WildcardUri).Any())
+            if (!IsNew && !_store.DeletePatterns.GetMatches(triple.Subject, triple.Predicate, Constants.WildcardUri).Any())
             {
                 AddDeleteTriples(new Triple
                 {
@@ -628,7 +619,7 @@ namespace BrightstarDB.Client
             }
 
             // Because this is a set, we use a wildcard to delete any existing properties with the same predicate
-            if (!_isNew && !_store.DeletePatterns.GetMatches(triple.Subject, triple.Predicate, Constants.WildcardUri).Any())
+            if (!IsNew && !_store.DeletePatterns.GetMatches(triple.Subject, triple.Predicate, Constants.WildcardUri).Any())
             {
                 _store.DeletePatterns.Add(new Triple
                 {

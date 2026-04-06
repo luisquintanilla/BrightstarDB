@@ -11,9 +11,6 @@ namespace BrightstarDB.Rdf
     /// and assign it to that property.</remarks>
     public class PlainLiteral
     {
-        private string _value;
-        private string _language;
-
         /// <summary>
         /// Creates an empty plain literal with no value and a default language tag
         /// </summary>
@@ -67,7 +64,7 @@ namespace BrightstarDB.Rdf
         /// <summary>
         /// Get or set the string value of the literal
         /// </summary>
-        public string Value { get { return _value; } private set { _value = (value ?? String.Empty); } }
+        public string Value { get; private set => field = value ?? string.Empty; }
 
         /// <summary>
         /// Get or set the language tag for the literal.
@@ -75,8 +72,8 @@ namespace BrightstarDB.Rdf
         /// <remarks>Returns <see cref="String.Empty"/> if the literal has no language tag. Use String.Empty or NULL to clear an existing language tag.</remarks>
         public string Language
         {
-            get { return _language; }
-            private set { _language = (value == null ? String.Empty : value.ToLowerInvariant()); }
+            get;
+            private set => field = value == null ? string.Empty : value.ToLowerInvariant();
         }
 
         /// <summary>
